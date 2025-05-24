@@ -1,4 +1,4 @@
 fastapi[standard]
 sqlalchemy
-psycopg2-binary
+psycopg[async]
 alembic
