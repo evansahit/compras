@@ -47,6 +47,7 @@ def upgrade() -> None:
             id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             first_name          TEXT NOT NULL,
             last_name           TEXT,
+            email               TEXT UNIQUE NOT NULL,
             created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
         );
@@ -76,7 +77,7 @@ def upgrade() -> None:
             id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             shopping_list_id    UUID REFERENCES shopping_lists,
             item_id             UUID REFERENCES items,
-            lowest_price        NUMERIC(5, 2),
+            lowest_price        NUMERIC(5, 2) CONSTRAINT positive_price CHECK (lowest_price > 0),
             quantity            INTEGER,
             created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP

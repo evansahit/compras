@@ -1,5 +1,6 @@
-from app.api.users import user_router
 from fastapi import FastAPI
+
+from app.api import users
 
 app = FastAPI(
     title="Compras+",
@@ -12,7 +13,7 @@ app = FastAPI(
     license_info={"name": "MIT"},
 )
 
-app.include_router(user_router)
+app.include_router(users.router)
 
 
 @app.get("/")
