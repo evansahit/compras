@@ -1,4 +1,4 @@
-# Compras++
+# Compras+
 
 A web app to track your shopping lists with a twist
 

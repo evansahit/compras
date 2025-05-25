@@ -2,7 +2,7 @@ from app.api.users import user_router
 from fastapi import FastAPI
 
 app = FastAPI(
-    title="Compras++",
+    title="Compras+",
     description="A shopping list that gives you up-to-date pricing information",
     version="0.0.1",
     contact={
@@ -17,4 +17,4 @@ app.include_router(user_router)
 
 @app.get("/")
 def root():
-    return {"message": "Hello Compras++"}
+    return {"message": "Hello Compras+"}
