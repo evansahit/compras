@@ -1,29 +1,25 @@
-from app.models.user import UserCreate, UserOutput
+from app.schemas.user import UserCreate, UserOutput
 from sqlalchemy import Connection, text
 
 
 class UserService:
-    # TODO: fix
-    #       THis results in a funky error.
     @staticmethod
     def create_user(conn: Connection, new_user: UserCreate) -> UserOutput:
+        sql = text("""
+            INSERT INTO users (first_name, last_name, email)
+            VALUES (:first_name, :last_name, :email)
+            RETURNING id, first_name, last_name, email, created_at, updated_at;
+        """)
         result = conn.execute(
-            text("""
-                INSERT INTO users 
-                VALUES (:first_name, :last_name, :email) 
-                RETURNING id, first_name, last_name, email, created_at, updated_at;
-            """),
-            {
-                "first_name": new_user.first_name,
-                "last_name": new_user.last_name,
-                "email": new_user.email,
-            },
+            sql,
+            new_user.model_dump(),
         )
+        conn.commit()
 
-        result = result.fetchone()
+        result = result.mappings().first()
         if result is None:
             raise Exception("Failed to create user")
-        result = UserOutput(**dict(result))
+        result = UserOutput(**result)
 
         return result
 

@@ -54,31 +54,12 @@ def upgrade() -> None:
     """)
 
     op.execute("""
-        CREATE TABLE shopping_lists (
-            id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),    
-            user_id             UUID REFERENCES users,
-            created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-            updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-        );
-    """)
-
-    op.execute("""
         CREATE TABLE items (
             id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            user_id             UUID REFERENCES users(id) NOT NULL,
             name                TEXT UNIQUE NOT NULL,
             grocery_store       TEXT UNIQUE NOT NULL,
-            created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-            updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
-        );
-    """)
-
-    op.execute("""
-        CREATE TABLE shopping_list_items (
-            id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-            shopping_list_id    UUID REFERENCES shopping_lists,
-            item_id             UUID REFERENCES items,
-            lowest_price        NUMERIC(5, 2) CONSTRAINT positive_price CHECK (lowest_price > 0),
-            quantity            INTEGER,
+            lowest_price        NUMERIC(5, 2) NOT NULL,
             created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
         );
@@ -86,17 +67,13 @@ def upgrade() -> None:
 
     # create triggers for all tables to update timestamp for rows that are updated
     create_updated_at_trigger("users")
-    create_updated_at_trigger("shopping_lists")
     create_updated_at_trigger("items")
-    create_updated_at_trigger("shopping_list_items")
 
 
 def downgrade() -> None:
     # drop all tables
     op.execute("""
-        DROP TABLE IF EXISTS shopping_list_items;
         DROP TABLE IF EXISTS items;
-        DROP TABLE IF EXISTS shopping_lists;
         DROP TABLE IF EXISTS users;
     """)
 

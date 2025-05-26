@@ -1,7 +1,7 @@
 from typing import Any
 
 from app.database.db import engine
-from app.models.user import UserCreate, UserOutput
+from app.schemas.user import UserCreate, UserOutput
 from app.service.user_service import UserService
 from fastapi import APIRouter
 
