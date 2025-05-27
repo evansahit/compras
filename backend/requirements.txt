@@ -3,3 +3,5 @@ sqlalchemy
 psycopg[async]
 alembic
 email-validator
+pyjwt
+passlib[bcrypt]

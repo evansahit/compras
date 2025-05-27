@@ -48,6 +48,7 @@ def upgrade() -> None:
             first_name          TEXT NOT NULL,
             last_name           TEXT,
             email               TEXT UNIQUE NOT NULL,
+            hashed_password     TEXT NOT NULL,
             created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
         );
@@ -60,7 +61,7 @@ def upgrade() -> None:
             name                TEXT UNIQUE NOT NULL,
             grocery_store       TEXT UNIQUE NOT NULL,
             lowest_price        NUMERIC(5, 2) NOT NULL,
-            is_complete         BOOLEAN DEFAULT FALSE,
+            is_completed         BOOLEAN DEFAULT FALSE,
             is_archived         BOOLEAN DEFAULT FALSE,
             created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP

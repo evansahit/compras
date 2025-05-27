@@ -18,3 +18,7 @@ class UserOutput(UserBase):
     id: UUID
     created_at: datetime
     updated_at: datetime
+
+
+class UserInDB(UserOutput):
+    hashed_password: str

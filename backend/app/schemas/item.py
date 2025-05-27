@@ -2,19 +2,23 @@ from datetime import datetime
 from decimal import Decimal
 from uuid import UUID
 
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ItemBase(BaseModel):
     name: str
     grocery_store: str
-    lowest_price: Decimal
-    is_complete: bool
-    is_archived: bool
+    lowest_price: Decimal = Field(gt=0)
+    is_completed: bool = False
+    is_archived: bool = False
 
 
 class ItemCreate(ItemBase):
     user_id: UUID
+
+
+class ItemUpdate(ItemCreate):
+    id: UUID
 
 
 class ItemOutput(ItemBase):

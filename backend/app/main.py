@@ -1,17 +1,14 @@
 from fastapi import FastAPI
 
-from app.api import items, users
+from app.api.main import router
+from app.config import Settings
 
 app = FastAPI(
-    title="Compras+",
-    description="A shopping list that gives you up-to-date pricing information",
-    version="0.0.1",
-    contact={
-        "name": "Evan Sahit",
-        "email": "evansahit@hotmail.com",
-    },
-    license_info={"name": "MIT"},
+    title=Settings.PROJECT_TITLE,
+    description=Settings.PROJECT_DESCRIPTION,
+    version=Settings.PROJECT_VERSION,
+    contact=Settings.CONTACT,
+    license_info=Settings.LICENSE_INFO,
 )
 
-app.include_router(users.router)
-app.include_router(items.router)
+app.include_router(router, prefix=Settings.API_V1_STR)
