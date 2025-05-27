@@ -10,18 +10,18 @@ class UserService:
             VALUES (:first_name, :last_name, :email)
             RETURNING id, first_name, last_name, email, created_at, updated_at;
         """)
-        result = conn.execute(
-            sql,
-            new_user.model_dump(),
-        )
-        conn.commit()
+        with conn.begin():
+            result = conn.execute(
+                sql,
+                new_user.model_dump(),
+            )
 
-        result = result.mappings().first()
-        if result is None:
-            raise Exception("Failed to create user")
-        result = UserOutput(**result)
+            result = result.mappings().first()
+            if result is None:
+                raise Exception("Failed to create user")
+            result = UserOutput(**result)
 
-        return result
+            return result
 
     # @staticmethod
     # def get_all_users(conn: Connection):

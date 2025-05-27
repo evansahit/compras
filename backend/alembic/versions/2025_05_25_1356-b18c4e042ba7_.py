@@ -60,6 +60,8 @@ def upgrade() -> None:
             name                TEXT UNIQUE NOT NULL,
             grocery_store       TEXT UNIQUE NOT NULL,
             lowest_price        NUMERIC(5, 2) NOT NULL,
+            is_complete         BOOLEAN DEFAULT FALSE,
+            is_archived         BOOLEAN DEFAULT FALSE,
             created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
         );

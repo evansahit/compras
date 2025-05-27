@@ -9,6 +9,8 @@ class ItemBase(BaseModel):
     name: str
     grocery_store: str
     lowest_price: Decimal
+    is_complete: bool
+    is_archived: bool
 
 
 class ItemCreate(ItemBase):

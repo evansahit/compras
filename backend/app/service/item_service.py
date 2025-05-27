@@ -11,12 +11,12 @@ class ItemService:
             RETURNING id, user_id, name, grocery_store, lowest_price, created_at, updated_at;
         """)
 
-        result = conn.execute(sql, new_item.model_dump())
-        conn.commit()
+        with conn.begin():
+            result = conn.execute(sql, new_item.model_dump())
 
-        result = result.mappings().first()
-        if result is None:
-            raise Exception("Failed to create item")
-        result = ItemOutput(**result)
+            result = result.mappings().first()
+            if result is None:
+                raise Exception("Failed to create item")
+            result = ItemOutput(**result)
 
-        return result
+            return result
