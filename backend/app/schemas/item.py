@@ -17,8 +17,8 @@ class ItemCreate(ItemBase):
     user_id: UUID
 
 
-class ItemUpdate(ItemCreate):
-    id: UUID
+class ItemUpdate(ItemBase):
+    pass
 
 
 class ItemOutput(ItemBase):

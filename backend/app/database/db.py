@@ -1,4 +1,9 @@
 from app.config import Settings
-from sqlalchemy import create_engine
+from sqlalchemy.ext.asyncio import create_async_engine
 
-db = create_engine(Settings.DB_URL)
+engine = create_async_engine(Settings.DB_URL, echo=False)
+
+
+async def get_db_connection():
+    async with engine.connect() as conn:
+        yield conn

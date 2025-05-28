@@ -3,38 +3,30 @@ from typing import Annotated, Any
 
 import jwt
 from app.config import Settings
+from app.database.db import get_db_connection
 from app.schemas.token import TokenData
 from app.schemas.user import UserInDB
 from app.service.user_service import UserOutput, UserService
-from app.service.utils import create_unauthorized_exception
+from app.service.utils import (
+    create_unauthorized_exception,
+    verify_password,
+)
 from fastapi import Depends
 from fastapi.security import OAuth2PasswordBearer
 from jwt import InvalidTokenError
-from passlib.context import CryptContext
-from sqlalchemy import Connection
+from sqlalchemy.ext.asyncio import AsyncConnection
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl=f"{Settings.API_V1_STR}/token")
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class AuthService:
     @staticmethod
-    def verify_password(plain_password: str, hashed_password: str) -> bool:
-        return pwd_context.verify(plain_password, hashed_password)
-
-    @staticmethod
-    def get_password_hash(plain_password: str) -> str:
-        return pwd_context.hash(plain_password)
-
-    @staticmethod
-    def authenticate_user(
-        conn: Connection, username: str, plain_password: str
+    async def authenticate_user(
+        conn: AsyncConnection, email: str, plain_password: str
     ) -> UserInDB | None:
-        user: UserInDB = UserService.get_user_by_email(conn, username)
+        user: UserInDB = await UserService.get_user_by_email(conn, email)
 
-        if not user or not AuthService.verify_password(
-            plain_password, user.hashed_password
-        ):
+        if not user or not verify_password(plain_password, user.hashed_password):
             return None
 
         return user
@@ -60,25 +52,31 @@ class AuthService:
 
     @staticmethod
     async def get_current_user(
-        conn: Connection,
+        conn: Annotated[AsyncConnection, Depends(get_db_connection)],
         token: Annotated[str, Depends(oauth2_scheme)],
     ) -> UserOutput:
+        exception = create_unauthorized_exception("Could not validate credentials")
+
         try:
-            payload = jwt.decode(token, Settings.SECRET, algorithms=Settings.ALGORITHM)  # type: ignore
+            payload = jwt.decode(  # type: ignore
+                token,
+                Settings.SECRET,
+                algorithms=Settings.ALGORITHM,
+            )
             email = payload.get("sub")
             if email is None:
-                raise create_unauthorized_exception("Could not validate credentials")
+                raise exception
 
             token_data = TokenData(username=email)
 
         except InvalidTokenError:
-            raise create_unauthorized_exception("Could not validate credentials")
+            raise exception
 
         if not token_data.username:
-            raise create_unauthorized_exception("Could not validate credentials")
+            raise exception
 
-        user: UserInDB = UserService.get_user_by_email(conn, token_data.username)
+        user: UserInDB = await UserService.get_user_by_email(conn, token_data.username)
         if not user:
-            raise create_unauthorized_exception("Could not validate credentials")
+            raise exception
 
         return UserOutput(**user.model_dump())

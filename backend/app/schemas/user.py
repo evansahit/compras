@@ -11,7 +11,7 @@ class UserBase(BaseModel):
 
 
 class UserCreate(UserBase):
-    pass
+    plain_password: str
 
 
 class UserOutput(UserBase):

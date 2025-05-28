@@ -58,10 +58,10 @@ def upgrade() -> None:
         CREATE TABLE items (
             id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
             user_id             UUID REFERENCES users(id) NOT NULL,
-            name                TEXT UNIQUE NOT NULL,
-            grocery_store       TEXT UNIQUE NOT NULL,
+            name                TEXT NOT NULL,
+            grocery_store       TEXT NOT NULL,
             lowest_price        NUMERIC(5, 2) NOT NULL,
-            is_completed         BOOLEAN DEFAULT FALSE,
+            is_completed        BOOLEAN DEFAULT FALSE,
             is_archived         BOOLEAN DEFAULT FALSE,
             created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
