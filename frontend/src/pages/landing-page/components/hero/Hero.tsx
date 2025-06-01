@@ -15,9 +15,8 @@ export default function Hero() {
                 groceries?
             </p>
             <p>
-                <span className="accent">Compras+</span> gives allows you to see
-                what each grocery store charges for each item on your grocery
-                list.
+                <span className="accent">Compras+</span> allows you to see what
+                each grocery store charges for each item on your grocery list.
             </p>
             <div className="hero-btn-row">
                 <Link to="/auth">

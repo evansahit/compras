@@ -52,16 +52,17 @@ button {
     font-size: 1rem;
     transition: all 0.5s;
     filter: brightness(90%);
+    outline-color: var(--primary-color);
 }
 
 button:hover {
-    cursor: pointer;
-    filter: brightness(100%);
+    cursor: pointer !important;
+    filter: brightness(100%) !important;
 }
 
 button:disabled {
-    opacity: 0.75;
-    cursor: not-allowed;
+    opacity: 0.75 !important;
+    cursor: not-allowed !important;
 }
 
 /* form */
@@ -101,7 +102,13 @@ input {
 .input-container {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1rem;
+}
+
+.input-error {
+    /* margin-top: 0.25rem; */
+    /* height: 1rem; */
+    color: red;
 }
 
 a {
