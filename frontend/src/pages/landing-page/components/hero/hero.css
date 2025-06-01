@@ -1,0 +1,27 @@
+.hero-container {
+    padding: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.hero-container h1 {
+    font-size: 3rem;
+    text-align: center;
+}
+
+.hero-container p {
+    line-height: 1.5rem;
+}
+
+.heading-accent {
+    font-family: var(--heading-font);
+    font-weight: bolder;
+    color: var(--primary-color);
+}
+
+.hero-btn-row {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+}

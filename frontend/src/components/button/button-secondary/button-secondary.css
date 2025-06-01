@@ -1,0 +1,12 @@
+.btn-secondary {
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    outline: 2px solid var(--primary-color);
+    /* filter: brightness(100%); */
+}
+
+/* .btn-secondary:hover {
+    background-color: var(--primary-color);
+    color: var(--background-color);
+    border: none;
+} */

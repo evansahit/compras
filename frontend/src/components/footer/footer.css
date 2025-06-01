@@ -1,0 +1,16 @@
+footer {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    align-items: center;
+    border-top: 1px solid var(--primary-color);
+    width: var(--header-footer-width);
+    padding: 0.5rem var(--x-padding);
+}
+
+footer > h2 {
+    font-family: var(--heading-font);
+    font-size: 2.5rem;
+    color: var(--primary-color);
+}
