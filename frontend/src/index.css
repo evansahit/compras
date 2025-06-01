@@ -2,6 +2,7 @@
     --border-radius: 10px;
     --x-padding: 1rem;
     --header-footer-width: 85%;
+    --transition-duration: 0.5s;
 
     /* fonts */
     --heading-font: "Kirang Haerang", system-ui;
@@ -50,7 +51,7 @@ button {
     border-radius: var(--border-radius);
     font-weight: bolder;
     font-size: 1rem;
-    transition: all 0.5s;
+    transition: all var(--transition-duration);
     filter: brightness(90%);
     outline-color: var(--primary-color);
 }
@@ -58,11 +59,18 @@ button {
 button:hover {
     cursor: pointer !important;
     filter: brightness(100%) !important;
+    transform: rotate(0.005turn) translateY(-3px);
+    box-shadow: 0 0 20px rgba(37, 89, 87, 0.5);
 }
 
 button:disabled {
     opacity: 0.75 !important;
     cursor: not-allowed !important;
+}
+
+button:disabled:hover {
+    transform: none;
+    box-shadow: none;
 }
 
 /* form */

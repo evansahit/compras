@@ -41,7 +41,10 @@ export default function SignUp() {
         if (
             emailError.length !== 0 ||
             passwordError.length !== 0 ||
-            passwordRepeatError.length !== 0
+            passwordRepeatError.length !== 0 ||
+            email.length === 0 ||
+            password.length === 0 ||
+            passwordRepeat.length === 0
         ) {
             setIsSubmitButtonDisabled(true);
         } else {
