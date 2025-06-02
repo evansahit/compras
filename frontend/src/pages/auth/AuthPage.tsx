@@ -5,8 +5,8 @@ import Login from "./components/login/Login";
 export default function AuthPage() {
     return (
         <>
-            <h1>Sign up or log in</h1>
             <Signup />
+            <h1>Or</h1>
             <Login />
         </>
     );

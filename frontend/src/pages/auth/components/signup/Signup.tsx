@@ -64,10 +64,8 @@ export default function SignUp() {
 
     return (
         <>
-            <form>
-                <span className="form-title">
-                    Sign up for <span className="accent">Compras+</span>{" "}
-                </span>
+            <form id="signup-form">
+                <span className="form-title">Sign up</span>
 
                 <div className="input-container">
                     <div className="input-group">
@@ -99,7 +97,7 @@ export default function SignUp() {
                     </div>
 
                     <div className="input-group">
-                        <label htmlFor="password">Repeat password*</label>
+                        <label htmlFor="password">Confirm password*</label>
                         <input
                             type="password"
                             name="password-repeat"

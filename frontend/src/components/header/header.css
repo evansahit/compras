@@ -1,25 +1,24 @@
 header {
-    width: var(--header-footer-width);
     margin: 0 auto 1rem auto;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.9rem;
+    padding: 1rem;
     border-radius: var(--border-radius);
     position: sticky;
     top: 0.75rem;
-    background-color: rgba(238, 235, 211, 0.5);
+    /* background-color: rgba(238, 235, 211, 0.5); */
+    /* border: 1px solid var(--primary-color); */
     backdrop-filter: blur(7px);
     -webkit-backdrop-filter: blur(20px); /* for Safari */
-    filter: saturate(1);
     z-index: 999;
 
     transition: all var(--transition-duration);
 }
 
-header:hover {
+/* header:hover {
     filter: saturate(1.5);
-}
+} */
 
 header > a > .website-title {
     font-size: 2.5rem;
