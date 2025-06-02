@@ -57,7 +57,7 @@ button {
 button:hover {
     cursor: pointer !important;
     filter: brightness(100%) !important;
-    transform: rotate(0.005turn) translateY(-3px);
+    transform: translateY(-2px);
     box-shadow: 0 0 20px rgba(37, 89, 87, 0.5);
 }
 

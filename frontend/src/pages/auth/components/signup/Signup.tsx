@@ -27,6 +27,7 @@ export default function SignUp() {
         if (isPasswordTouched) setPasswordError(validatePassword(password));
         if (isPasswordRepeatTouched)
             setPasswordRepeatError(validatePassword(passwordRepeat));
+
         if (
             isPasswordTouched &&
             isPasswordRepeatTouched &&
@@ -38,6 +39,7 @@ export default function SignUp() {
             );
         }
 
+        // disable submit button on any error
         if (
             emailError.length !== 0 ||
             passwordError.length !== 0 ||
@@ -73,7 +75,7 @@ export default function SignUp() {
                         <input
                             type="email"
                             name="email"
-                            id="input-email"
+                            id="signup-input-email"
                             placeholder="your@email.com"
                             required
                             onChange={(e) => setEmail(e.target.value)}
@@ -87,7 +89,7 @@ export default function SignUp() {
                         <input
                             type="password"
                             name="password"
-                            id="input-password"
+                            id="signup-input-password"
                             placeholder="supersecurepassword"
                             required
                             onChange={(e) => setPassword(e.target.value)}
@@ -101,10 +103,13 @@ export default function SignUp() {
                         <input
                             type="password"
                             name="password-repeat"
-                            id="input-password-repeat"
+                            id="signup-input-password-repeat"
                             placeholder="supersecurepassword"
                             required
-                            onChange={(e) => setPasswordRepeat(e.target.value)}
+                            onChange={(e) => {
+                                setPasswordRepeat(e.target.value);
+                                setIsPasswordRepeatTouched(true);
+                            }}
                             onBlur={() => setIsPasswordRepeatTouched(true)}
                         />
                         <span className="input-error">
