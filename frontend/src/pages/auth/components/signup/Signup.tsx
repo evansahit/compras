@@ -6,7 +6,7 @@ import {
     validateEmail,
     validatePassword,
     validatePasswordsMatch,
-} from "../../form-validation-logic";
+} from "../../logic/form-validation";
 
 export default function SignUp() {
     const [firstName, setFirstName] = useState("");
