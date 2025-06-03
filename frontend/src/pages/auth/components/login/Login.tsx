@@ -1,7 +1,7 @@
 import "./login.css";
 import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
 import { useState, useEffect } from "react";
-import { validateEmail, validatePassword } from "../../util";
+import { validateEmail, validatePassword } from "../../form-validation-logic";
 
 export default function Login() {
     const [email, setEmail] = useState("");

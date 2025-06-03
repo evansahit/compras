@@ -2,7 +2,7 @@
     --border-radius: 10px;
     --x-padding: 1rem;
     --header-footer-width: 85%;
-    --transition-duration: 0.5s;
+    --transition-duration: 0.25s;
 
     /* fonts */
     --heading-font: "Kirang Haerang", system-ui;
@@ -55,8 +55,8 @@ button {
 }
 
 button:hover {
-    cursor: pointer !important;
-    filter: brightness(100%) !important;
+    cursor: pointer;
+    filter: brightness(100%);
     transform: translateY(-2px);
     box-shadow: 0 0 20px rgba(37, 89, 87, 0.5);
 }

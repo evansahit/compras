@@ -2,27 +2,33 @@ import "./signup.css";
 import { useState, useEffect } from "react";
 import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
 import {
+    validateFirstName,
     validateEmail,
     validatePassword,
     validatePasswordsMatch,
-} from "../../util";
+} from "../../form-validation-logic";
 
 export default function SignUp() {
+    const [firstName, setFirstName] = useState("");
+    const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [passwordRepeat, setPasswordRepeat] = useState("");
 
-    const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(true);
+    const [firstNameError, setFirstNameError] = useState("");
     const [emailError, setEmailError] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [passwordRepeatError, setPasswordRepeatError] = useState("");
+    const [isSubmitButtonDisabled, setIsSubmitButtonDisabled] = useState(true);
 
+    const [isFirstNameTouched, setIsFirstNameTouched] = useState(false);
     const [isEmailTouched, setIsEmailTouched] = useState(false);
     const [isPasswordTouched, setIsPasswordTouched] = useState(false);
     const [isPasswordRepeatTouched, setIsPasswordRepeatTouched] =
         useState(false);
 
     useEffect(() => {
+        if (isFirstNameTouched) setFirstNameError(validateFirstName(firstName));
         if (isEmailTouched) setEmailError(validateEmail(email));
         if (isPasswordTouched) setPasswordError(validatePassword(password));
         if (isPasswordRepeatTouched)
@@ -41,6 +47,7 @@ export default function SignUp() {
 
         // disable submit button on any error
         if (
+            firstNameError.length !== 0 ||
             emailError.length !== 0 ||
             passwordError.length !== 0 ||
             passwordRepeatError.length !== 0 ||
@@ -53,13 +60,16 @@ export default function SignUp() {
             setIsSubmitButtonDisabled(false);
         }
     }, [
+        firstName,
         email,
-        emailError,
         password,
         passwordRepeat,
+        isFirstNameTouched,
         isEmailTouched,
         isPasswordTouched,
         isPasswordRepeatTouched,
+        firstNameError,
+        emailError,
         passwordError.length,
         passwordRepeatError.length,
     ]);
@@ -70,6 +80,27 @@ export default function SignUp() {
                 <span className="form-title">Sign up</span>
 
                 <div className="input-container">
+                    <div className="input-group">
+                        <label htmlFor="first-name">First name*</label>
+                        <input
+                            type="text"
+                            name="first-name"
+                            placeholder="Your first name"
+                            required
+                            onChange={(e) => setFirstName(e.target.value)}
+                            onBlur={() => setIsFirstNameTouched(true)}
+                        />
+                        <span className="input-error">{firstNameError}</span>
+                    </div>
+                    <div className="input-group">
+                        <label htmlFor="last-name">Last name</label>
+                        <input
+                            type="text"
+                            name="last-name"
+                            placeholder="Your last name"
+                            onChange={(e) => setLastName(e.target.value)}
+                        />
+                    </div>
                     <div className="input-group">
                         <label htmlFor="email">Email*</label>
                         <input
@@ -99,7 +130,9 @@ export default function SignUp() {
                     </div>
 
                     <div className="input-group">
-                        <label htmlFor="password">Confirm password*</label>
+                        <label htmlFor="password-repeat">
+                            Confirm password*
+                        </label>
                         <input
                             type="password"
                             name="password-repeat"

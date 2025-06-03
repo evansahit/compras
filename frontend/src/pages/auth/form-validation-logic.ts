@@ -1,3 +1,7 @@
+const firstNameErrors = {
+    empty: "First name is required",
+};
+
 const emailErrors = {
     empty: "Email is required",
     invalid: "Email is invalid",
@@ -7,6 +11,12 @@ const passwordErrors = {
     empty: "Password is required",
     noMatch: "Passwords need to match",
 };
+
+function validateFirstName(firstName: string): string {
+    if (firstName.trim().length === 0) return firstNameErrors.empty;
+
+    return "";
+}
 
 function validateEmail(email: string): string {
     if (email.trim().length === 0) {
@@ -50,4 +60,9 @@ function validatePasswordsMatch(passwordA: string, passwordB: string): string {
     return "";
 }
 
-export { validateEmail, validatePassword, validatePasswordsMatch };
+export {
+    validateEmail,
+    validatePassword,
+    validatePasswordsMatch,
+    validateFirstName,
+};
