@@ -27,6 +27,10 @@ The project is still in development, so exact tools are subject to change.
   - `SQLAlchemy` as a database engine/ connector.
   - `Alembic` for database migrations.
   - Writing raw `SQL` for DDL, DML and database functions and triggers to practice.
+- Authentication
+  - Simple username + password authentication.
+  - JWTs.
+  - Implemented using FastAPI's built-in authentication components.
 
 ## Progress
 - FastAPI and React projects have been created.
