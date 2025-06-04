@@ -35,6 +35,8 @@ The project is still in development, so exact tools are subject to change.
 ## Progress
 - FastAPI and React projects have been created.
 - Backend
+  - Database tables have been created.
+  - `PostgreSQL` functions and triggers have been implemented to automatically update the `updated_at` column in each table with the current timestamp at time of updating.
   - Endpoints and logic for `/users` and `/items` resources have been created.
   - Simple username + password authentication is implemented. Relevant endpoints have been protected by authentication checks.
 - Frontend
