@@ -16,13 +16,24 @@ The project is still in development, so exact tools are subject to change.
 - Frontend library/ framework
   - `React`.
     - `react-router` for routing.
+- `Typescript`.
 
 **Backend**
 - Backend framework
   - `FastAPI` (`Python`).
+  - `Pydantic` for data validation (`FastAPI` makes heavy usage of `Pydantic`).
 - Database 
   - `PostgreSQL`.
   - `SQLAlchemy` as a database engine/ connector.
   - `Alembic` for database migrations.
-  - `Pydantic` for data validation (`FastAPI` makes heavy usage of `Pydantic`).
   - Writing raw `SQL` for DDL, DML and database functions and triggers to practice.
+
+## Progress
+- FastAPI and React projects have been created.
+- Backend
+  - Endpoints and logic for `/users` and `/items` resources have been created.
+  - Simple username + password authentication is implemented. Relevant endpoints have been protected by authentication checks.
+- Frontend
+  - Landing page has been created, albeit a simple one.
+  - Signup/ login page has been created, including form validation.
+  - Working on frontend logic for creating a new user.
