@@ -40,6 +40,7 @@ The project is still in development, so exact tools are subject to change.
   - Endpoints and logic for `/users` and `/items` resources have been created.
   - Simple username + password authentication is implemented. Relevant endpoints have been protected by authentication checks.
 - Frontend
+  - Doing mobile-first, so the website doesn't look great on anything larger than mobile.
   - Landing page has been created, albeit a simple one.
   - Signup/ login page has been created, including form validation.
   - Working on frontend logic for creating a new user.
