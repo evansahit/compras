@@ -12,7 +12,7 @@ export default function Header() {
                 <Link
                     to="/"
                     style={
-                        location.pathname === "/auth"
+                        location.pathname !== "/"
                             ? {
                                   margin: "0 auto",
                               }
@@ -21,8 +21,8 @@ export default function Header() {
                 >
                     <span className="website-title">Compras+</span>
                 </Link>
-                {location.pathname !== "/auth" && (
-                    <Link to="/auth">
+                {location.pathname === "/" && (
+                    <Link to="signup-or-login">
                         <ButtonPrimary>Sign up or Login</ButtonPrimary>
                     </Link>
                 )}

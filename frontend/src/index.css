@@ -5,7 +5,7 @@
     --transition-duration: 0.25s;
 
     /* fonts */
-    --heading-font: "Kirang Haerang", system-ui;
+    --accent-font: "Kirang Haerang", system-ui;
     --paragraph-font: "Poppins", sans-serif;
 
     /* colors */
@@ -34,8 +34,14 @@ html {
     min-height: 100%;
 }
 
+main {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
 .accent {
-    font-family: var(--heading-font);
+    font-family: var(--accent-font);
     font-size: 1.6rem;
     font-weight: bolder;
     color: var(--primary-color);
@@ -93,6 +99,10 @@ form > button {
     margin: 1rem auto 0 auto;
 }
 
+label {
+    font-weight: bold;
+}
+
 input {
     padding: 0.5rem;
     border-radius: var(--border-radius);
@@ -116,6 +126,12 @@ input {
     /* margin-top: 0.25rem; */
     /* height: 1rem; */
     color: red;
+}
+
+.form-error {
+    margin-top: 1rem;
+    color: red;
+    text-align: center;
 }
 
 a {

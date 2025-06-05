@@ -44,7 +44,9 @@ def upgrade() -> None:
     # create all tables
     op.execute("""
         CREATE TABLE users (
-            id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+            id                  UUID 
+                                    PRIMARY KEY 
+                                    DEFAULT gen_random_uuid(),
             first_name          TEXT NOT NULL,
             last_name           TEXT,
             email               TEXT UNIQUE NOT NULL,
@@ -56,8 +58,13 @@ def upgrade() -> None:
 
     op.execute("""
         CREATE TABLE items (
-            id                  UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-            user_id             UUID REFERENCES users(id) NOT NULL,
+            id                  UUID 
+                                    PRIMARY KEY 
+                                    DEFAULT gen_random_uuid(),
+            user_id             UUID 
+                                    NOT NULL 
+                                    REFERENCES users(id) 
+                                    ON DELETE CASCADE,
             name                TEXT NOT NULL,
             grocery_store       TEXT NOT NULL,
             lowest_price        NUMERIC(5, 2) NOT NULL,

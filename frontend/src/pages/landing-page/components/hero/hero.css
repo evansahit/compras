@@ -15,7 +15,7 @@
 }
 
 .heading-accent {
-    font-family: var(--heading-font);
+    font-family: var(--accent-font);
     font-weight: bolder;
     color: var(--primary-color);
 }

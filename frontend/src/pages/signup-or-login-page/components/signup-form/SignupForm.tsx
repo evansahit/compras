@@ -1,5 +1,5 @@
-import "./signup.css";
-import { useState, useEffect } from "react";
+import "./signup-form.css";
+import { useState, useEffect, type FormEvent } from "react";
 import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
 import {
     validateFirstName,
@@ -7,8 +7,13 @@ import {
     validatePassword,
     validatePasswordsMatch,
 } from "../../logic/form-validation";
+import { useNavigate } from "react-router";
 
-export default function SignUp() {
+import { createUser } from "../../logic/auth";
+
+export default function SignUpForm() {
+    const navigate = useNavigate();
+
     const [firstName, setFirstName] = useState("");
     const [lastName, setLastName] = useState("");
     const [email, setEmail] = useState("");
@@ -26,6 +31,28 @@ export default function SignUp() {
     const [isPasswordTouched, setIsPasswordTouched] = useState(false);
     const [isPasswordRepeatTouched, setIsPasswordRepeatTouched] =
         useState(false);
+
+    const [isFormLoading, setIsFormLoading] = useState(false);
+    const [formError, setFormError] = useState("");
+
+    async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+        setIsFormLoading(true);
+        setFormError("");
+        e.preventDefault();
+        const formElement = e.currentTarget;
+        const formData = new FormData(formElement);
+
+        try {
+            await createUser(formData);
+            navigate("/login");
+        } catch (error) {
+            setFormError(
+                error instanceof Error ? error.message : "Unknown error"
+            );
+        } finally {
+            setIsFormLoading(false);
+        }
+    }
 
     useEffect(() => {
         if (isFirstNameTouched) setFirstNameError(validateFirstName(firstName));
@@ -53,7 +80,8 @@ export default function SignUp() {
             passwordRepeatError.length !== 0 ||
             email.length === 0 ||
             password.length === 0 ||
-            passwordRepeat.length === 0
+            passwordRepeat.length === 0 ||
+            isFormLoading
         ) {
             setIsSubmitButtonDisabled(true);
         } else {
@@ -72,11 +100,12 @@ export default function SignUp() {
         emailError,
         passwordError.length,
         passwordRepeatError.length,
+        isFormLoading,
     ]);
 
     return (
         <>
-            <form id="signup-form">
+            <form id="signup-form" onSubmit={handleSubmit}>
                 <span className="form-title">Sign up</span>
 
                 <div className="input-container">
@@ -151,8 +180,10 @@ export default function SignUp() {
                     </div>
                 </div>
 
+                <span className="form-error">{formError}</span>
+
                 <ButtonPrimary type="submit" disabled={isSubmitButtonDisabled}>
-                    Sign up
+                    {isFormLoading ? "Working on it..." : "Sign up"}
                 </ButtonPrimary>
             </form>
         </>

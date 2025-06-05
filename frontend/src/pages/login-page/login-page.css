@@ -1,0 +1,7 @@
+.login-wrapper {
+    position: absolute;
+    top: 30%;
+    left: 30%;
+    transform: translate(-30%, -30%);
+    width: 100%;
+}
