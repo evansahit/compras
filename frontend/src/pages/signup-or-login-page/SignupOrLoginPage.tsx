@@ -6,7 +6,7 @@ export default function SignupOrLoginPage() {
     return (
         <>
             <SignupForm />
-            <h1>Or</h1>
+            <h1 className="text-seperator">Or</h1>
             <LoginForm />
         </>
     );

@@ -1,7 +1,8 @@
 import type { UserOutput, UserInput } from "../../../types";
 import { API_URL_BASE } from "../../../constants";
+import { convertToUserOutput } from "../../../util";
 
-async function createUser(formData: FormData): Promise<UserOutput> {
+export async function createUser(formData: FormData): Promise<UserOutput> {
     const endpoint = "/users";
     const url = API_URL_BASE + endpoint;
 
@@ -24,23 +25,27 @@ async function createUser(formData: FormData): Promise<UserOutput> {
         throw new Error("Something went wrong creating a new user");
     }
 
-    const data = await response.json();
-    console.log("data from backend:");
-    console.table(data);
+    const json = await response.json();
 
-    const res: UserOutput = {
-        id: data.id,
-        firstName: data.first_name,
-        lastName: data.last_name,
-        email: data.email,
-        createdAt: data.created_at,
-        updatedAt: data.updated_at,
-    };
-
-    console.log("transformed data from backend:");
-    console.table(res);
-
-    return res;
+    return convertToUserOutput(json);
 }
 
-export { createUser };
+export async function loginUser(formData: FormData): Promise<void> {
+    const endpoint = "/token";
+    const url = API_URL_BASE + endpoint;
+
+    const response: Response = await fetch(url, {
+        method: "POST",
+        body: formData,
+    });
+    const json = await response.json();
+
+    if (!response.ok) {
+        const error = json.detail || "Login failed";
+        throw new Error(error);
+    }
+
+    const jwt = `${json.token_type} ${json.access_token}`;
+
+    localStorage.setItem("jwt", jwt);
+}

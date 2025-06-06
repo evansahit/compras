@@ -1,0 +1,5 @@
+.greeting {
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: 300;
+}

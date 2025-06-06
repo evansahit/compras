@@ -110,10 +110,13 @@ export default function SignUpForm() {
 
                 <div className="input-container">
                     <div className="input-group">
-                        <label htmlFor="first-name">First name*</label>
+                        <label htmlFor="signup-input-first-name">
+                            First name*
+                        </label>
                         <input
                             type="text"
                             name="first-name"
+                            id="signup-input-first-name"
                             placeholder="Your first name"
                             required
                             onChange={(e) => setFirstName(e.target.value)}
@@ -122,16 +125,19 @@ export default function SignUpForm() {
                         <span className="input-error">{firstNameError}</span>
                     </div>
                     <div className="input-group">
-                        <label htmlFor="last-name">Last name</label>
+                        <label htmlFor="signup-input-last-name">
+                            Last name
+                        </label>
                         <input
                             type="text"
                             name="last-name"
+                            id="signup-input-last-name"
                             placeholder="Your last name"
                             onChange={(e) => setLastName(e.target.value)}
                         />
                     </div>
                     <div className="input-group">
-                        <label htmlFor="email">Email*</label>
+                        <label htmlFor="signup-input-email">Email*</label>
                         <input
                             type="email"
                             name="email"
@@ -145,7 +151,7 @@ export default function SignUpForm() {
                     </div>
 
                     <div className="input-group">
-                        <label htmlFor="password">Password*</label>
+                        <label htmlFor="signup-input-password">Password*</label>
                         <input
                             type="password"
                             name="password"
@@ -159,7 +165,7 @@ export default function SignUpForm() {
                     </div>
 
                     <div className="input-group">
-                        <label htmlFor="password-repeat">
+                        <label htmlFor="signup-input-password-repeat">
                             Confirm password*
                         </label>
                         <input

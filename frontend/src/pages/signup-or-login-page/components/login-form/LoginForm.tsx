@@ -1,9 +1,13 @@
 import "./login-form.css";
 import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { validateEmail, validatePassword } from "../../logic/form-validation";
+import { loginUser } from "../../logic/auth";
+import { useNavigate } from "react-router";
 
 export default function LoginForm() {
+    const navigate = useNavigate();
+
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -14,6 +18,27 @@ export default function LoginForm() {
     const [isEmailTouched, setIsEmailTouched] = useState(false);
     const [isPasswordTouched, setIsPasswordTouched] = useState(false);
 
+    const [isFormLoading, setIsFormLoading] = useState(false);
+    const [formError, setFormError] = useState("");
+
+    async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setIsFormLoading(true);
+        setFormError("");
+
+        const form = e.currentTarget;
+        const formData = new FormData(form);
+
+        try {
+            await loginUser(formData);
+            navigate("/home");
+        } catch (error) {
+            setFormError(error as string);
+        } finally {
+            setIsFormLoading(false);
+        }
+    }
+
     useEffect(() => {
         if (isEmailTouched) setEmailError(validateEmail(email));
         if (isPasswordTouched) setPasswordError(validatePassword(password));
@@ -22,7 +47,8 @@ export default function LoginForm() {
             emailError.length !== 0 ||
             passwordError.length !== 0 ||
             email.length === 0 ||
-            password.length === 0
+            password.length === 0 ||
+            isFormLoading
         ) {
             setIsSubmitButtonDisabled(true);
         } else {
@@ -35,19 +61,20 @@ export default function LoginForm() {
         isEmailTouched,
         isPasswordTouched,
         passwordError.length,
+        isFormLoading,
     ]);
 
     return (
         <>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <span className="form-title">Login</span>
 
                 <div className="input-container">
                     <div className="input-group">
-                        <label htmlFor="email">Email*</label>
+                        <label htmlFor="login-input-email">Email*</label>
                         <input
                             type="email"
-                            name="email"
+                            name="username"
                             id="login-input-email"
                             placeholder="your@email.com"
                             required
@@ -58,7 +85,7 @@ export default function LoginForm() {
                     </div>
 
                     <div className="input-group">
-                        <label htmlFor="password">Password*</label>
+                        <label htmlFor="login-input-password">Password*</label>
                         <input
                             type="password"
                             name="password"
@@ -72,8 +99,10 @@ export default function LoginForm() {
                     </div>
                 </div>
 
+                <span className="form-error">{formError}</span>
+
                 <ButtonPrimary type="submit" disabled={isSubmitButtonDisabled}>
-                    Sign up
+                    {isFormLoading ? "Working on it..." : "Log in"}
                 </ButtonPrimary>
             </form>
         </>
