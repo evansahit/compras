@@ -5,6 +5,9 @@ from app.service.user_service import UserService
 from fastapi import HTTPException, status
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection
+from supermarktconnector.ah import AHConnector
+
+ah_connector = AHConnector()
 
 
 class ItemService:
@@ -16,7 +19,7 @@ class ItemService:
         # TODO: here I would need to do the fancy stuff to search for product prices at multiple supermarkets
         #       this can be done by any available APIs or packages, or I need to do some webscraping
 
-        print("NEW ITEM:", new_item)
+        # all_relevant_products = ah_connector.search_all_products
 
         # sql = text("""
         #     INSERT INTO items (name, user_id, grocery_store, lowest_price)
