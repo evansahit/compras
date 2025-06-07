@@ -1,5 +1,5 @@
 import "./login-page.css";
-import LoginForm from "../signup-or-login-page/components/login-form/LoginForm";
+import LoginForm from "../../components/login-form/LoginForm";
 
 export default function LoginPage() {
     return (

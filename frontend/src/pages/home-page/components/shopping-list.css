@@ -1,0 +1,25 @@
+.shopping-list {
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    display: flex;
+    flex-direction: column;
+    background-color: var(--primary-color);
+    backdrop-filter: blur(7px);
+    -webkit-backdrop-filter: blur(20px);
+    filter: saturate(2);
+    color: white;
+}
+
+.default-msg {
+    margin: auto;
+}
+
+.btn-add-item {
+    width: 50%;
+    margin: 1rem auto 0 auto;
+}
+
+.input-new-item {
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+}

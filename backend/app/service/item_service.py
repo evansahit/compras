@@ -1,6 +1,7 @@
 from uuid import UUID
 
 from app.schemas.item import ItemCreate, ItemOutput, ItemUpdate
+from app.service.user_service import UserService
 from fastapi import HTTPException, status
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection
@@ -12,23 +13,28 @@ class ItemService:
         conn: AsyncConnection,
         new_item: ItemCreate,
     ):
-        sql = text("""
-            INSERT INTO items (name, user_id, grocery_store, lowest_price)
-            VALUES (:name, :user_id, :grocery_store, :lowest_price)
-            RETURNING id, user_id, name, grocery_store, lowest_price, created_at, updated_at;
-        """)
+        # TODO: here I would need to do the fancy stuff to search for product prices at multiple supermarkets
+        #       this can be done by any available APIs or packages, or I need to do some webscraping
 
-        result = await conn.execute(sql, new_item.model_dump())
-        await conn.commit()
+        print("NEW ITEM:", new_item)
 
-        result = result.mappings().first()
-        if result is None:
-            raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to create item with name {new_item.name}",
-            )
+        # sql = text("""
+        #     INSERT INTO items (name, user_id, grocery_store, lowest_price)
+        #     VALUES (:name, :user_id, :grocery_store, :lowest_price)
+        #     RETURNING id, user_id, name, grocery_store, lowest_price, created_at, updated_at;
+        # """)
 
-        return ItemOutput(**result)
+        # result = await conn.execute(sql, new_item.model_dump())
+        # await conn.commit()
+
+        # result = result.mappings().first()
+        # if result is None:
+        #     raise HTTPException(
+        #         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+        #         detail=f"Failed to create item with name {new_item.name}",
+        #     )
+
+        # return ItemOutput(**result)
 
     @staticmethod
     async def get_all_items_by_user_id(conn: AsyncConnection, user_id: UUID):

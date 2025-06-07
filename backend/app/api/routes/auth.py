@@ -27,11 +27,11 @@ async def login_for_access_token(
         raise create_unauthorized_exception("Incorrect username or password")
 
     access_token_expires = (
-        float(Settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-        if Settings.ACCESS_TOKEN_EXPIRE_MINUTES
-        else float(30)
+        float(Settings.ACCESS_TOKEN_EXPIRE_DAYS)
+        if Settings.ACCESS_TOKEN_EXPIRE_DAYS
+        else float(3)
     )
-    access_token_expires = timedelta(minutes=access_token_expires)
+    access_token_expires = timedelta(days=access_token_expires)
 
     access_token: str = AuthService.create_access_token(
         data={"sub": user.email}, expires_delta=access_token_expires

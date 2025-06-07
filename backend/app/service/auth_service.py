@@ -8,6 +8,7 @@ from app.schemas.token import TokenData
 from app.schemas.user import UserInDB
 from app.service.user_service import UserOutput, UserService
 from app.service.utils import (
+    create_not_found_exception,
     create_unauthorized_exception,
     verify_password,
 )
@@ -77,6 +78,6 @@ class AuthService:
 
         user: UserInDB = await UserService.get_user_by_email(conn, token_data.username)
         if not user:
-            raise exception
+            raise create_not_found_exception("User not found.")
 
         return UserOutput(**user.model_dump())

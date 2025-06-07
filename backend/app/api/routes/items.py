@@ -13,7 +13,7 @@ from app.service.item_service import ItemService
 router = APIRouter(prefix="/items")
 
 
-@router.post("", response_model=ItemOutput, status_code=status.HTTP_201_CREATED)
+@router.post("", status_code=status.HTTP_201_CREATED)
 async def create_item(
     new_item: ItemCreate,
     conn: Annotated[AsyncConnection, Depends(get_db_connection)],

@@ -1,8 +1,8 @@
 import "./login-form.css";
-import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
+import ButtonPrimary from "../button/button-primary/ButtonPrimary";
 import React, { useState, useEffect } from "react";
-import { validateEmail, validatePassword } from "../../logic/form-validation";
-import { loginUser } from "../../logic/auth";
+import { validateEmail, validatePassword } from "../../utils/form-validation";
+import { loginUser } from "../../api/auth";
 import { useNavigate } from "react-router";
 
 export default function LoginForm() {

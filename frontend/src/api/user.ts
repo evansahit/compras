@@ -1,6 +1,9 @@
-import type { ItemOutput, UserOutput } from "../../../types";
-import { API_URL_BASE } from "../../../constants";
-import { convertToUserOutput, convertToItemOutput } from "../../../util";
+import type { ItemOutput, UserOutput } from "../types";
+import { API_URL_BASE } from "../constants";
+import {
+    convertToUserOutput,
+    convertToItemOutput,
+} from "../utils/data-transformation";
 
 export async function getCurrentUser(): Promise<UserOutput> {
     const endpoint = "/users/me";
@@ -26,7 +29,7 @@ export async function getCurrentUser(): Promise<UserOutput> {
 export async function getItemsForCurrentUser(
     userId: string
 ): Promise<ItemOutput[]> {
-    const endpoint = `/${userId}/items`;
+    const endpoint = `/users/${userId}/items`;
     const url = API_URL_BASE + endpoint;
 
     const response = await fetch(url, {
@@ -35,22 +38,28 @@ export async function getItemsForCurrentUser(
         },
     });
 
-    const json = await response.json();
+    let json;
 
-    if (!response) {
+    try {
+        json = await response.json();
+    } catch {
+        json = null;
+    }
+
+    if (!response.ok) {
         const error =
-            json.detail || "Something went wrong retrieving your items";
+            json.detail || "Something went wrong getting your shopping list.";
+
         throw new Error(error);
     }
 
-    if (response.status === 404) {
-        const error = json.detail || "This user does not exist";
-        throw new Error(error);
-    }
-
-    const items = json.map((item) => {
+    const items = json.map((item: unknown) => {
         convertToItemOutput(item);
     });
 
     return items;
+}
+
+function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }

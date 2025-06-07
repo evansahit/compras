@@ -1,5 +1,5 @@
-import type { UserOutput } from "./types";
-import type { ItemOutput } from "./types";
+import type { UserOutput } from "../types";
+import type { ItemOutput } from "../types";
 
 export function convertToUserOutput(data): UserOutput {
     return {

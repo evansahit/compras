@@ -10,7 +10,7 @@ header {
     /* background-color: rgba(238, 235, 211, 0.5); */
     /* border: 1px solid var(--primary-color); */
     backdrop-filter: blur(7px);
-    -webkit-backdrop-filter: blur(20px); /* for Safari */
+    -webkit-backdrop-filter: blur(20px);
     z-index: 999;
 
     transition: all var(--transition-duration);

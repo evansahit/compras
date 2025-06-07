@@ -1,14 +1,16 @@
 import "./home-page.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-import { getCurrentUser, getItemsForCurrentUser } from "./logic/user";
+import { getCurrentUser, getItemsForCurrentUser } from "../../api/user";
 import type { ItemOutput, UserOutput } from "../../types";
+import ShoppingList from "./components/ShoppingList";
 
 export default function HomePage() {
     const navigate = useNavigate();
     const [currentUser, setCurrentUser] = useState<UserOutput>();
-    const [items, setItems] = useState<ItemOutput[] | undefined | null>();
+    const [items, setItems] = useState<ItemOutput[] | []>([]);
     const [isItemsLoading, setIsItemsLoading] = useState(true);
+    const [itemsError, setItemsError] = useState("");
 
     // make a request to get the current user to get their name
     useEffect(() => {
@@ -40,7 +42,7 @@ export default function HomePage() {
                 setItems(items);
                 setIsItemsLoading(false);
             } catch (error) {
-                console.log(error);
+                setItemsError(error as string);
             }
         }
 
@@ -49,28 +51,23 @@ export default function HomePage() {
 
     return (
         <>
+            {!currentUser && <h1>Loading...</h1>}
+
             <span className="greeting">
                 Hey {currentUser ? currentUser.firstName : "User"}
             </span>
-            <h1>Shopping list</h1>
-            {isItemsLoading && "Loading shopping list..."}
-            {items ? (
-                <ul>
-                    {items.map((item: ItemOutput) => (
-                        <>
-                            <li>{item.id}</li>
-                            <li>{item.name}</li>
-                            <li>{item.groceryStore}</li>
-                            <li>{item.lowestPrice}</li>
-                            <li>{item.isCompleted}</li>
-                            <li>{item.isArchived}</li>
-                            <li>{item.createdAt.toDateString()}</li>
-                            <li>{item.updatedAt.toDateString()}</li>
-                        </>
-                    ))}
-                </ul>
-            ) : (
-                <p>There are no items in your shopping list.</p>
+            <h1 className="home-title">Shopping list</h1>
+
+            {isItemsLoading && (
+                <span className="list-loading">Loading shopping list...</span>
+            )}
+
+            {currentUser && (
+                <ShoppingList
+                    userId={currentUser.id}
+                    items={items}
+                    itemsError={itemsError}
+                />
             )}
         </>
     );

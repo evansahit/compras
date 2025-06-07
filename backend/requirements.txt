@@ -5,3 +5,4 @@ alembic
 email-validator
 pyjwt
 passlib[bcrypt]
+supermarktconnector

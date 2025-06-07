@@ -13,8 +13,9 @@ class ItemBase(BaseModel):
     is_archived: bool = False
 
 
-class ItemCreate(ItemBase):
+class ItemCreate(BaseModel):
     user_id: UUID
+    name: str
 
 
 class ItemUpdate(ItemBase):

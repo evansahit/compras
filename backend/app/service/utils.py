@@ -10,6 +10,13 @@ def create_unauthorized_exception(detail: str) -> HTTPException:
     )
 
 
+def create_not_found_exception(detail: str) -> HTTPException:
+    return HTTPException(
+        status_code=status.HTTP_404_NOT_FOUND,
+        detail=detail,
+    )
+
+
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 

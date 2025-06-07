@@ -1,15 +1,15 @@
 import "./signup-form.css";
 import { useState, useEffect, type FormEvent } from "react";
-import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
+import ButtonPrimary from "../button/button-primary/ButtonPrimary";
 import {
     validateFirstName,
     validateEmail,
     validatePassword,
     validatePasswordsMatch,
-} from "../../logic/form-validation";
+} from "../../utils/form-validation";
 import { useNavigate } from "react-router";
 
-import { createUser } from "../../logic/auth";
+import { createUser } from "../../api/auth";
 
 export default function SignUpForm() {
     const navigate = useNavigate();

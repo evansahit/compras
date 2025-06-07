@@ -16,6 +16,11 @@ export type UserOutput = {
 };
 
 // items
+export type ItemInput = {
+    userId: string;
+    name: string;
+};
+
 export type ItemOutput = {
     id: string;
     name: string;

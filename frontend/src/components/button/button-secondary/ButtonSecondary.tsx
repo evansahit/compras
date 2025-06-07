@@ -1,10 +1,18 @@
 import React from "react";
 import "./button-secondary.css";
 
-type ButtonSecondaryProps = {
+type ButtonSecondaryProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     children: React.ReactNode;
 };
 
-export default function ButtonSecondary(props: ButtonSecondaryProps) {
-    return <button className="btn-secondary">{props.children}</button>;
+export default function ButtonSecondary({
+    children,
+    className = "",
+    ...rest
+}: ButtonSecondaryProps) {
+    return (
+        <button className={`btn-secondary ${className}`} {...rest}>
+            {children}
+        </button>
+    );
 }

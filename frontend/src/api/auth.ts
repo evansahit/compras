@@ -1,6 +1,6 @@
-import type { UserOutput, UserInput } from "../../../types";
-import { API_URL_BASE } from "../../../constants";
-import { convertToUserOutput } from "../../../util";
+import type { UserOutput, UserInput } from "../types";
+import { API_URL_BASE } from "../constants";
+import { convertToUserOutput } from "../utils/data-transformation";
 
 export async function createUser(formData: FormData): Promise<UserOutput> {
     const endpoint = "/users";
