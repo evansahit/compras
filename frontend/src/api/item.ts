@@ -2,6 +2,9 @@ import { API_URL_BASE, jsonAuthedHeaders } from "../constants";
 import type { ItemInput, ItemOutput } from "../types";
 import { convertToItemOutput } from "../utils/data-transformation";
 
+// TODO: create a new type for the CreateItemResponse that's coming from the backend
+//       return the object containing the new item and associated its products or return
+//       them separated?
 export async function createNewItem(newItem: ItemInput): Promise<void> {
     const endpoint = "/items";
     const url = API_URL_BASE + endpoint;
@@ -17,20 +20,20 @@ export async function createNewItem(newItem: ItemInput): Promise<void> {
         body: JSON.stringify(data),
     });
 
-    // let json;
+    let json;
 
-    // try {
-    //     json = await response.json();
-    // } catch {
-    //     json = null;
-    // }
+    try {
+        json = await response.json();
+    } catch {
+        json = null;
+    }
 
-    // if (!response.ok) {
-    //     const error =
-    //         json.detail || "Something went wrong creating a new item.";
+    if (!response.ok) {
+        const error =
+            json.detail || "Something went wrong creating a new item.";
 
-    //     throw new Error(error);
-    // }
+        throw new Error(error);
+    }
 
     // return convertToItemOutput(json);
 }
