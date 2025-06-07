@@ -49,3 +49,7 @@ The project is still in development, so exact tools are subject to change.
     -   Signup/ login page has been created, including form validation.
     -   Creating a user from the frontend works.
     -   Need to work on logging in next.
+    -   Logging in works.
+    -   Working on Home page which is where the Shopping list will be.
+    -   Working on adding new items to the shopping list.
+    -   Found a Python package which allows me to search current product data from Albert Heijn and Jumbo.
