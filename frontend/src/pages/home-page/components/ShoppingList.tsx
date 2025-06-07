@@ -14,21 +14,25 @@ export default function ShoppingList(props: ShoppingListProps) {
     const newItemInputRef = useRef<HTMLInputElement>(null);
     const [items, setItems] = useState(props.items);
     const [isEditing, setIsEditing] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     async function handleCreateNewItemOnEnter(
         e: React.KeyboardEvent<HTMLInputElement>
     ) {
         if (e.key.toLowerCase() === "enter") {
+            setIsLoading(true);
             const newItem = await createNewItem({
                 userId: props.userId,
                 name: e.currentTarget.value,
             });
 
             console.log("new item:", newItem);
+            setIsLoading(false);
         }
     }
 
     async function handleCreateNewItemOnSave() {
+        setIsLoading(true);
         const newItemName = newItemInputRef?.current?.value;
         const newItem = await createNewItem({
             userId: props.userId,
@@ -36,6 +40,7 @@ export default function ShoppingList(props: ShoppingListProps) {
         });
 
         console.log("new item:", newItem);
+        setIsLoading(false);
     }
 
     return (
@@ -61,6 +66,10 @@ export default function ShoppingList(props: ShoppingListProps) {
                     ref={newItemInputRef}
                     onKeyDown={handleCreateNewItemOnEnter}
                 />
+            )}
+
+            {isLoading && (
+                <span className="item-creation-loading">Working on it...</span>
             )}
 
             <ButtonSecondary

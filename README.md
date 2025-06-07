@@ -34,6 +34,8 @@ The project is still in development, so exact tools are subject to change.
     -   Simple username + password authentication.
     -   JWTs.
     -   Implemented using FastAPI's built-in authentication components.
+-   Retrieving product information
+    -   `supermarktconnector` package provides a means to retrieve product information from Albert Heijn and Jumbo.
 
 ## Progress
 

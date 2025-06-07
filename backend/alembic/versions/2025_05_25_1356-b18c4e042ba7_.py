@@ -66,10 +66,25 @@ def upgrade() -> None:
                                     REFERENCES users(id) 
                                     ON DELETE CASCADE,
             name                TEXT NOT NULL,
-            grocery_store       TEXT NOT NULL,
-            lowest_price        NUMERIC(5, 2) NOT NULL,
             is_completed        BOOLEAN DEFAULT FALSE,
             is_archived         BOOLEAN DEFAULT FALSE,
+            created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
+            updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
+        );
+    """)
+
+    op.execute("""
+        CREATE TABLE products (
+            id                  UUID
+                                    PRIMARY KEY
+                                    DEFAULT gen_random_uuid(),
+            item_id             UUID 
+                                    NOT NULL
+                                    REFERENCES items(id)
+                                    ON DELETE CASCADE,
+            name                TEXT NOT NULL,
+            grocery_store       TEXT NOT NULL,
+            price               NUMERIC(5, 2) NOT NULL,
             created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
         );
@@ -78,6 +93,7 @@ def upgrade() -> None:
     # create triggers for all tables to update timestamp for rows that are updated
     create_updated_at_trigger("users")
     create_updated_at_trigger("items")
+    create_updated_at_trigger("products")
 
 
 def downgrade() -> None:
@@ -85,6 +101,7 @@ def downgrade() -> None:
     op.execute("""
         DROP TABLE IF EXISTS items;
         DROP TABLE IF EXISTS users;
+        DROP TABLE IF EXISTS products;
     """)
 
     # drop function

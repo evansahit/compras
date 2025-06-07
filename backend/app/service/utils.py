@@ -1,5 +1,6 @@
 from fastapi import HTTPException, status
 from passlib.context import CryptContext
+from app.schemas.item import ItemOutput
 
 
 def create_unauthorized_exception(detail: str) -> HTTPException:
@@ -26,3 +27,6 @@ def get_password_hash(plain_password: str) -> str:
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
+
+def transform_to_item_output_ah(items_raw: list[dict[str, any]]) ItemOutput:
+    

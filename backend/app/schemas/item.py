@@ -1,14 +1,11 @@
 from datetime import datetime
-from decimal import Decimal
 from uuid import UUID
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 
 
 class ItemBase(BaseModel):
     name: str
-    grocery_store: str
-    lowest_price: Decimal = Field(gt=0)
     is_completed: bool = False
     is_archived: bool = False
 

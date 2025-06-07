@@ -23,3 +23,7 @@
     padding: 0.5rem;
     border-radius: var(--border-radius);
 }
+
+.item-creation-loading {
+    margin: 1rem auto 0 auto;
+}
