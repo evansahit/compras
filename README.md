@@ -55,3 +55,6 @@ The project is still in development, so exact tools are subject to change.
     -   Working on Home page which is where the Shopping list will be.
     -   Working on adding new items to the shopping list.
     -   Found a Python package which allows me to search current product data from Albert Heijn and Jumbo.
+    -   Can create new items which searches for AH products. Still need to implement product search for Jumbo.
+    -   Can logout.
+    -   Starting to render newly created items on frontend.
