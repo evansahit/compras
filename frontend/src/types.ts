@@ -24,10 +24,28 @@ export type ItemInput = {
 export type ItemOutput = {
     id: string;
     name: string;
-    groceryStore: string;
-    lowestPrice: number;
     isCompleted: boolean;
     isArchived: boolean;
     createdAt: Date;
     updatedAt: Date;
+};
+
+// products
+export type ProductOutput = {
+    id: string;
+    itemId: string;
+    name: string;
+    groceryStore: string;
+    price: number;
+    priceDiscounted: number;
+    weight: string;
+    image_url: string;
+    createdAt: Date;
+    updatedAt: Date;
+};
+
+// combination types
+export type ItemWithProducts = {
+    item: ItemOutput;
+    products: ProductOutput[];
 };

@@ -1,5 +1,5 @@
 .btn-secondary {
     background-color: var(--background-color);
     color: var(--primary-color);
-    outline: 2px solid var(--primary-color);
+    /* outline: 2px solid; */
 }

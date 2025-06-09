@@ -1,18 +1,19 @@
 from datetime import datetime
 from uuid import UUID
 
-from pydantic import BaseModel
+from app.schemas.product import ProductOutput
+from pydantic import BaseModel, Field
 
 
 class ItemBase(BaseModel):
-    name: str
+    name: str = Field(min_length=2)
     is_completed: bool = False
     is_archived: bool = False
 
 
 class ItemCreate(BaseModel):
     user_id: UUID
-    name: str
+    name: str = Field(min_length=2)
 
 
 class ItemUpdate(ItemBase):
@@ -23,3 +24,8 @@ class ItemOutput(ItemBase):
     id: UUID
     created_at: datetime
     updated_at: datetime
+
+
+class ItemWithProducts(BaseModel):
+    item: ItemOutput
+    products: list[ProductOutput]

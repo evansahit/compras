@@ -1,8 +1,9 @@
-import type { ItemOutput, UserOutput } from "../types";
+import type { ItemWithProducts, UserOutput } from "../types";
 import { API_URL_BASE } from "../constants";
 import {
-    convertToUserOutput,
-    convertToItemOutput,
+    transformToUserOutput,
+    transformToItemOutput,
+    transformToItemWithProducts,
 } from "../utils/data-transformation";
 
 export async function getCurrentUser(): Promise<UserOutput> {
@@ -15,20 +16,25 @@ export async function getCurrentUser(): Promise<UserOutput> {
         },
     });
 
-    const json = await response.json();
+    let json;
+    try {
+        json = await response.json();
+    } catch {
+        json = null;
+    }
 
     if (!response.ok) {
         const error =
-            json.detail || "Something went wrong getting your user data";
+            json.detail || "Something went wrong getting your user information";
         throw new Error(error);
     }
 
-    return convertToUserOutput(json);
+    return transformToUserOutput(json);
 }
 
 export async function getItemsForCurrentUser(
     userId: string
-): Promise<ItemOutput[]> {
+): Promise<ItemWithProducts[]> {
     const endpoint = `/users/${userId}/items`;
     const url = API_URL_BASE + endpoint;
 
@@ -39,7 +45,6 @@ export async function getItemsForCurrentUser(
     });
 
     let json;
-
     try {
         json = await response.json();
     } catch {
@@ -53,9 +58,7 @@ export async function getItemsForCurrentUser(
         throw new Error(error);
     }
 
-    const items = json.map((item: unknown) => {
-        convertToItemOutput(item);
-    });
+    const items = json.map((item) => transformToItemWithProducts(item));
 
     return items;
 }

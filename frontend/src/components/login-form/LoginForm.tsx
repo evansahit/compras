@@ -2,7 +2,7 @@ import "./login-form.css";
 import ButtonPrimary from "../button/button-primary/ButtonPrimary";
 import React, { useState, useEffect } from "react";
 import { validateEmail, validatePassword } from "../../utils/form-validation";
-import { loginUser } from "../../api/auth";
+import { login } from "../../api/auth";
 import { useNavigate } from "react-router";
 
 export default function LoginForm() {
@@ -30,10 +30,14 @@ export default function LoginForm() {
         const formData = new FormData(form);
 
         try {
-            await loginUser(formData);
+            await login(formData);
             navigate("/home");
         } catch (error) {
-            setFormError(error as string);
+            setFormError(
+                error instanceof Error
+                    ? error.message
+                    : "Something went wrong logging you in."
+            );
         } finally {
             setIsFormLoading(false);
         }

@@ -2,13 +2,13 @@ import "./home-page.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { getCurrentUser, getItemsForCurrentUser } from "../../api/user";
-import type { ItemOutput, UserOutput } from "../../types";
+import type { ItemWithProducts, UserOutput } from "../../types";
 import ShoppingList from "./components/ShoppingList";
 
 export default function HomePage() {
     const navigate = useNavigate();
     const [currentUser, setCurrentUser] = useState<UserOutput>();
-    const [items, setItems] = useState<ItemOutput[] | []>([]);
+    const [items, setItems] = useState<ItemWithProducts[] | []>([]);
     const [isItemsLoading, setIsItemsLoading] = useState(true);
     const [itemsError, setItemsError] = useState("");
 
@@ -36,17 +36,21 @@ export default function HomePage() {
 
         async function getItemDataForCurrentUser(userId: string) {
             try {
-                const items: ItemOutput[] = await getItemsForCurrentUser(
+                const items: ItemWithProducts[] = await getItemsForCurrentUser(
                     userId
                 );
                 setItems(items);
                 setIsItemsLoading(false);
             } catch (error) {
-                setItemsError(error as string);
+                setItemsError(
+                    error instanceof Error
+                        ? error.message
+                        : "Something went wrong retrieving your shopping list."
+                );
             }
         }
 
-        if (currentUser) getItemDataForCurrentUser(currentUser.id);
+        getItemDataForCurrentUser(currentUser.id);
     }, [currentUser]);
 
     return (
@@ -67,6 +71,9 @@ export default function HomePage() {
                     userId={currentUser.id}
                     items={items}
                     itemsError={itemsError}
+                    createItem={(newItem: ItemWithProducts) => {
+                        setItems((prev) => [...prev, newItem]);
+                    }}
                 />
             )}
         </>

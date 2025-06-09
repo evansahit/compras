@@ -1,6 +1,6 @@
 import type { UserOutput, UserInput } from "../types";
 import { API_URL_BASE } from "../constants";
-import { convertToUserOutput } from "../utils/data-transformation";
+import { transformToUserOutput } from "../utils/data-transformation";
 
 export async function createUser(formData: FormData): Promise<UserOutput> {
     const endpoint = "/users";
@@ -21,16 +21,22 @@ export async function createUser(formData: FormData): Promise<UserOutput> {
         body: JSON.stringify(userInput),
     });
 
-    if (!response.ok) {
-        throw new Error("Something went wrong creating a new user");
+    let json;
+    try {
+        json = await response.json();
+    } catch {
+        json = null;
     }
 
-    const json = await response.json();
+    if (!response.ok) {
+        const error = json.detail || "Something went wrong creating a new user";
+        throw new Error(error);
+    }
 
-    return convertToUserOutput(json);
+    return transformToUserOutput(json);
 }
 
-export async function loginUser(formData: FormData): Promise<void> {
+export async function login(formData: FormData): Promise<void> {
     const endpoint = "/token";
     const url = API_URL_BASE + endpoint;
 
@@ -38,14 +44,24 @@ export async function loginUser(formData: FormData): Promise<void> {
         method: "POST",
         body: formData,
     });
-    const json = await response.json();
+
+    let json;
+    try {
+        json = await response.json();
+    } catch {
+        json = null;
+    }
 
     if (!response.ok) {
-        const error = json.detail || "Login failed";
+        const error = json.detail || "Your email or password is incorrect.";
         throw new Error(error);
     }
 
     const jwt = `${json.token_type} ${json.access_token}`;
 
     localStorage.setItem("jwt", jwt);
+}
+
+export async function logout(): Promise<void> {
+    localStorage.removeItem("jwt");
 }

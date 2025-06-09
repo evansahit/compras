@@ -1,26 +1,48 @@
-import type { UserOutput } from "../types";
-import type { ItemOutput } from "../types";
+import type { UserOutput, ItemOutput, ItemWithProducts } from "../types";
 
-export function convertToUserOutput(data): UserOutput {
+export function transformToUserOutput(data): UserOutput {
     return {
         id: data.id,
         firstName: data.first_name,
         lastName: data.last_name,
         email: data.email,
-        createdAt: data.created_at,
-        updatedAt: data.updated_at,
+        createdAt: new Date(data.created_at),
+        updatedAt: new Date(data.updated_at),
     };
 }
 
-export function convertToItemOutput(data): ItemOutput {
+export function transformToItemOutput(data): ItemOutput {
     return {
-        id: data.id,
-        name: data.name,
-        groceryStore: data.groceryStore,
-        lowestPrice: data.lowestPrice,
-        isCompleted: data.isCompleted,
-        isArchived: data.isArchived,
-        createdAt: data.createdAt,
-        updatedAt: data.updatedAt,
+        id: data.item.id,
+        name: data.item.name,
+        isCompleted: data.item.is_complete,
+        isArchived: data.item.is_archived,
+        createdAt: data.item.created_at,
+        updatedAt: data.item.updated_at,
+    };
+}
+
+export function transformToItemWithProducts(data): ItemWithProducts {
+    return {
+        item: {
+            id: data.item.id,
+            name: data.item.name,
+            isCompleted: data.item.is_complete,
+            isArchived: data.item.is_archived,
+            createdAt: new Date(data.created_at),
+            updatedAt: new Date(data.updated_at),
+        },
+        products: data.products.map((p) => ({
+            id: p.id,
+            itemId: p.item_id,
+            name: p.name,
+            groceryStore: p.grocery_store,
+            price: p.price,
+            priceDiscounted: p.price_discounted,
+            weight: p.weight,
+            imageUrl: p.image_url,
+            createdAt: new Date(p.created_at),
+            updatedAt: new Date(p.updated_at),
+        })),
     };
 }

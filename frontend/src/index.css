@@ -1,6 +1,6 @@
 :root {
     --border-radius: 10px;
-    --x-padding: 1rem;
+    --x-padding: 0.9rem;
     --header-footer-width: 85%;
     --transition-duration: 0.25s;
 
@@ -11,6 +11,8 @@
     /* colors */
     --background-color: #eeebd3;
     --primary-color: #255957;
+    --danger-color: #764134;
+    --error-color: red;
 }
 
 * {
@@ -123,14 +125,12 @@ input {
 }
 
 .input-error {
-    /* margin-top: 0.25rem; */
-    /* height: 1rem; */
-    color: red;
+    color: var(--error-color);
 }
 
 .form-error {
     margin-top: 1rem;
-    color: red;
+    color: var(--error-color);
     text-align: center;
 }
 

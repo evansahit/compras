@@ -1,0 +1,4 @@
+.btn-danger {
+    background-color: var(--danger-color);
+    color: var(--background-color);
+}

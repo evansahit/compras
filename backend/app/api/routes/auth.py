@@ -24,7 +24,7 @@ async def login_for_access_token(
         conn, form_data.username, form_data.password
     )
     if not user:
-        raise create_unauthorized_exception("Incorrect username or password")
+        raise create_unauthorized_exception("Invalid email or password.")
 
     access_token_expires = (
         float(Settings.ACCESS_TOKEN_EXPIRE_DAYS)

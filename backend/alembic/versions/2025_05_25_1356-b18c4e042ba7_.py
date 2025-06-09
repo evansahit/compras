@@ -85,6 +85,9 @@ def upgrade() -> None:
             name                TEXT NOT NULL,
             grocery_store       TEXT NOT NULL,
             price               NUMERIC(5, 2) NOT NULL,
+            price_discounted    NUMERIC(5, 2),
+            weight              TEXT NOT NULL,
+            image_url           TEXT,
             created_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
             updated_at          TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP
         );
@@ -99,9 +102,9 @@ def upgrade() -> None:
 def downgrade() -> None:
     # drop all tables
     op.execute("""
+        DROP TABLE IF EXISTS products;
         DROP TABLE IF EXISTS items;
         DROP TABLE IF EXISTS users;
-        DROP TABLE IF EXISTS products;
     """)
 
     # drop function

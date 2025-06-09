@@ -5,3 +5,7 @@
     transform: translate(-30%, -30%);
     width: 100%;
 }
+
+.login-wrapper > h1 {
+    text-align: center;
+}

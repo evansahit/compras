@@ -12,13 +12,18 @@ const passwordErrors = {
     noMatch: "Passwords need to match",
 };
 
-function validateFirstName(firstName: string): string {
+const newItemErrors = {
+    empty: "An item's name cannot be empty.",
+    tooShort: "An item's name must be atleast 2 characters long.",
+};
+
+export function validateFirstName(firstName: string): string {
     if (firstName.trim().length === 0) return firstNameErrors.empty;
 
     return "";
 }
 
-function validateEmail(email: string): string {
+export function validateEmail(email: string): string {
     if (email.trim().length === 0) {
         return emailErrors.empty;
     }
@@ -41,7 +46,7 @@ function validateEmail(email: string): string {
     return "";
 }
 
-function validatePassword(password: string): string {
+export function validatePassword(password: string): string {
     if (password.trim().length === 0) {
         return passwordErrors.empty;
     }
@@ -49,7 +54,10 @@ function validatePassword(password: string): string {
     return "";
 }
 
-function validatePasswordsMatch(passwordA: string, passwordB: string): string {
+export function validatePasswordsMatch(
+    passwordA: string,
+    passwordB: string
+): string {
     if (
         passwordA.length !== 0 &&
         passwordB.length !== 0 &&
@@ -60,9 +68,9 @@ function validatePasswordsMatch(passwordA: string, passwordB: string): string {
     return "";
 }
 
-export {
-    validateEmail,
-    validatePassword,
-    validatePasswordsMatch,
-    validateFirstName,
-};
+export function validateItemName(name: string, minLength: number = 2) {
+    if (name.length === 0) return newItemErrors.empty;
+    if (name.length <= minLength) return newItemErrors.tooShort;
+
+    return "";
+}

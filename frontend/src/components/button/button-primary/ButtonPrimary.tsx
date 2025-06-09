@@ -7,10 +7,11 @@ type ButtonPrimaryProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export default function ButtonPrimary({
     children,
-    ...defaultProps
+    className = "",
+    ...rest
 }: ButtonPrimaryProps) {
     return (
-        <button className="btn-primary" {...defaultProps}>
+        <button className={`btn-primary ${className}`} {...rest}>
             {children}
         </button>
     );
