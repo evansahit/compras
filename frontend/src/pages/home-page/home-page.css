@@ -1,13 +1,16 @@
-.greeting {
+#greeting {
     text-transform: uppercase;
     letter-spacing: 2px;
     font-weight: 300;
 }
 
-.list-loading {
+#list-loading {
     text-align: center;
 }
 
-.home-title {
-    margin-bottom: 1rem;
+#page-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }

@@ -1,6 +1,14 @@
 import { API_URL_BASE, jsonAuthedHeaders } from "../constants";
-import type { ItemInput, ItemWithProducts } from "../types";
-import { transformToItemWithProducts } from "../utils/data-transformation";
+import type {
+    ItemInput,
+    ItemWithProducts,
+    ItemUpdate,
+    ItemOutput,
+} from "../types";
+import {
+    transformToItemOutput,
+    transformToItemWithProducts,
+} from "../utils/data-transformation";
 
 export async function createNewItem(
     newItem: ItemInput
@@ -34,4 +42,61 @@ export async function createNewItem(
     }
 
     return transformToItemWithProducts(json);
+}
+
+export async function updateItem(newItem: ItemUpdate): Promise<ItemOutput> {
+    const endpoint = `/items/${newItem.id}`;
+    const url = API_URL_BASE + endpoint;
+
+    const data = {
+        id: newItem.id,
+        name: newItem.name,
+        is_completed: newItem.isCompleted,
+        is_archived: newItem.isArchived,
+    };
+
+    const response = await fetch(url, {
+        method: "PUT",
+        headers: jsonAuthedHeaders,
+        body: JSON.stringify(data),
+    });
+
+    let json;
+    try {
+        json = await response.json();
+    } catch {
+        json = null;
+    }
+
+    if (!response.ok) {
+        const error =
+            json.detail || `Something went wrong updating item ${newItem.name}`;
+        throw new Error(error);
+    }
+
+    return transformToItemOutput(json);
+}
+
+export async function deleteItem(itemId: string): Promise<ItemOutput> {
+    const endpoint = `/items/${itemId}`;
+    const url = API_URL_BASE + endpoint;
+
+    const response = await fetch(url, {
+        method: "DELETE",
+        headers: jsonAuthedHeaders,
+    });
+
+    let json;
+    try {
+        json = await response.json();
+    } catch {
+        json = null;
+    }
+
+    if (!response.ok) {
+        const error = json.detail || `Something went wrong deleting item`;
+        throw new Error(error);
+    }
+
+    return transformToItemOutput(json);
 }

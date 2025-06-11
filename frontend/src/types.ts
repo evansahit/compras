@@ -23,11 +23,19 @@ export type ItemInput = {
 
 export type ItemOutput = {
     id: string;
+    userId: string;
     name: string;
     isCompleted: boolean;
     isArchived: boolean;
     createdAt: Date;
     updatedAt: Date;
+};
+
+export type ItemUpdate = {
+    id: string;
+    name: string;
+    isCompleted: boolean;
+    isArchived: boolean;
 };
 
 // products

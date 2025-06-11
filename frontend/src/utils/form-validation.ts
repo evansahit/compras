@@ -70,7 +70,7 @@ export function validatePasswordsMatch(
 
 export function validateItemName(name: string, minLength: number = 2) {
     if (name.length === 0) return newItemErrors.empty;
-    if (name.length <= minLength) return newItemErrors.tooShort;
+    if (name.length < minLength) return newItemErrors.tooShort;
 
     return "";
 }

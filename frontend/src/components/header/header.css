@@ -3,12 +3,11 @@ header {
     justify-content: space-between;
     align-items: center;
     margin: 1rem 0;
-    padding: 0.5rem 0;
+    padding: 0.5rem;
+    border: 1px solid rgba(37, 89, 87, 0.25);
     border-radius: var(--border-radius);
     position: sticky;
     top: 0.75rem;
-    /* background-color: rgba(238, 235, 211, 0.5); */
-    /* border: 1px solid var(--primary-color); */
     backdrop-filter: blur(7px);
     -webkit-backdrop-filter: blur(20px);
     z-index: 999;
@@ -16,9 +15,9 @@ header {
     transition: all var(--transition-duration);
 }
 
-/* header:hover {
-    filter: saturate(1.5);
-} */
+header:hover {
+    filter: saturate(2);
+}
 
 header > a > .website-title {
     font-size: 2.5rem;

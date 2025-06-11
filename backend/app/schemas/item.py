@@ -17,11 +17,12 @@ class ItemCreate(BaseModel):
 
 
 class ItemUpdate(ItemBase):
-    pass
+    id: UUID
 
 
 class ItemOutput(ItemBase):
     id: UUID
+    user_id: UUID
     created_at: datetime
     updated_at: datetime
 

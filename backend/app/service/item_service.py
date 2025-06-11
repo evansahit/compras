@@ -36,6 +36,12 @@ class ItemService:
         ah_products: list[ProductCreate] = get_ah_products(
             created_item.id, new_item.name
         )
+        if not ah_products or len(ah_products) == 0:
+            return ItemWithProducts(
+                item=created_item,
+                products=[],
+            )
+
         sql_insert_products = text("""
             INSERT INTO products (item_id, name, grocery_store, price, price_discounted, weight, image_url)
             VALUES (:item_id, :name, :grocery_store, :price, :price_discounted, :weight, :image_url)
@@ -67,7 +73,8 @@ class ItemService:
         sql_item = text("""
             SELECT id, user_id, name, is_completed, is_archived, created_at, updated_at
             FROM items
-            WHERE user_id = :user_id;
+            WHERE user_id = :user_id
+            ORDER BY created_at;
         """)
         items = await conn.execute(sql_item, {"user_id": user_id})
         items = items.mappings().all()
@@ -97,7 +104,7 @@ class ItemService:
         return items_with_products
 
     @staticmethod
-    async def get_item_by_id(conn: AsyncConnection, item_id: UUID):
+    async def get_item_by_id(conn: AsyncConnection, item_id: UUID) -> ItemOutput:
         sql = text("""
             SELECT id, user_id, name, is_completed, is_archived, created_at, updated_at
             FROM items
@@ -119,7 +126,7 @@ class ItemService:
         conn: AsyncConnection,
         item_id: UUID,
         updated_item: ItemUpdate,
-    ):
+    ) -> ItemOutput:
         sql = text("""
             UPDATE items
             SET name = :name, is_completed = :is_completed, is_archived = :is_archived
@@ -148,7 +155,7 @@ class ItemService:
         return ItemOutput(**result)
 
     @staticmethod
-    async def delete_item_by_id(conn: AsyncConnection, item_id: UUID):
+    async def delete_item_by_id(conn: AsyncConnection, item_id: UUID) -> ItemOutput:
         sql = text("""
             DELETE FROM items 
             WHERE id = :item_id
@@ -156,15 +163,16 @@ class ItemService:
         """)
 
         result = await conn.execute(sql, {"item_id": item_id})
-        await conn.commit()
-
         result = result.mappings().first()
-
         if not result:
             raise HTTPException(
-                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                detail=f"Failed to delete item with ID of {item_id}",
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Item not found or already deleted",
             )
+
+        print("result before commit: ", result)
+        await conn.commit()
+        print("result after commit: ", result)
 
         return ItemOutput(**result)
 
@@ -178,6 +186,9 @@ def get_ah_products(item_id: UUID, query: str, size: int = 10) -> list[ProductCr
     ah_connector = AHConnector()
     response: dict[Any, Any] = ah_connector.search_products(query=query, size=size)  # type: ignore
     all_products: list[dict[str, Any]] = response["products"]
+    if not all_products or len(all_products) == 0:
+        return []
+
     res: list[Any] = []
     for p in all_products:
         res.append(

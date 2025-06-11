@@ -41,7 +41,7 @@ class UserService:
             return UserOutput(**row)
 
     @staticmethod
-    async def get_user_by_id(conn: AsyncConnection, user_id: UUID):
+    async def get_user_by_id(conn: AsyncConnection, user_id: UUID) -> UserOutput:
         sql = text("""
             SELECT id, first_name, last_name, email, hashed_password, created_at, updated_at
             FROM users
@@ -69,11 +69,5 @@ class UserService:
 
         result = await conn.execute(sql, {"email": email})
         row = result.mappings().first()
-
-        # if not row:
-        #     raise HTTPException(
-        #         status_code=status.HTTP_404_NOT_FOUND,
-        #         detail=f"Could not find user with email of {email}",
-        #     )
 
         return UserInDB(**row) if row else None

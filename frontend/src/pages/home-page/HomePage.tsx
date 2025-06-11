@@ -2,15 +2,40 @@ import "./home-page.css";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { getCurrentUser, getItemsForCurrentUser } from "../../api/user";
-import type { ItemWithProducts, UserOutput } from "../../types";
+import type { ItemWithProducts, UserOutput, ItemOutput } from "../../types";
 import ShoppingList from "./components/ShoppingList";
+import { createNewItem } from "../../api/item";
 
+// TODO: need to find a more secure for storing JWTs
+//       can someone fake having a JWT token by creating a localstorage entry named "jwt"?
 export default function HomePage() {
     const navigate = useNavigate();
     const [currentUser, setCurrentUser] = useState<UserOutput>();
     const [items, setItems] = useState<ItemWithProducts[] | []>([]);
     const [isItemsLoading, setIsItemsLoading] = useState(true);
     const [itemsError, setItemsError] = useState("");
+
+    function handleAddNewItem(newItem: ItemWithProducts) {
+        setItems((prev) => [...prev, newItem]);
+    }
+
+    function handleUpdateItem(newItem: ItemOutput) {
+        setItems((prev) =>
+            prev.map((itemWithProducts) =>
+                itemWithProducts.item.id === newItem.id
+                    ? { ...itemWithProducts, item: { ...newItem } }
+                    : itemWithProducts
+            )
+        );
+    }
+
+    function handleDeleteItem(itemId: string) {
+        setItems((prev) =>
+            prev.filter(
+                (itemWithProducts) => itemWithProducts.item.id !== itemId
+            )
+        );
+    }
 
     // make a request to get the current user to get their name
     useEffect(() => {
@@ -55,26 +80,34 @@ export default function HomePage() {
 
     return (
         <>
-            {!currentUser && <h1>Loading...</h1>}
+            {!currentUser ? (
+                <h1 id="page-loading">Loading...</h1>
+            ) : (
+                <>
+                    <span id="greeting">
+                        Hey {currentUser ? currentUser.firstName : "User"}
+                    </span>
+                    <h1>Shopping list</h1>
+                    <p>
+                        Products will be searched and matched based on the names
+                        of your items.
+                    </p>
 
-            <span className="greeting">
-                Hey {currentUser ? currentUser.firstName : "User"}
-            </span>
-            <h1 className="home-title">Shopping list</h1>
+                    {isItemsLoading && (
+                        <span id="list-loading">Loading shopping list...</span>
+                    )}
 
-            {isItemsLoading && (
-                <span className="list-loading">Loading shopping list...</span>
-            )}
-
-            {currentUser && (
-                <ShoppingList
-                    userId={currentUser.id}
-                    items={items}
-                    itemsError={itemsError}
-                    createItem={(newItem: ItemWithProducts) => {
-                        setItems((prev) => [...prev, newItem]);
-                    }}
-                />
+                    {currentUser && (
+                        <ShoppingList
+                            userId={currentUser.id}
+                            items={items}
+                            itemsError={itemsError}
+                            createItem={handleAddNewItem}
+                            updateItem={handleUpdateItem}
+                            deleteItem={handleDeleteItem}
+                        />
+                    )}
+                </>
             )}
         </>
     );
