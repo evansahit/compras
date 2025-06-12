@@ -1,8 +1,9 @@
 :root {
     --border-radius: 10px;
-    --x-padding: 0.5rem;
+    --x-padding: 0.75rem;
     --header-footer-width: 85%;
     --transition-duration: 0.25s;
+    --icon-width: 20px;
 
     /* fonts */
     --accent-font: "Kirang Haerang", system-ui;
@@ -62,21 +63,23 @@ button {
     outline-color: var(--primary-color);
 }
 
-button:hover {
-    cursor: pointer;
-    filter: brightness(100%);
-    transform: translateY(-2px);
-    box-shadow: 0 0 20px rgba(37, 89, 87, 0.5);
+@media (hover: hover) and (pointer: fine) {
+    button:hover {
+        cursor: pointer;
+        filter: brightness(100%);
+        transform: translateY(-2px);
+        box-shadow: 0 0 20px rgba(37, 89, 87, 0.5);
+    }
+
+    button:disabled:hover {
+        transform: none;
+        box-shadow: none;
+    }
 }
 
 button:disabled {
     opacity: 0.75 !important;
     cursor: not-allowed !important;
-}
-
-button:disabled:hover {
-    transform: none;
-    box-shadow: none;
 }
 
 /* form */

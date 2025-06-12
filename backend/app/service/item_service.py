@@ -170,9 +170,7 @@ class ItemService:
                 detail="Item not found or already deleted",
             )
 
-        print("result before commit: ", result)
         await conn.commit()
-        print("result after commit: ", result)
 
         return ItemOutput(**result)
 

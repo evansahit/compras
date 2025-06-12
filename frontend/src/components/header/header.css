@@ -15,8 +15,10 @@ header {
     transition: all var(--transition-duration);
 }
 
-header:hover {
-    filter: saturate(2);
+@media (hover: hover) and (pointer: fine) {
+    header:hover {
+        filter: saturate(2);
+    }
 }
 
 header > a > .website-title {

@@ -1,6 +1,6 @@
 import "./shopping-list.css";
 import type { ItemUpdate, ItemOutput, ItemWithProducts } from "../../../types";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ButtonPrimary from "../../../components/button/button-primary/ButtonPrimary";
 import { createNewItem } from "../../../api/item";
 import ButtonDanger from "../../../components/button/button-danger/ButtonDanger";
@@ -29,6 +29,8 @@ export default function ShoppingList(props: ShoppingListProps) {
     const [isEditing, setIsEditing] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
+
+    const inputRef = useRef<HTMLInputElement>(null);
 
     function renderLowestPrice(item: ItemWithProducts): number | string {
         const cheapestProduct = findCheapestProductForItem(item);
@@ -71,37 +73,42 @@ export default function ShoppingList(props: ShoppingListProps) {
                 );
             } finally {
                 setIsLoading(false);
-                setItemName("");
             }
         }
     }
 
     async function handleUpdateItem(newItem: ItemUpdate) {
-        if (isEditing) {
+        const itemToFind = items.find((i) => i.item.id === newItem.id);
+        if (
+            newItem.name.length >= 2 &&
+            itemToFind?.item.name !== newItem.name
+        ) {
             setError(validateItemName(itemName));
             if (error.length > 0 || itemName.length === 0) {
                 return;
             } else {
                 setIsLoading(true);
                 setError("");
+                setIsInputTouched(false);
 
                 try {
                     const updatedItem: ItemOutput = await updateItem(newItem);
                     props.updateItem(updatedItem);
+                    setItemName("");
                 } catch (error) {
                     setError(
                         error instanceof Error
                             ? error.message
                             : `Something went wrong updating item ${newItem.name}.`
                     );
+                } finally {
+                    setIsLoading(false);
                 }
-
-                setIsLoading(false);
-                setItemName("");
             }
         } else {
             setIsLoading(true);
-
+            setError("");
+            setIsInputTouched(false);
             try {
                 const updatedItem = await updateItem(newItem);
                 props.updateItem(updatedItem);
@@ -136,27 +143,22 @@ export default function ShoppingList(props: ShoppingListProps) {
 
     useEffect(() => {
         if (isEditing) {
+            inputRef.current?.focus();
+
             setIsButtonDisabled(true);
-            if (itemName.length >= 2) {
+            if (itemName.length >= 2 && error.length === 0) {
                 setIsButtonDisabled(false);
                 setError("");
             }
 
-            // if (error.length > 0) {
-            //     setError(validateItemName(itemName));
-            //     setIsButtonDisabled(
-            //         error.length > 0 || itemName.length === 0 ? true : false
-            //     );
-            // }
-
             if (isInputTouched) {
                 setError(validateItemName(itemName));
-                setIsButtonDisabled(
-                    error.length > 0 || itemName.length === 0 ? true : false
-                );
+                setIsButtonDisabled(error.length > 0 || itemName.length === 0);
             }
+
+            // setIsButtonDisabled(isLoading);
         }
-    }, [error.length, isEditing, isInputTouched, itemName]);
+    }, [error.length, isEditing, isInputTouched, isLoading, itemName]);
 
     return (
         <div id="shopping-list">
@@ -181,11 +183,13 @@ export default function ShoppingList(props: ShoppingListProps) {
                         {items.map((i) => (
                             <tr
                                 className={
-                                    i.item.isCompleted ? "completed" : ""
+                                    i.item.isCompleted
+                                        ? "item-row completed"
+                                        : "item-row"
                                 }
                                 key={i.item.id}
                             >
-                                <td id="checkbox">
+                                <td className="checkbox">
                                     <img
                                         src={
                                             i.item.isCompleted
@@ -193,7 +197,6 @@ export default function ShoppingList(props: ShoppingListProps) {
                                                 : BlankCheckBoxIcon
                                         }
                                         alt="Checkbox button."
-                                        width={20}
                                         onClick={() =>
                                             handleUpdateItem({
                                                 ...i.item,
@@ -203,14 +206,15 @@ export default function ShoppingList(props: ShoppingListProps) {
                                         }
                                     />
                                 </td>
-                                <td id="name">{i.item.name}</td>
-                                <td id="price">€{renderLowestPrice(i)}</td>
+                                <td className="name">{i.item.name}</td>
+                                <td className="price">
+                                    €{renderLowestPrice(i)}
+                                </td>
                                 <td>{renderGroceryStoreOfLowestPrice(i)}</td>
-                                <td id="delete">
+                                <td className="delete">
                                     <img
                                         src={DeleteIcon}
                                         alt="Delete button."
-                                        width={20}
                                         onClick={() =>
                                             handleDeleteItem(i.item.id)
                                         }
@@ -230,6 +234,7 @@ export default function ShoppingList(props: ShoppingListProps) {
                         placeholder="Type a new item here"
                         type="text"
                         autoComplete="off"
+                        ref={inputRef}
                         value={itemName}
                         onBlur={() => {
                             setIsInputTouched(true);
@@ -250,10 +255,10 @@ export default function ShoppingList(props: ShoppingListProps) {
                     <ButtonDanger
                         onClick={() => {
                             setIsEditing(false);
-                            setIsButtonDisabled(false);
                             setIsInputTouched(false);
                             setError("");
                             setItemName("");
+                            setIsButtonDisabled(false);
                         }}
                     >
                         Cancel
@@ -261,7 +266,6 @@ export default function ShoppingList(props: ShoppingListProps) {
                 )}
 
                 <ButtonPrimary
-                    className="btn-add-item"
                     onClick={() => {
                         if (!isEditing) {
                             setIsEditing(true);
