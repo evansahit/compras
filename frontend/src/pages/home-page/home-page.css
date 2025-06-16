@@ -14,3 +14,17 @@
     left: 50%;
     transform: translate(-50%, -50%);
 }
+
+@media (min-width: 768px) {
+    #greeting {
+        font-size: 1.3rem;
+    }
+
+    #home-page-title {
+        font-size: 3.3rem;
+    }
+
+    #home-page-message {
+        font-size: 1.3rem;
+    }
+}

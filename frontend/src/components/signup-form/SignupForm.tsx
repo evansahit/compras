@@ -105,7 +105,7 @@ export default function SignUpForm() {
 
     return (
         <>
-            <form id="signup-form" onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit}>
                 <span className="form-title">Sign up</span>
 
                 <div className="input-container">
@@ -188,8 +188,12 @@ export default function SignUpForm() {
 
                 <span className="form-error">{formError}</span>
 
-                <ButtonPrimary type="submit" disabled={isSubmitButtonDisabled}>
-                    {isFormLoading ? "Working on it..." : "Sign up"}
+                <ButtonPrimary
+                    type="submit"
+                    disabled={isSubmitButtonDisabled}
+                    isLoading={isFormLoading}
+                >
+                    Sign up
                 </ButtonPrimary>
             </form>
         </>

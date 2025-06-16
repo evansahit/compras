@@ -1,3 +1,4 @@
+import "./landing-page.css";
 import Hero from "./components/hero/Hero";
 import Demo from "./components/demo/Demo";
 import { useNavigate } from "react-router";
@@ -14,9 +15,9 @@ export default function LandingPage() {
     }, [navigate]);
 
     return (
-        <>
+        <div id="landing-page-container">
             <Hero />
             <Demo />
-        </>
+        </div>
     );
 }

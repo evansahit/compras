@@ -24,6 +24,7 @@ export default function ShoppingList(props: ShoppingListProps) {
     const [itemName, setItemName] = useState("");
     const [isInputTouched, setIsInputTouched] = useState(false);
     const [error, setError] = useState("");
+
     const items = props.items;
 
     const [isEditing, setIsEditing] = useState(false);
@@ -36,16 +37,16 @@ export default function ShoppingList(props: ShoppingListProps) {
         const cheapestProduct = findCheapestProductForItem(item);
         if (typeof cheapestProduct === "string") return cheapestProduct;
         if (cheapestProduct.priceDiscounted)
-            return cheapestProduct.priceDiscounted;
+            return `€${cheapestProduct.priceDiscounted}`;
 
-        return cheapestProduct.price;
+        return `€${cheapestProduct.price}`;
     }
 
     function renderGroceryStoreOfLowestPrice(item: ItemWithProducts): string {
         const cheapestProduct = findCheapestProductForItem(item);
         if (typeof cheapestProduct === "string") return cheapestProduct;
 
-        return cheapestProduct.groceryStore;
+        return `€${cheapestProduct.groceryStore}`;
     }
 
     async function handleCreateNewItem() {
@@ -208,10 +209,10 @@ export default function ShoppingList(props: ShoppingListProps) {
                                 </td>
                                 <td className="name">{i.item.name}</td>
                                 <td className="price">
-                                    €{renderLowestPrice(i)}
+                                    {renderLowestPrice(i)}
                                 </td>
                                 <td>{renderGroceryStoreOfLowestPrice(i)}</td>
-                                <td className="delete">
+                                <td id="delete">
                                     <img
                                         src={DeleteIcon}
                                         alt="Delete button."
@@ -231,7 +232,7 @@ export default function ShoppingList(props: ShoppingListProps) {
                     <input
                         id="input-new-item"
                         name="item"
-                        placeholder="Type a new item here"
+                        placeholder="Add a new item here"
                         type="text"
                         autoComplete="off"
                         ref={inputRef}
@@ -242,10 +243,6 @@ export default function ShoppingList(props: ShoppingListProps) {
                         onChange={(e) => setItemName(e.target.value)}
                     />
                 </form>
-            )}
-
-            {isLoading && (
-                <span id="item-creation-loading">Working on it...</span>
             )}
 
             {error.length > 0 && <span id="input-error">{error}</span>}
@@ -275,6 +272,7 @@ export default function ShoppingList(props: ShoppingListProps) {
                         }
                     }}
                     disabled={isButtonDisabled}
+                    isLoading={isLoading}
                 >
                     {isEditing ? "Save" : "Add item"}
                 </ButtonPrimary>

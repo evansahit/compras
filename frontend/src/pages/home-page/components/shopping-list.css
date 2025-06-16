@@ -39,6 +39,7 @@ td {
 td {
     font-size: 0.9rem;
     padding: 0.5rem 0rem;
+    /* text-align: left; */
 }
 
 .checkbox {
@@ -73,14 +74,14 @@ td {
     pointer-events: none;
 }
 
-.delete {
-    padding: 0 0.25rem;
+#delete {
+    /* padding: 0 0.25rem; */
 }
-.delete:hover {
+#delete:hover {
     cursor: pointer;
 }
 
-.delete > img {
+#delete > img {
     position: relative;
     top: 0.2rem;
     opacity: 0.75;
@@ -91,7 +92,7 @@ td {
 }
 
 @media (hover: hover) and (pointer: fine) {
-    .delete > img:hover {
+    #delete > img:hover {
         opacity: 1;
     }
 }
@@ -100,7 +101,7 @@ td {
     text-align: left;
 }
 .name {
-    /* text-align: left; */
+    text-align: left;
 }
 
 #item-form {
@@ -111,10 +112,6 @@ td {
 #input-new-item {
     padding: 0.5rem;
     border-radius: var(--border-radius);
-}
-
-#item-creation-loading {
-    margin: 1rem auto 0 auto;
 }
 
 #input-error {
@@ -129,4 +126,43 @@ td {
     gap: 1rem;
     justify-content: center;
     margin-top: 1rem;
+}
+
+@media (min-width: 768px) {
+    th {
+        font-size: 1.3rem;
+        text-align: left;
+    }
+
+    td {
+        text-align: left;
+        font-size: 1.15rem;
+    }
+
+    #delete > img {
+        width: 1.8rem;
+    }
+
+    .checkbox > img {
+        width: 1.8rem;
+    }
+
+    #item-form > input {
+        font-size: 1.15rem;
+    }
+
+    #input-error {
+        font-size: 1.3rem;
+    }
+
+    #default-msg {
+        font-size: 1.35rem;
+    }
+}
+
+@media (min-width: 1200px) {
+    #shopping-list {
+        width: 75%;
+        margin: 1rem auto;
+    }
 }

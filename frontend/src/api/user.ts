@@ -2,7 +2,6 @@ import type { ItemWithProducts, UserOutput } from "../types";
 import { API_URL_BASE } from "../constants";
 import {
     transformToUserOutput,
-    transformToItemOutput,
     transformToItemWithProducts,
 } from "../utils/data-transformation";
 

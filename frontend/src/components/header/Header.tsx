@@ -4,6 +4,7 @@ import ButtonPrimary from "../button/button-primary/ButtonPrimary";
 import ButtonDanger from "../button/button-danger/ButtonDanger";
 import { useLocation, useNavigate } from "react-router";
 import { logout } from "../../api/auth";
+import { useState } from "react";
 
 // TODO: need to find a more secure for storing JWTs
 //       can someone fake having a JWT token by creating a localstorage entry named "jwt"?
@@ -11,6 +12,7 @@ export default function Header() {
     const location = useLocation();
     const navigate = useNavigate();
     const jwt = localStorage.getItem("jwt");
+    const isLoading = useState(false);
 
     return (
         <>
@@ -25,7 +27,7 @@ export default function Header() {
                             : undefined
                     }
                 >
-                    <span className="website-title">Compras+</span>
+                    <span id="website-title">Compras+</span>
                 </Link>
                 {location.pathname === "/" && (
                     <Link to="signup-or-login">
@@ -38,6 +40,7 @@ export default function Header() {
                             logout();
                             navigate("/");
                         }}
+                        isLoading={isLoading}
                     >
                         Logout
                     </ButtonDanger>

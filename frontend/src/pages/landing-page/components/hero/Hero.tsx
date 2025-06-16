@@ -1,7 +1,4 @@
 import "./hero.css";
-// import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
-// import ButtonSecondary from "../../../../components/button/button-secondary/ButtonSecondary";
-// import { Link } from "react-router";
 
 export default function Hero() {
     return (
@@ -15,17 +12,10 @@ export default function Hero() {
                 groceries?
             </p>
             <p>
-                <span className="accent">Compras+</span> allows you to see what
-                each grocery store charges for each item on your grocery list.
+                <span className="paragraph-accent">Compras+</span> allows you to
+                see what each grocery store charges for each item on your
+                grocery list.
             </p>
-            {/* <div className="hero-btn-row">
-                <Link to="/auth">
-                    <ButtonPrimary>Sign up</ButtonPrimary>
-                </Link>
-                <Link to="/auth">
-                    <ButtonSecondary>Log in</ButtonSecondary>
-                </Link>
-            </div> */}
         </div>
     );
 }

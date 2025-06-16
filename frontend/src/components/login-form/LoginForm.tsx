@@ -105,8 +105,12 @@ export default function LoginForm() {
 
                 <span className="form-error">{formError}</span>
 
-                <ButtonPrimary type="submit" disabled={isSubmitButtonDisabled}>
-                    {isFormLoading ? "Working on it..." : "Log in"}
+                <ButtonPrimary
+                    type="submit"
+                    disabled={isSubmitButtonDisabled}
+                    isLoading={isFormLoading}
+                >
+                    Log in
                 </ButtonPrimary>
             </form>
         </>

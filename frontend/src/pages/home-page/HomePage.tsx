@@ -48,6 +48,8 @@ export default function HomePage() {
                 setCurrentUser(user);
             } catch (error) {
                 console.log(error);
+                // remove invalid jwt
+                if (jwt) localStorage.removeItem("jwt");
                 navigate("/signup-or-login");
             }
         }
@@ -87,8 +89,8 @@ export default function HomePage() {
                     <span id="greeting">
                         Hey {currentUser ? currentUser.firstName : "User"}
                     </span>
-                    <h1>Shopping list</h1>
-                    <p>
+                    <h1 id="home-page-title">Shopping list</h1>
+                    <p id="home-page-message">
                         Products will be searched and matched based on the names
                         of your items.
                     </p>

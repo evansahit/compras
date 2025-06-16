@@ -5,7 +5,7 @@ export default function Demo() {
                 style={{
                     textAlign: "center",
                     margin: "1rem 0",
-                    padding: "2rem",
+                    padding: "5rem",
                     border: "1px solid black",
                 }}
             >

@@ -1,0 +1,8 @@
+@media (min-width: 1200px) {
+    #landing-page-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        margin: 10rem auto;
+    }
+}

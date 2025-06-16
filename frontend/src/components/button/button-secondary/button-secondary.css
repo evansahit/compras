@@ -1,5 +1,12 @@
 .btn-secondary {
     background-color: var(--background-color);
     color: var(--primary-color);
-    /* outline: 2px solid; */
+
+    transition: all var(--transition-duration);
+}
+
+.btn-secondary > span {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
 }
