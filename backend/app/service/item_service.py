@@ -4,6 +4,7 @@ from uuid import UUID
 
 from app.schemas.item import ItemCreate, ItemOutput, ItemUpdate, ItemWithProducts
 from app.schemas.product import ProductCreate, ProductOutput
+from app.service.utils import create_not_found_exception
 from fastapi import HTTPException, status
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection
@@ -11,7 +12,6 @@ from supermarktconnector.ah import AHConnector  # type: ignore
 from supermarktconnector.jumbo import JumboConnector  # type: ignore
 
 
-# TODO: rewrite other functions to account for new Products table
 class ItemService:
     @staticmethod
     async def create_item(
@@ -114,10 +114,7 @@ class ItemService:
         result = await conn.execute(sql, {"item_id": item_id})
         result = result.mappings().first()
         if not result:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Item with ID of {item_id} cannot be found",
-            )
+            raise create_not_found_exception("Could not find this item.")
 
         return ItemOutput(**result)
 
@@ -155,6 +152,24 @@ class ItemService:
         return ItemOutput(**result)
 
     @staticmethod
+    async def get_products_for_item_by_item_id(
+        conn: AsyncConnection, item_id: UUID
+    ) -> list[ProductOutput]:
+        _ = await ItemService.get_item_by_id(conn, item_id)
+
+        sql = text("""
+            SELECT id, item_id, name, grocery_store, price, price_discounted, weight, image_url, created_at, updated_at
+            FROM products
+            WHERE item_id = :item_id
+            ORDER BY COALESCE(price_discounted, price);
+        """)
+        products = await conn.execute(sql, {"item_id": item_id})
+        products = products.mappings().all()
+        products = [ProductOutput(**p) for p in products]
+
+        return products
+
+    @staticmethod
     async def delete_item_by_id(conn: AsyncConnection, item_id: UUID) -> ItemOutput:
         sql = text("""
             DELETE FROM items 
@@ -165,10 +180,7 @@ class ItemService:
         result = await conn.execute(sql, {"item_id": item_id})
         result = result.mappings().first()
         if not result:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail="Item not found or already deleted",
-            )
+            raise create_not_found_exception("Item not found or already deleted")
 
         await conn.commit()
 

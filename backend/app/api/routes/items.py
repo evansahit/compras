@@ -6,6 +6,7 @@ from sqlalchemy.ext.asyncio import AsyncConnection
 
 from app.database.db import get_db_connection
 from app.schemas.item import ItemCreate, ItemOutput, ItemUpdate
+from app.schemas.product import ProductOutput
 from app.schemas.user import UserOutput
 from app.service.auth_service import AuthService
 from app.service.item_service import ItemService
@@ -60,3 +61,16 @@ async def delete_item_by_id(
     _: Annotated[UserOutput, Depends(AuthService.get_current_user)],
 ) -> Any:
     return await ItemService.delete_item_by_id(conn, item_id)
+
+
+@router.get(
+    "/{item_id}/products",
+    response_model=list[ProductOutput],
+    status_code=status.HTTP_200_OK,
+)
+async def get_products_for_item_by_item_id(
+    conn: Annotated[AsyncConnection, Depends(get_db_connection)],
+    item_id: UUID,
+    _: Annotated[UserOutput, Depends(AuthService.get_current_user)],
+):
+    return await ItemService.get_products_for_item_by_item_id(conn, item_id)

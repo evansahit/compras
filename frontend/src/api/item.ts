@@ -4,10 +4,12 @@ import type {
     ItemWithProducts,
     ItemUpdate,
     ItemOutput,
+    ProductOutput,
 } from "../types";
 import {
     transformToItemOutput,
     transformToItemWithProducts,
+    transformToProductOutput,
 } from "../utils/data-transformation";
 
 export async function createNewItem(
@@ -42,6 +44,42 @@ export async function createNewItem(
     }
 
     return transformToItemWithProducts(json);
+}
+
+export async function getProductsForItemByItemId(
+    itemId: string
+): Promise<ProductOutput[]> {
+    const endpoint = `/items/${itemId}/products`;
+    const url = API_URL_BASE + endpoint;
+
+    const response = await fetch(url, {
+        headers: {
+            Authorization: localStorage.getItem("jwt") as string,
+        },
+    });
+
+    console.log("response:");
+    console.log(response);
+
+    let json;
+    try {
+        json = await response.json();
+    } catch {
+        json = null;
+    }
+
+    console.log("json:");
+    console.log(json);
+
+    if (!response.ok) {
+        const error =
+            json.detail || "Something went wrong retrieving the products";
+        throw new Error(error);
+    }
+
+    const products = json.map((product) => transformToProductOutput(product));
+
+    return products;
 }
 
 export async function updateItem(newItem: ItemUpdate): Promise<ItemOutput> {

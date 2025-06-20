@@ -1,6 +1,6 @@
 :root {
     --border-radius: 10px;
-    --x-padding-mobile: 0.75rem;
+    --x-padding-mobile: 0.45rem;
     --x-padding-tablet: 2.5rem;
     --x-padding-laptop: 4rem;
 
@@ -10,7 +10,9 @@
 
     --header-footer-width: 85%;
     --transition-duration: 0.25s;
-    --icon-width: 20px;
+    --icon-width-mobile: 1.5rem;
+    --icon-width-mobile-large: 2rem;
+    --icon-width-tablet: 2rem;
 
     /* fonts */
     --accent-font: "Kirang Haerang", system-ui;
@@ -49,8 +51,6 @@ main {
     flex-direction: column;
     min-height: 100vh;
 }
-
-/* button */
 
 button {
     padding: 0.75rem;

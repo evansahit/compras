@@ -6,3 +6,7 @@
     margin: 1rem 0;
     padding: 1rem;
 }
+
+svg {
+    width: var(--icon-width-mobile-large);
+}

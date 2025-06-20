@@ -10,9 +10,9 @@ import { createNewItem } from "../../../../api/item";
 import ButtonDanger from "../../../../components/button/button-danger/ButtonDanger";
 import { validateItemName } from "../../../../utils/form-validation";
 import { findCheapestProductForItem } from "../../../../utils/find-cheapest-product";
-import BlankCheckBoxIcon from "../../../../assets/icons/blank-check-box.png";
-import CheckedCheckboxIcon from "../../../../assets/icons/check-box.png";
-import DeleteIcon from "../../../../assets/icons/delete.png";
+import CheckedCheckBox from "../../../../assets/icons/CheckedCheckBox";
+import BlankCheckBoxIcon from "../../../../assets/icons/BlankCheckBoxIcon";
+import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 import { updateItem, deleteItem } from "../../../../api/item";
 import { useNavigate } from "react-router";
 
@@ -52,7 +52,7 @@ export default function ShoppingList(props: ShoppingListProps) {
         const cheapestProduct = findCheapestProductForItem(item);
         if (typeof cheapestProduct === "string") return cheapestProduct;
 
-        return `€${cheapestProduct.groceryStore}`;
+        return `${cheapestProduct.groceryStore}`;
     }
 
     async function handleCreateNewItem() {
@@ -199,40 +199,50 @@ export default function ShoppingList(props: ShoppingListProps) {
                                         : "item-row"
                                 }
                                 key={i.item.id}
-                                onClick={() =>
-                                    navigate(`/home/items/${i.item.id}`)
-                                }
                             >
-                                <td className="checkbox">
-                                    <img
-                                        src={
-                                            i.item.isCompleted
-                                                ? CheckedCheckboxIcon
-                                                : BlankCheckBoxIcon
-                                        }
-                                        alt="Checkbox button."
-                                        onClick={() =>
-                                            handleUpdateItem({
-                                                ...i.item,
-                                                isCompleted:
-                                                    !i.item.isCompleted,
-                                            })
-                                        }
-                                    />
+                                <td
+                                    id="checkbox"
+                                    onClick={() =>
+                                        handleUpdateItem({
+                                            ...i.item,
+                                            isCompleted: !i.item.isCompleted,
+                                        })
+                                    }
+                                >
+                                    {i.item.isCompleted ? (
+                                        <CheckedCheckBox color="var(--primary-color)" />
+                                    ) : (
+                                        <BlankCheckBoxIcon color="var(--primary-color)" />
+                                    )}
                                 </td>
-                                <td className="name">{i.item.name}</td>
-                                <td className="price">
+                                <td
+                                    className="name"
+                                    onClick={() =>
+                                        navigate(`/home/items/${i.item.id}`)
+                                    }
+                                >
+                                    {i.item.name}
+                                </td>
+                                <td
+                                    className="price"
+                                    onClick={() =>
+                                        navigate(`/home/items/${i.item.id}`)
+                                    }
+                                >
                                     {renderLowestPrice(i)}
                                 </td>
-                                <td>{renderGroceryStoreOfLowestPrice(i)}</td>
-                                <td id="delete">
-                                    <img
-                                        src={DeleteIcon}
-                                        alt="Delete button."
-                                        onClick={() =>
-                                            handleDeleteItem(i.item.id)
-                                        }
-                                    />
+                                <td
+                                    onClick={() =>
+                                        navigate(`/home/items/${i.item.id}`)
+                                    }
+                                >
+                                    {renderGroceryStoreOfLowestPrice(i)}
+                                </td>
+                                <td
+                                    id="delete"
+                                    onClick={() => handleDeleteItem(i.item.id)}
+                                >
+                                    <DeleteIcon color="var(--danger-color)" />
                                 </td>
                             </tr>
                         ))}

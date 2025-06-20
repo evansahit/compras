@@ -47,7 +47,7 @@ export type ProductOutput = {
     price: number;
     priceDiscounted: number;
     weight: string;
-    image_url: string;
+    imageUrl: string;
     createdAt: Date;
     updatedAt: Date;
 };

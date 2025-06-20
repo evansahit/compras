@@ -26,6 +26,7 @@ tr {
 }
 @media (hover: hover) and (pointer: fine) {
     tr.item-row:hover {
+        cursor: pointer;
         background-color: rgba(37, 89, 87, 0.15);
     }
 }
@@ -39,24 +40,23 @@ td {
 td {
     font-size: 0.9rem;
     padding: 0.5rem 0rem;
-    /* text-align: left; */
 }
 
-.checkbox {
+#checkbox {
     padding: 0 0.25rem;
 }
-.checkbox > img {
+#checkbox > svg {
     display: block;
     opacity: 0.75;
-    width: var(--icon-width);
+    width: var(--icon-width-mobile);
 
     transition: all var(--transition-duration);
 }
-
 @media (hover: hover) and (pointer: fine) {
-    .checkbox > img:hover {
+    #checkbox > svg:hover {
         cursor: pointer;
         opacity: 1;
+        transform: translateY(-2px);
     }
 }
 
@@ -75,25 +75,26 @@ td {
 }
 
 #delete {
-    /* padding: 0 0.25rem; */
+    text-align: center;
 }
 #delete:hover {
     cursor: pointer;
 }
-
-#delete > img {
+#delete > svg {
     position: relative;
     top: 0.2rem;
     opacity: 0.75;
     border-radius: var(--border-radius);
-    width: var(--icon-width);
+    width: var(--icon-width-mobile);
+    /* height: var(--icon-width-mobile); */
 
     transition: all var(--transition-duration);
 }
 
 @media (hover: hover) and (pointer: fine) {
-    #delete > img:hover {
+    #delete > svg:hover {
         opacity: 1;
+        transform: translateY(-2px);
     }
 }
 
@@ -139,12 +140,12 @@ td {
         font-size: 1.15rem;
     }
 
-    #delete > img {
-        width: 1.8rem;
+    #delete > svg {
+        width: var(--icon-width-tablet);
     }
 
-    .checkbox > img {
-        width: 1.8rem;
+    #checkbox > svg {
+        width: var(--icon-width-tablet);
     }
 
     #item-form > input {

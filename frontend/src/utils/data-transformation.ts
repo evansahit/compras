@@ -1,4 +1,9 @@
-import type { UserOutput, ItemOutput, ItemWithProducts } from "../types";
+import type {
+    UserOutput,
+    ItemOutput,
+    ItemWithProducts,
+    ProductOutput,
+} from "../types";
 
 export function transformToUserOutput(data): UserOutput {
     return {
@@ -46,5 +51,20 @@ export function transformToItemWithProducts(data): ItemWithProducts {
             createdAt: new Date(p.created_at),
             updatedAt: new Date(p.updated_at),
         })),
+    };
+}
+
+export function transformToProductOutput(data): ProductOutput {
+    return {
+        id: data.id,
+        itemId: data.item_id,
+        name: data.name,
+        groceryStore: data.grocery_store,
+        price: parseFloat(data.price),
+        priceDiscounted: parseFloat(data.price_discounted),
+        weight: data.weight,
+        imageUrl: data.image_url,
+        createdAt: new Date(data.created_at),
+        updatedAt: new Date(data.updated_at),
     };
 }
