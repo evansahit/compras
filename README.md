@@ -57,4 +57,8 @@ The project is still in development, so exact tools are subject to change.
     -   Found a Python package which allows me to search current product data from Albert Heijn and Jumbo.
     -   Can create new items which searches for AH products. Still need to implement product search for Jumbo.
     -   Can logout.
-    -   Starting to render newly created items on frontend.
+    -   Can create new items.
+    -   Can mark items as completed.
+    -   Can delete items.
+    -   Working on item detail page where all the found products for an item is displayed and where the item title can be edited.
+    -   All pages except item detail page are responsive up until now.
