@@ -3,18 +3,18 @@ import "./button-primary.css";
 
 type ButtonPrimaryProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     children: React.ReactNode;
-    isLoading?: boolean;
+    isloading?: boolean;
 };
 
 export default function ButtonPrimary({
     children,
-    isLoading,
+    isloading,
     className = "",
     ...rest
 }: ButtonPrimaryProps) {
     return (
         <button className={`btn-primary ${className}`} {...rest}>
-            {isLoading ? (
+            {isloading ? (
                 <span>
                     {children} <span className="loading-spinner" />
                 </span>

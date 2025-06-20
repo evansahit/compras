@@ -108,7 +108,7 @@ export default function LoginForm() {
                 <ButtonPrimary
                     type="submit"
                     disabled={isSubmitButtonDisabled}
-                    isLoading={isFormLoading}
+                    isloading={isFormLoading}
                 >
                     Log in
                 </ButtonPrimary>

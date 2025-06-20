@@ -1,6 +1,7 @@
 #shopping-list {
     margin: 1rem 0;
     padding: 1rem;
+    border: 1px solid var(--primary-color);
     border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
@@ -20,7 +21,6 @@ table {
 tr {
     text-align: left;
     border-bottom: 1px solid var(--primary-color) !important;
-    border-radius: var(--border-radius);
 
     transition: all var(--transition-duration);
 }

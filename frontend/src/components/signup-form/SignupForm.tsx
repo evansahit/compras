@@ -191,7 +191,7 @@ export default function SignUpForm() {
                 <ButtonPrimary
                     type="submit"
                     disabled={isSubmitButtonDisabled}
-                    isLoading={isFormLoading}
+                    isloading={isFormLoading}
                 >
                     Sign up
                 </ButtonPrimary>

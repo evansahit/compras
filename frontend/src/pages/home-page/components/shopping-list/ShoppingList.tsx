@@ -1,15 +1,20 @@
 import "./shopping-list.css";
-import type { ItemUpdate, ItemOutput, ItemWithProducts } from "../../../types";
+import type {
+    ItemUpdate,
+    ItemOutput,
+    ItemWithProducts,
+} from "../../../../types";
 import { useEffect, useRef, useState } from "react";
-import ButtonPrimary from "../../../components/button/button-primary/ButtonPrimary";
-import { createNewItem } from "../../../api/item";
-import ButtonDanger from "../../../components/button/button-danger/ButtonDanger";
-import { validateItemName } from "../../../utils/form-validation";
-import { findCheapestProductForItem } from "../../../utils/find-cheapest-product";
-import BlankCheckBoxIcon from "../../../assets/icons/blank-check-box.png";
-import CheckedCheckboxIcon from "../../../assets/icons/check-box.png";
-import DeleteIcon from "../../../assets/icons/delete.png";
-import { updateItem, deleteItem } from "../../../api/item";
+import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
+import { createNewItem } from "../../../../api/item";
+import ButtonDanger from "../../../../components/button/button-danger/ButtonDanger";
+import { validateItemName } from "../../../../utils/form-validation";
+import { findCheapestProductForItem } from "../../../../utils/find-cheapest-product";
+import BlankCheckBoxIcon from "../../../../assets/icons/blank-check-box.png";
+import CheckedCheckboxIcon from "../../../../assets/icons/check-box.png";
+import DeleteIcon from "../../../../assets/icons/delete.png";
+import { updateItem, deleteItem } from "../../../../api/item";
+import { useNavigate } from "react-router";
 
 type ShoppingListProps = {
     userId: string;
@@ -21,10 +26,10 @@ type ShoppingListProps = {
 };
 
 export default function ShoppingList(props: ShoppingListProps) {
+    const navigate = useNavigate();
     const [itemName, setItemName] = useState("");
     const [isInputTouched, setIsInputTouched] = useState(false);
     const [error, setError] = useState("");
-
     const items = props.items;
 
     const [isEditing, setIsEditing] = useState(false);
@@ -32,6 +37,7 @@ export default function ShoppingList(props: ShoppingListProps) {
     const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
     const inputRef = useRef<HTMLInputElement>(null);
+    const cancelledRef = useRef(false);
 
     function renderLowestPrice(item: ItemWithProducts): number | string {
         const cheapestProduct = findCheapestProductForItem(item);
@@ -156,10 +162,14 @@ export default function ShoppingList(props: ShoppingListProps) {
                 setError(validateItemName(itemName));
                 setIsButtonDisabled(error.length > 0 || itemName.length === 0);
             }
-
-            // setIsButtonDisabled(isLoading);
         }
     }, [error.length, isEditing, isInputTouched, isLoading, itemName]);
+
+    useEffect(() => {
+        if (!isEditing) {
+            cancelledRef.current = false;
+        }
+    }, [isEditing]);
 
     return (
         <div id="shopping-list">
@@ -189,6 +199,9 @@ export default function ShoppingList(props: ShoppingListProps) {
                                         : "item-row"
                                 }
                                 key={i.item.id}
+                                onClick={() =>
+                                    navigate(`/home/items/${i.item.id}`)
+                                }
                             >
                                 <td className="checkbox">
                                     <img
@@ -238,7 +251,9 @@ export default function ShoppingList(props: ShoppingListProps) {
                         ref={inputRef}
                         value={itemName}
                         onBlur={() => {
-                            setIsInputTouched(true);
+                            if (!cancelledRef.current) {
+                                setIsInputTouched(true);
+                            }
                         }}
                         onChange={(e) => setItemName(e.target.value)}
                     />
@@ -250,6 +265,9 @@ export default function ShoppingList(props: ShoppingListProps) {
             <div id="button-row">
                 {isEditing && (
                     <ButtonDanger
+                        onMouseDown={() => {
+                            cancelledRef.current = true;
+                        }}
                         onClick={() => {
                             setIsEditing(false);
                             setIsInputTouched(false);
@@ -272,7 +290,7 @@ export default function ShoppingList(props: ShoppingListProps) {
                         }
                     }}
                     disabled={isButtonDisabled}
-                    isLoading={isLoading}
+                    isloading={isLoading}
                 >
                     {isEditing ? "Save" : "Add item"}
                 </ButtonPrimary>

@@ -8,6 +8,7 @@ import Layout from "./components/layout/Layout.tsx";
 import NotFound from "./components/404/NotFound.tsx";
 import LoginPage from "./pages/login-page/LoginPage.tsx";
 import HomePage from "./pages/home-page/HomePage.tsx";
+import ItemDetail from "./pages/home-page/components/item-detail/ItemDetail.tsx";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
@@ -17,12 +18,20 @@ createRoot(document.getElementById("root")!).render(
                     <Route index element={<LandingPage />} />
                     {/* auth */}
                     <Route
-                        path="signup-or-login"
+                        path="/signup-or-login"
                         element={<SignupOrLoginPage />}
                     />
-                    <Route path="login" element={<LoginPage />} />
+                    <Route path="/login" element={<LoginPage />} />
 
-                    <Route path="home" element={<HomePage />} />
+                    {/* <Route path="/home" element={<HomePage />}>
+                        <Route
+                            path="home/items/:itemId"
+                            element={<ItemDetail />}
+                        />
+                    </Route> */}
+
+                    <Route path="/home" element={<HomePage />} />
+                    <Route path="home/items/:itemId" element={<ItemDetail />} />
 
                     {/* 404 */}
                     <Route path="*" element={<NotFound />} />

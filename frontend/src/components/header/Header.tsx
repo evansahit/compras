@@ -12,7 +12,7 @@ export default function Header() {
     const location = useLocation();
     const navigate = useNavigate();
     const jwt = localStorage.getItem("jwt");
-    const isLoading = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     return (
         <>
@@ -40,7 +40,7 @@ export default function Header() {
                             logout();
                             navigate("/");
                         }}
-                        isLoading={isLoading}
+                        isloading={isLoading}
                     >
                         Logout
                     </ButtonDanger>

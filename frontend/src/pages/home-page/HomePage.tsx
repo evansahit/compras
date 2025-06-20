@@ -3,8 +3,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 import { getCurrentUser, getItemsForCurrentUser } from "../../api/user";
 import type { ItemWithProducts, UserOutput, ItemOutput } from "../../types";
-import ShoppingList from "./components/ShoppingList";
-import { createNewItem } from "../../api/item";
+import ShoppingList from "./components/shopping-list/ShoppingList";
 
 // TODO: need to find a more secure for storing JWTs
 //       can someone fake having a JWT token by creating a localstorage entry named "jwt"?

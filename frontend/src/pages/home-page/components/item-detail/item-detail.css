@@ -1,0 +1,8 @@
+.item-container {
+    background-color: var(--background-color);
+    filter: saturate(2);
+    border: 1px solid var(--primary-color);
+    border-radius: var(--border-radius);
+    margin: 1rem 0;
+    padding: 1rem;
+}
