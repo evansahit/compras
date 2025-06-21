@@ -18,11 +18,12 @@ import { Link } from "react-router";
 
 type ShoppingListProps = {
     userId: string;
-    items: ItemWithProducts[] | [];
+    items: ItemWithProducts[];
     itemsError: string;
     createItem: (newItem: ItemWithProducts) => void;
     updateItem: (newItem: ItemOutput) => void;
     deleteItem: (itemId: string) => void;
+    demoMode?: boolean;
 };
 
 export default function ShoppingList(props: ShoppingListProps) {
@@ -201,11 +202,15 @@ export default function ShoppingList(props: ShoppingListProps) {
                             >
                                 <td
                                     id="checkbox"
-                                    onClick={() =>
-                                        handleUpdateItem({
-                                            ...i.item,
-                                            isCompleted: !i.item.isCompleted,
-                                        })
+                                    onClick={
+                                        props.demoMode
+                                            ? () => null
+                                            : () =>
+                                                  handleUpdateItem({
+                                                      ...i.item,
+                                                      isCompleted:
+                                                          !i.item.isCompleted,
+                                                  })
                                     }
                                 >
                                     {i.item.isCompleted ? (
@@ -215,32 +220,50 @@ export default function ShoppingList(props: ShoppingListProps) {
                                     )}
                                 </td>
                                 <td className="name">
-                                    <Link
-                                        to={`/home/items/${i.item.id}`}
-                                        state={i}
-                                    >
-                                        {i.item.name}
-                                    </Link>
+                                    {props.demoMode ? (
+                                        <>{i.item.name}</>
+                                    ) : (
+                                        <Link
+                                            to={`/home/items/${i.item.id}`}
+                                            state={i}
+                                        >
+                                            {i.item.name}
+                                        </Link>
+                                    )}
                                 </td>
                                 <td className="price">
-                                    <Link
-                                        to={`/home/items/${i.item.id}`}
-                                        state={i}
-                                    >
-                                        {renderLowestPrice(i)}
-                                    </Link>
+                                    {props.demoMode ? (
+                                        <>{renderLowestPrice(i)}</>
+                                    ) : (
+                                        <Link
+                                            to={`/home/items/${i.item.id}`}
+                                            state={i}
+                                        >
+                                            {renderLowestPrice(i)}
+                                        </Link>
+                                    )}
                                 </td>
                                 <td>
-                                    <Link
-                                        to={`/home/items/${i.item.id}`}
-                                        state={i}
-                                    >
-                                        {renderGroceryStoreOfLowestPrice(i)}
-                                    </Link>
+                                    {props.demoMode ? (
+                                        <>
+                                            {renderGroceryStoreOfLowestPrice(i)}
+                                        </>
+                                    ) : (
+                                        <Link
+                                            to={`/home/items/${i.item.id}`}
+                                            state={i}
+                                        >
+                                            {renderGroceryStoreOfLowestPrice(i)}
+                                        </Link>
+                                    )}
                                 </td>
                                 <td
                                     id="delete"
-                                    onClick={() => handleDeleteItem(i.item.id)}
+                                    onClick={
+                                        props.demoMode
+                                            ? () => null
+                                            : () => handleDeleteItem(i.item.id)
+                                    }
                                 >
                                     <DeleteIcon color="var(--danger-color)" />
                                 </td>
@@ -278,27 +301,35 @@ export default function ShoppingList(props: ShoppingListProps) {
                         onMouseDown={() => {
                             cancelledRef.current = true;
                         }}
-                        onClick={() => {
-                            setIsEditing(false);
-                            setIsInputTouched(false);
-                            setError("");
-                            setItemName("");
-                            setIsButtonDisabled(false);
-                        }}
+                        onClick={
+                            props.demoMode
+                                ? () => null
+                                : () => {
+                                      setIsEditing(false);
+                                      setIsInputTouched(false);
+                                      setError("");
+                                      setItemName("");
+                                      setIsButtonDisabled(false);
+                                  }
+                        }
                     >
                         Cancel
                     </ButtonDanger>
                 )}
 
                 <ButtonPrimary
-                    onClick={() => {
-                        if (!isEditing) {
-                            setIsEditing(true);
-                            setError("");
-                        } else {
-                            handleCreateNewItem();
-                        }
-                    }}
+                    onClick={
+                        props.demoMode
+                            ? () => null
+                            : () => {
+                                  if (!isEditing) {
+                                      setIsEditing(true);
+                                      setError("");
+                                  } else {
+                                      handleCreateNewItem();
+                                  }
+                              }
+                    }
                     disabled={isButtonDisabled}
                     isloading={isLoading}
                 >

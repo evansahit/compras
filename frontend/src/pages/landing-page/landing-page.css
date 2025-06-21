@@ -1,3 +1,39 @@
+#demo-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 2rem;
+    border-radius: var(--border-radius);
+
+    transition: all var(--transition-duration);
+}
+@media (hover: hover) and (pointer: fine) {
+    #demo-container:hover {
+        transform: translateY(-1px);
+        box-shadow: 0 0 20px rgba(37, 89, 87, 0.5);
+
+        #demo-title {
+            background-color: var(--primary-color);
+            color: var(--background-color);
+        }
+    }
+}
+
+#demo-title {
+    font-family: var(--accent-font);
+    font-size: 2rem;
+    position: relative;
+    top: 0.75rem;
+    color: var(--primary-color);
+    background-color: var(--background-color);
+    filter: saturate(2.5);
+    border: 1px solid var(--border-color);
+    width: fit-content;
+    border-radius: var(--border-radius);
+    padding: 0.05rem 0.5rem;
+
+    transition: all var(--transition-duration);
+}
+
 @media (min-width: 1200px) {
     #landing-page-container {
         display: flex;
