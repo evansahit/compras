@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, status
 from sqlalchemy.ext.asyncio import AsyncConnection
 
 from app.database.db import get_db_connection
-from app.schemas.item import ItemCreate, ItemOutput, ItemUpdate
+from app.schemas.item import ItemCreate, ItemOutput, ItemUpdate, ItemWithProducts
 from app.schemas.product import ProductOutput
 from app.schemas.user import UserOutput
 from app.service.auth_service import AuthService
@@ -14,7 +14,7 @@ from app.service.item_service import ItemService
 router = APIRouter(prefix="/items")
 
 
-@router.post("", status_code=status.HTTP_201_CREATED)
+@router.post("", response_model=ItemWithProducts, status_code=status.HTTP_201_CREATED)
 async def create_item(
     new_item: ItemCreate,
     conn: Annotated[AsyncConnection, Depends(get_db_connection)],

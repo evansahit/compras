@@ -45,17 +45,17 @@ td {
 #checkbox {
     padding: 0 0.25rem;
 }
-#checkbox > svg {
+#checkbox svg {
     display: block;
-    opacity: 0.75;
+    opacity: var(--default-icon-opacity);
     width: var(--icon-width-mobile);
 
     transition: all var(--transition-duration);
 }
 @media (hover: hover) and (pointer: fine) {
-    #checkbox > svg:hover {
+    #checkbox svg:hover {
         cursor: pointer;
-        opacity: 1;
+        opacity: var(--hovered-icon-opacity);
         transform: translateY(-2px);
     }
 }
@@ -80,20 +80,19 @@ td {
 #delete:hover {
     cursor: pointer;
 }
-#delete > svg {
+#delete svg {
     position: relative;
     top: 0.2rem;
-    opacity: 0.75;
+    opacity: var(--default-icon-opacity);
     border-radius: var(--border-radius);
     width: var(--icon-width-mobile);
     /* height: var(--icon-width-mobile); */
 
     transition: all var(--transition-duration);
 }
-
 @media (hover: hover) and (pointer: fine) {
-    #delete > svg:hover {
-        opacity: 1;
+    #delete svg:hover {
+        opacity: var(--hovered-icon-opacity);
         transform: translateY(-2px);
     }
 }
@@ -140,11 +139,11 @@ td {
         font-size: 1.15rem;
     }
 
-    #delete > svg {
+    #delete svg {
         width: var(--icon-width-tablet);
     }
 
-    #checkbox > svg {
+    #checkbox svg {
         width: var(--icon-width-tablet);
     }
 

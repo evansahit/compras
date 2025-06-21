@@ -1,16 +1,21 @@
-// import type { ItemWithProducts } from "../../../../types";
-import { useEffect, useState } from "react";
 import "./item-detail.css";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 import type { ProductOutput } from "../../../../types";
 import { getProductsForItemByItemId } from "../../../../api/item";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import BackIcon from "../../../../assets/icons/BackIcon";
 
+// TODO: - keep working on item detail component.
+//       - center svg within span of icon components.
 export default function ItemDetail() {
     const navigate = useNavigate();
-    const [products, setProducts] = useState<ProductOutput[]>();
+    const location = useLocation();
     const { itemId } = useParams();
+    const itemWithProducts = location.state;
+    const [products, setProducts] = useState<ProductOutput[]>(
+        itemWithProducts.products
+    );
 
     const [error, setError] = useState("");
 
@@ -32,14 +37,20 @@ export default function ItemDetail() {
             }
         }
 
-        getProducts(itemId as string);
-    }, [itemId, navigate]);
+        if (!itemWithProducts) getProducts(itemId as string);
+    }, [itemWithProducts, itemId, navigate]);
 
     return (
-        <div className="item-container">
-            <BackIcon color="var(--primary-color)" />
-            {error && <p>{error}</p>}
+        <div id="products-container">
+            <div id="products-header">
+                <BackIcon
+                    color="var(--primary-color)"
+                    onClick={() => navigate("/home")}
+                />
+                <span id="header-title">{itemWithProducts.item.name}</span>
+            </div>
 
+            {error && <p>{error}</p>}
             <ul>
                 {products &&
                     products.map((p) => (

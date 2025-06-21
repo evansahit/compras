@@ -1,4 +1,4 @@
-.item-container {
+#products-container {
     background-color: var(--background-color);
     filter: saturate(2);
     border: 1px solid var(--primary-color);
@@ -7,6 +7,21 @@
     padding: 1rem;
 }
 
-svg {
+#products-header {
+    display: flex;
+    align-items: center;
+}
+
+#products-header svg {
     width: var(--icon-width-mobile-large);
+    opacity: var(--default-icon-opacity);
+
+    transition: all var(--transition-duration);
+}
+@media (hover: hover) and (pointer: fine) {
+    #products-header svg:hover {
+        cursor: pointer;
+        opacity: var(--hovered-icon-opacity);
+        transform: translateY(-2px);
+    }
 }

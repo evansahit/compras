@@ -4,9 +4,8 @@
     --x-padding-tablet: 2.5rem;
     --x-padding-laptop: 4rem;
 
-    /* --width-tablet: 768px; */
-    /* --width-laptop: 1200px; */
-    /* --width-desktop: 1200px */
+    --default-icon-opacity: 0.75;
+    --hovered-icon-opacity: 1;
 
     --header-footer-width: 85%;
     --transition-duration: 0.25s;

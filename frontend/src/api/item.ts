@@ -58,18 +58,12 @@ export async function getProductsForItemByItemId(
         },
     });
 
-    console.log("response:");
-    console.log(response);
-
     let json;
     try {
         json = await response.json();
     } catch {
         json = null;
     }
-
-    console.log("json:");
-    console.log(json);
 
     if (!response.ok) {
         const error =

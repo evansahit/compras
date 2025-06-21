@@ -14,7 +14,7 @@ import CheckedCheckBox from "../../../../assets/icons/CheckedCheckBox";
 import BlankCheckBoxIcon from "../../../../assets/icons/BlankCheckBoxIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 import { updateItem, deleteItem } from "../../../../api/item";
-import { useNavigate } from "react-router";
+import { Link } from "react-router";
 
 type ShoppingListProps = {
     userId: string;
@@ -26,7 +26,6 @@ type ShoppingListProps = {
 };
 
 export default function ShoppingList(props: ShoppingListProps) {
-    const navigate = useNavigate();
     const [itemName, setItemName] = useState("");
     const [isInputTouched, setIsInputTouched] = useState(false);
     const [error, setError] = useState("");
@@ -215,28 +214,29 @@ export default function ShoppingList(props: ShoppingListProps) {
                                         <BlankCheckBoxIcon color="var(--primary-color)" />
                                     )}
                                 </td>
-                                <td
-                                    className="name"
-                                    onClick={() =>
-                                        navigate(`/home/items/${i.item.id}`)
-                                    }
-                                >
-                                    {i.item.name}
+                                <td className="name">
+                                    <Link
+                                        to={`/home/items/${i.item.id}`}
+                                        state={i}
+                                    >
+                                        {i.item.name}
+                                    </Link>
                                 </td>
-                                <td
-                                    className="price"
-                                    onClick={() =>
-                                        navigate(`/home/items/${i.item.id}`)
-                                    }
-                                >
-                                    {renderLowestPrice(i)}
+                                <td className="price">
+                                    <Link
+                                        to={`/home/items/${i.item.id}`}
+                                        state={i}
+                                    >
+                                        {renderLowestPrice(i)}
+                                    </Link>
                                 </td>
-                                <td
-                                    onClick={() =>
-                                        navigate(`/home/items/${i.item.id}`)
-                                    }
-                                >
-                                    {renderGroceryStoreOfLowestPrice(i)}
+                                <td>
+                                    <Link
+                                        to={`/home/items/${i.item.id}`}
+                                        state={i}
+                                    >
+                                        {renderGroceryStoreOfLowestPrice(i)}
+                                    </Link>
                                 </td>
                                 <td
                                     id="delete"
