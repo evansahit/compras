@@ -4,7 +4,14 @@ type EditIconProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export default function EditIcon({ color, ...rest }: EditIconProps) {
     return (
-        <span {...rest} style={{ display: "flex" }}>
+        <button
+            {...rest}
+            style={{
+                padding: "0.1rem",
+                display: "flex",
+                background: "inherit",
+            }}
+        >
             <svg
                 viewBox="0 0 20 20"
                 xmlns="http://www.w3.org/2000/svg"
@@ -26,6 +33,6 @@ export default function EditIcon({ color, ...rest }: EditIconProps) {
                     ></path>
                 </g>
             </svg>
-        </span>
+        </button>
     );
 }

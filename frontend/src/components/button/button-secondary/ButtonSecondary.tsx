@@ -3,20 +3,24 @@ import "./button-secondary.css";
 
 type ButtonSecondaryProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     children: React.ReactNode;
-    isLoading: boolean;
+    isloading?: boolean;
 };
 
 export default function ButtonSecondary({
     children,
-    isLoading,
+    isloading,
     className = "",
     ...rest
 }: ButtonSecondaryProps) {
     return (
         <button className={`btn-secondary ${className}`} {...rest}>
-            <span>
-                {children} {isLoading && <span className="loading-spinner" />}
-            </span>
+            {isloading ? (
+                <span>
+                    {children} <span className="loading-spinner" />
+                </span>
+            ) : (
+                children
+            )}
         </button>
     );
 }

@@ -9,6 +9,7 @@ import EditIcon from "../../../../assets/icons/EditIcon";
 import { validateItemName } from "../../../../utils/form-validation";
 import CancelIcon from "../../../../assets/icons/CancelIcon";
 import { updateItem } from "../../../../api/item";
+import ButtonSecondary from "../../../../components/button/button-secondary/ButtonSecondary";
 
 export default function ItemDetail() {
     const navigate = useNavigate();
@@ -24,10 +25,12 @@ export default function ItemDetail() {
     const [updatedItemName, setUpdatedItemName] = useState(
         itemWithProducts?.item.name || ""
     );
+    const [isLoading, setIsLoading] = useState(false);
 
     const [error, setError] = useState("");
 
     async function handleUpdateItem(updatedItemName: string) {
+        setIsLoading(true);
         if (itemWithProducts?.item.name === updatedItemName) {
             setIsEditing(false);
 
@@ -60,6 +63,8 @@ export default function ItemDetail() {
                         ? error.message
                         : `Something went updating this item.`
                 );
+            } finally {
+                setIsLoading(false);
             }
         }
     }
@@ -88,12 +93,11 @@ export default function ItemDetail() {
     return (
         <div id="products-container">
             <div id="products-header">
-                <span id="back-icon">
-                    <BackIcon
-                        color="var(--background-color)"
-                        onClick={() => navigate("/home")}
-                    />
-                </span>
+                <BackIcon
+                    id="back-icon"
+                    color="var(--background-color)"
+                    onClick={() => navigate("/home")}
+                />
                 {isEditing ? (
                     <span id="item-name-update">
                         <input
@@ -101,13 +105,15 @@ export default function ItemDetail() {
                             value={updatedItemName}
                             onChange={(e) => setUpdatedItemName(e.target.value)}
                         />
-                        <span
+                        <ButtonSecondary
+                            id="item-edit-save-button"
                             onClick={() => {
                                 handleUpdateItem(updatedItemName);
                             }}
+                            isloading={isLoading}
                         >
                             Save
-                        </span>
+                        </ButtonSecondary>
                     </span>
                 ) : (
                     <span id="products-header-title">
@@ -116,19 +122,19 @@ export default function ItemDetail() {
                 )}
 
                 {isEditing ? (
-                    <span id="cancel-icon">
-                        <CancelIcon
-                            color="var(--background-color)"
-                            onClick={() => {
-                                setIsEditing(false);
-                                setUpdatedItemName(
-                                    itemWithProducts?.item.name || ""
-                                );
-                            }}
-                        />
-                    </span>
+                    <CancelIcon
+                        id="cancel-icon"
+                        color="var(--background-color)"
+                        onClick={() => {
+                            setIsEditing(false);
+                            setUpdatedItemName(
+                                itemWithProducts?.item.name || ""
+                            );
+                        }}
+                    />
                 ) : (
                     <EditIcon
+                        id="edit-icon"
                         color="var(--background-color)"
                         onClick={() => {
                             setIsEditing(true);

@@ -6,7 +6,14 @@ type CancelIconProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export default function CancelIcon({ color, ...rest }: CancelIconProps) {
     return (
-        <span {...rest} style={{ display: "flex" }}>
+        <button
+            {...rest}
+            style={{
+                padding: "0.1rem",
+                display: "flex",
+                background: "inherit",
+            }}
+        >
             <svg
                 fill={color}
                 version="1.1"
@@ -77,6 +84,6 @@ export default function CancelIcon({ color, ...rest }: CancelIconProps) {
                     </g>
                 </g>
             </svg> */}
-        </span>
+        </button>
     );
 }

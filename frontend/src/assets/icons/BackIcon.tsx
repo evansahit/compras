@@ -6,7 +6,14 @@ type BackIconProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 
 export default function BackIcon({ color, ...rest }: BackIconProps) {
     return (
-        <span {...rest} style={{ display: "flex" }}>
+        <button
+            {...rest}
+            style={{
+                padding: "0.1rem",
+                display: "flex",
+                background: "inherit",
+            }}
+        >
             <svg
                 viewBox="0 0 24 24"
                 fill={color}
@@ -43,6 +50,6 @@ export default function BackIcon({ color, ...rest }: BackIconProps) {
                     ></path>
                 </g>
             </svg>
-        </span>
+        </button>
     );
 }
