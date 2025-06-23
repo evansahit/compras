@@ -4,6 +4,7 @@ footer {
     gap: 1rem;
     align-items: center;
     border-top: 1px solid var(--primary-color);
+    margin-top: 1rem;
     padding: 1rem var(--x-padding-mobile);
 }
 

@@ -55,7 +55,7 @@ class ItemService:
                 created_products.append(ProductOutput(**row))
         await conn.commit()
 
-        if not created_products:
+        if len(created_products) == 0:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Something went wrong saving products for item {created_item.name}",
@@ -124,6 +124,8 @@ class ItemService:
         item_id: UUID,
         updated_item: ItemUpdate,
     ) -> ItemOutput:
+        item_to_update: ItemOutput = await ItemService.get_item_by_id(conn, item_id)
+
         sql = text("""
             UPDATE items
             SET name = :name, is_completed = :is_completed, is_archived = :is_archived
@@ -131,7 +133,7 @@ class ItemService:
             RETURNING id, user_id, name, is_completed, is_archived, created_at, updated_at;
         """)
 
-        result = await conn.execute(
+        item_update_result = await conn.execute(
             sql,
             {
                 "item_id": item_id,
@@ -142,14 +144,37 @@ class ItemService:
         )
         await conn.commit()
 
-        result = result.mappings().first()
-        if not result:
+        item_update_result = item_update_result.mappings().first()
+        if not item_update_result:
             raise HTTPException(
                 status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
                 detail=f"Failed to update item with name {updated_item.name}",
             )
 
-        return ItemOutput(**result)
+        # update products if item name changed
+        if item_to_update.name != updated_item.name:
+            # delete all products previously associated with this item to replace later
+            sql_delete_products = text("""
+                DELETE FROM products
+                WHERE item_id = :item_id;
+            """)
+            await conn.execute(sql_delete_products, {"item_id": item_id})
+            await conn.commit()
+
+            # insert products found for newly updated item name
+            ah_products: list[ProductCreate] = get_ah_products(
+                item_id, updated_item.name
+            )
+            sql_insert_products = text("""
+                INSERT INTO products (item_id, name, grocery_store, price, price_discounted, weight, image_url)
+                VALUES (:item_id, :name, :grocery_store, :price, :price_discounted, :weight, :image_url)
+                RETURNING id, item_id, name, grocery_store, price, price_discounted, weight, image_url, created_at, updated_at;
+            """)
+            for p in ah_products:
+                await conn.execute(sql_insert_products, p.model_dump())
+            await conn.commit()
+
+        return ItemOutput(**item_update_result)
 
     @staticmethod
     async def get_products_for_item_by_item_id(

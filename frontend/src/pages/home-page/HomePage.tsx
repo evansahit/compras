@@ -91,7 +91,8 @@ export default function HomePage() {
                     <h1 id="home-page-title">Shopping list</h1>
                     <p id="home-page-message">
                         Products will be searched and matched based on the names
-                        of your items.
+                        of your items, so these will need to be written in
+                        Dutch.
                     </p>
 
                     {isItemsLoading && (

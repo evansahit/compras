@@ -13,7 +13,7 @@ export default function Hero() {
             </p>
             <p>
                 <span className="paragraph-accent">Compras+</span> allows you to
-                see what each grocery store charges for each item on your
+                see what different grocery stores charge for each item on your
                 grocery list.
             </p>
         </div>

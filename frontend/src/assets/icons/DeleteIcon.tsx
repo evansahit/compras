@@ -1,10 +1,10 @@
 type DeleteIconProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    color: string;
+    color?: string;
 };
 
 export default function DeleteIcon({ color, ...rest }: DeleteIconProps) {
     return (
-        <span {...rest}>
+        <span {...rest} style={{ display: "flex" }}>
             <svg
                 viewBox="0 0 24 24"
                 fill="none"

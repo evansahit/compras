@@ -82,11 +82,9 @@ td {
 }
 #delete svg {
     position: relative;
-    top: 0.2rem;
     opacity: var(--default-icon-opacity);
     border-radius: var(--border-radius);
     width: var(--icon-width-mobile);
-    /* height: var(--icon-width-mobile); */
 
     transition: all var(--transition-duration);
 }

@@ -103,7 +103,7 @@ export default function LoginForm() {
                     </div>
                 </div>
 
-                <span className="form-error">{formError}</span>
+                {formError && <span className="form-error">{formError}</span>}
 
                 <ButtonPrimary
                     type="submit"

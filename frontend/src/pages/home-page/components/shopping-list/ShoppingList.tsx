@@ -84,12 +84,9 @@ export default function ShoppingList(props: ShoppingListProps) {
         }
     }
 
-    async function handleUpdateItem(newItem: ItemUpdate) {
-        const itemToFind = items.find((i) => i.item.id === newItem.id);
-        if (
-            newItem.name.length >= 2 &&
-            itemToFind?.item.name !== newItem.name
-        ) {
+    async function handleUpdateItem(item: ItemUpdate) {
+        const itemToFind = items.find((i) => i.item.id === item.id);
+        if (item.name.length >= 2 && itemToFind?.item.name !== item.name) {
             setError(validateItemName(itemName));
             if (error.length > 0 || itemName.length === 0) {
                 return;
@@ -99,14 +96,14 @@ export default function ShoppingList(props: ShoppingListProps) {
                 setIsInputTouched(false);
 
                 try {
-                    const updatedItem: ItemOutput = await updateItem(newItem);
+                    const updatedItem: ItemOutput = await updateItem(item);
                     props.updateItem(updatedItem);
                     setItemName("");
                 } catch (error) {
                     setError(
                         error instanceof Error
                             ? error.message
-                            : `Something went wrong updating item ${newItem.name}.`
+                            : `Something went wrong updating item ${item.name}.`
                     );
                 } finally {
                     setIsLoading(false);
@@ -117,13 +114,13 @@ export default function ShoppingList(props: ShoppingListProps) {
             setError("");
             setIsInputTouched(false);
             try {
-                const updatedItem = await updateItem(newItem);
+                const updatedItem = await updateItem(item);
                 props.updateItem(updatedItem);
             } catch (error) {
                 setError(
                     error instanceof Error
                         ? error.message
-                        : `Something went wrong updating item ${newItem.name}.`
+                        : `Something went wrong updating item ${item.name}.`
                 );
             } finally {
                 setIsLoading(false);
@@ -163,7 +160,7 @@ export default function ShoppingList(props: ShoppingListProps) {
                 setIsButtonDisabled(error.length > 0 || itemName.length === 0);
             }
         }
-    }, [error.length, isEditing, isInputTouched, isLoading, itemName]);
+    }, [error, isEditing, isInputTouched, isLoading, itemName]);
 
     useEffect(() => {
         if (!isEditing) {

@@ -1,5 +1,5 @@
 type CheckedCheckBoxProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    color: string;
+    color?: string;
 };
 
 export default function CheckedCheckBox({

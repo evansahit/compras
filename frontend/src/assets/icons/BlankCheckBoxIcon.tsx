@@ -1,5 +1,5 @@
 type BlankCheckBoxIconProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
-    color: string;
+    color?: string;
 };
 
 export default function BlankCheckBoxIcon({
@@ -7,7 +7,7 @@ export default function BlankCheckBoxIcon({
     ...rest
 }: BlankCheckBoxIconProps) {
     return (
-        <span {...rest}>
+        <span {...rest} style={{ display: "flex" }}>
             <svg
                 viewBox="0 0 24 24"
                 fill="none"

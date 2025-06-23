@@ -1,7 +1,6 @@
 #demo-container {
     display: flex;
     flex-direction: column;
-    padding: 1rem 2rem;
     border-radius: var(--border-radius);
 
     transition: all var(--transition-duration);
@@ -24,12 +23,11 @@
     position: relative;
     top: 0.75rem;
     color: var(--primary-color);
-    background-color: var(--background-color);
+    /* border: 1px solid var(--border-color); */
     filter: saturate(2.5);
-    border: 1px solid var(--border-color);
     width: fit-content;
     border-radius: var(--border-radius);
-    padding: 0.05rem 0.5rem;
+    padding: 0 0.5rem;
 
     transition: all var(--transition-duration);
 }
@@ -40,5 +38,10 @@
         flex-direction: row;
         justify-content: space-around;
         margin: 10rem auto;
+    }
+
+    #demo-container {
+        padding: 0 1rem;
+        width: 50%;
     }
 }
