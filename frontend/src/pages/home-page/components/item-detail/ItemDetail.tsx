@@ -12,6 +12,9 @@ import { updateItem } from "../../../../api/item";
 import ButtonSecondary from "../../../../components/button/button-secondary/ButtonSecondary";
 import { sortProductsByPriceAscending } from "../../../../utils/sortProductsByPrice";
 
+// TODO: fix bug where if an item is updated and the page is refreshed, the products revert back to what they were
+//       if you navigate back to ShoppingList then the product is properly updated and if you click on it then you see the updated products
+//       this is probably happening because itemWithProducts is being set by grabbing the value from location.state and refreshing the page grabs the data from there.
 export default function ItemDetail() {
     const navigate = useNavigate();
     const location = useLocation();
@@ -44,7 +47,6 @@ export default function ItemDetail() {
 
         const inputError = validateItemName(updatedItemName);
         setError(inputError);
-
         if (inputError.length === 0) {
             try {
                 const updatedItem = {
@@ -184,7 +186,7 @@ function ProductCard({ product }: { product: ProductOutput }) {
                 </div>
                 <div className="product-description-field">
                     <span className="product-description-heading">Weight</span>
-                    <p>{product.weight}</p>
+                    <p>{product.weight || "No weight information found."}</p>
                 </div>
                 <div className="product-description-field">
                     <span className="product-description-heading">Price</span>
