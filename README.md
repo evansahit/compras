@@ -63,8 +63,8 @@ The project is still in development, so exact tools are subject to change.
     -   Working on item detail page where all the found products for an item is displayed and where the item title can be edited.
     -   All pages except item detail page are responsive up until now.
     -   All pages are responsive.
-    -   Jumbo products also included in product search.
     -   Can edit item name on item detail page.
     -   Products on item detail page are sorted by price ascending.
-    -   Would love to include more supermarkets, but they don't have public API's :(
-        -   Albert Heijn and Jumbo don't either, but I lucked out by finding a Python package which provides a means to search for products.
+
+-   Would love to include more supermarkets, but they don't have public API's :(
+    -   Albert Heijn and Jumbo don't either, but I lucked out by finding a Python package which provides a means to search for products.
