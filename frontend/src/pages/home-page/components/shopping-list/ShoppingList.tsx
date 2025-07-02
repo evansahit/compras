@@ -14,7 +14,7 @@ import CheckedCheckBox from "../../../../assets/icons/CheckedCheckBox";
 import BlankCheckBoxIcon from "../../../../assets/icons/BlankCheckBoxIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
 import { updateItem, deleteItem } from "../../../../api/item";
-import { Link } from "react-router";
+import { useNavigate } from "react-router";
 
 type ShoppingListProps = {
     userId: string;
@@ -27,6 +27,8 @@ type ShoppingListProps = {
 };
 
 export default function ShoppingList(props: ShoppingListProps) {
+    const navigate = useNavigate();
+
     const [itemName, setItemName] = useState("");
     const [isInputTouched, setIsInputTouched] = useState(false);
     const [error, setError] = useState("");
@@ -216,43 +218,47 @@ export default function ShoppingList(props: ShoppingListProps) {
                                         <BlankCheckBoxIcon color="var(--primary-color)" />
                                     )}
                                 </td>
-                                <td className="name">
-                                    {props.demoMode ? (
-                                        <>{i.item.name}</>
-                                    ) : (
-                                        <Link
-                                            to={`/home/items/${i.item.id}`}
-                                            state={i}
-                                        >
-                                            {i.item.name}
-                                        </Link>
-                                    )}
+                                <td
+                                    className="name"
+                                    onClick={
+                                        props.demoMode
+                                            ? () => null
+                                            : () =>
+                                                  navigate(
+                                                      `/home/items/${i.item.id}`,
+                                                      { state: i }
+                                                  )
+                                    }
+                                >
+                                    {i.item.name}
                                 </td>
-                                <td className="price">
-                                    {props.demoMode ? (
-                                        <>{renderLowestPrice(i)}</>
-                                    ) : (
-                                        <Link
-                                            to={`/home/items/${i.item.id}`}
-                                            state={i}
-                                        >
-                                            {renderLowestPrice(i)}
-                                        </Link>
-                                    )}
+                                <td
+                                    className="price"
+                                    onClick={
+                                        props.demoMode
+                                            ? () => null
+                                            : () =>
+                                                  navigate(
+                                                      `/home/items/${i.item.id}`,
+                                                      { state: i }
+                                                  )
+                                    }
+                                >
+                                    {renderLowestPrice(i)}
                                 </td>
-                                <td>
-                                    {props.demoMode ? (
-                                        <>
-                                            {renderGroceryStoreOfLowestPrice(i)}
-                                        </>
-                                    ) : (
-                                        <Link
-                                            to={`/home/items/${i.item.id}`}
-                                            state={i}
-                                        >
-                                            {renderGroceryStoreOfLowestPrice(i)}
-                                        </Link>
-                                    )}
+                                <td
+                                    className="grocery-store"
+                                    onClick={
+                                        props.demoMode
+                                            ? () => null
+                                            : () =>
+                                                  navigate(
+                                                      `/home/items/${i.item.id}`,
+                                                      { state: i }
+                                                  )
+                                    }
+                                >
+                                    {renderGroceryStoreOfLowestPrice(i)}
                                 </td>
                                 <td
                                     id="delete"
@@ -271,7 +277,13 @@ export default function ShoppingList(props: ShoppingListProps) {
             )}
 
             {isEditing && (
-                <form id="item-form" onSubmit={handleCreateNewItem}>
+                <form
+                    id="item-form"
+                    onSubmit={(e) => {
+                        e.preventDefault();
+                        handleCreateNewItem();
+                    }}
+                >
                     <input
                         id="input-new-item"
                         name="item"

@@ -1,4 +1,5 @@
 from collections import defaultdict
+from decimal import Decimal
 from typing import Any
 from uuid import UUID
 
@@ -36,7 +37,9 @@ class ItemService:
         ah_products: list[ProductCreate] = get_ah_products(
             created_item.id, new_item.name
         )
-        if not ah_products or len(ah_products) == 0:
+        jumbo_products = get_jumbo_products(created_item.id, new_item.name)
+        products = ah_products + jumbo_products
+        if not products or len(products) == 0:
             return ItemWithProducts(
                 item=created_item,
                 products=[],
@@ -48,7 +51,7 @@ class ItemService:
             RETURNING id, item_id, name, grocery_store, price, price_discounted, weight, image_url, created_at, updated_at;
         """)
         created_products: list[ProductOutput] = []
-        for p in ah_products:
+        for p in products:
             result = await conn.execute(sql_insert_products, p.model_dump())
             row = result.mappings().first()
             if row:
@@ -165,12 +168,14 @@ class ItemService:
             ah_products: list[ProductCreate] = get_ah_products(
                 item_id, updated_item.name
             )
+            jumbo_products = get_jumbo_products(item_id, updated_item.name)
+            products = ah_products + jumbo_products
             sql_insert_products = text("""
                 INSERT INTO products (item_id, name, grocery_store, price, price_discounted, weight, image_url)
                 VALUES (:item_id, :name, :grocery_store, :price, :price_discounted, :weight, :image_url)
                 RETURNING id, item_id, name, grocery_store, price, price_discounted, weight, image_url, created_at, updated_at;
             """)
-            for p in ah_products:
+            for p in products:
                 await conn.execute(sql_insert_products, p.model_dump())
             await conn.commit()
 
@@ -215,17 +220,18 @@ class ItemService:
 def get_ah_products(item_id: UUID, query: str, size: int = 10) -> list[ProductCreate]:
     """
     Searches for all products relevant to `query`.
-    For some reason there's a bug with the `size` parameter: `size` + 2 products are returned instead of just `size` products
+    For some reason there's sometimes a bug with the `size` parameter:
+        `size` + 2 products are returned instead of just `size` products
     """
 
     ah_connector = AHConnector()
     response: dict[Any, Any] = ah_connector.search_products(query=query, size=size)  # type: ignore
-    all_products: list[dict[str, Any]] = response["products"]
-    if not all_products or len(all_products) == 0:
+    products: list[dict[str, Any]] = response["products"]
+    if not products or len(products) == 0:
         return []
 
-    res: list[Any] = []
-    for p in all_products:
+    res: list[ProductCreate] = []
+    for p in products:
         res.append(
             ProductCreate(
                 item_id=item_id,
@@ -235,6 +241,36 @@ def get_ah_products(item_id: UUID, query: str, size: int = 10) -> list[ProductCr
                 price_discounted=p["currentPrice"] if "currentPrice" in p else None,
                 weight=p["salesUnitSize"],
                 image_url=p["images"][0]["url"],
+            )
+        )
+
+    return res
+
+
+def get_jumbo_products(
+    item_id: UUID, query: str, size: int = 10
+) -> list[ProductCreate]:
+    jumbo_connector = JumboConnector()
+    response: Any = jumbo_connector.search_products(query=query, size=size)  # type: ignore
+    products = response["products"]["data"]
+    if not products or len(products) == 0:
+        return []
+
+    res: list[ProductCreate] = []
+    for p in products:
+        res.append(
+            ProductCreate(
+                item_id=item_id,
+                name=p["title"],
+                grocery_store="Jumbo",
+                price=Decimal(str(float(p["prices"]["price"]["amount"] / 100))),
+                price_discounted=Decimal(
+                    str(float(p["prices"]["promotionalPrice"]["amount"]) / 100)
+                )
+                if "promotionalPrice" in p["prices"]
+                else None,
+                weight=p["quantity"] if "quantity" in p else "",
+                image_url=p["imageInfo"]["primaryView"][0]["url"],
             )
         )
 

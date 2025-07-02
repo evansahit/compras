@@ -7,7 +7,14 @@ export default function CheckedCheckBox({
     ...rest
 }: CheckedCheckBoxProps) {
     return (
-        <span {...rest}>
+        <button
+            {...rest}
+            style={{
+                padding: "0",
+                display: "flex",
+                background: "inherit",
+            }}
+        >
             <svg
                 viewBox="0 0 24 24"
                 fill="none"
@@ -34,6 +41,6 @@ export default function CheckedCheckBox({
                     </g>{" "}
                 </g>
             </svg>
-        </span>
+        </button>
     );
 }

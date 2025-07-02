@@ -1,6 +1,6 @@
 #shopping-list {
     margin: 1rem 0;
-    padding: 1rem;
+    padding: 0.7rem;
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius);
     display: flex;
@@ -8,6 +8,8 @@
     background-color: var(--background-color);
     filter: saturate(2);
     color: var(--primary-color);
+
+    transition: all var(--transition-duration);
 }
 
 #default-msg {
@@ -44,19 +46,20 @@ td {
 
 #checkbox {
     padding: 0 0.25rem;
+    transition: all var(--transition-duration);
 }
 #checkbox svg {
     display: block;
     opacity: var(--default-icon-opacity);
     width: var(--icon-width-mobile);
-
-    transition: all var(--transition-duration);
 }
 @media (hover: hover) and (pointer: fine) {
-    #checkbox svg:hover {
-        cursor: pointer;
+    #checkbox:hover {
         opacity: var(--hovered-icon-opacity);
         transform: translateY(-2px);
+    }
+    #checkbox button {
+        box-shadow: none;
     }
 }
 
@@ -76,6 +79,7 @@ td {
 
 #delete {
     text-align: center;
+    transition: all var(--transition-duration);
 }
 #delete:hover {
     cursor: pointer;
@@ -89,9 +93,12 @@ td {
     transition: all var(--transition-duration);
 }
 @media (hover: hover) and (pointer: fine) {
-    #delete svg:hover {
+    #delete:hover {
         opacity: var(--hovered-icon-opacity);
         transform: translateY(-2px);
+    }
+    #delete button {
+        box-shadow: none;
     }
 }
 
@@ -100,6 +107,15 @@ td {
 }
 .name {
     text-align: left;
+    /* background-color: red; */
+}
+
+.price {
+    /* background-color: purple; */
+}
+
+.grocery-store {
+    /* background-color: blue; */
 }
 
 #item-form {
@@ -126,7 +142,17 @@ td {
     margin-top: 1rem;
 }
 
+@media (min-width: 500px) {
+    #shopping-list {
+        padding: 1rem;
+    }
+}
+
 @media (min-width: 768px) {
+    #shopping-list {
+        padding: 1.5rem;
+    }
+
     th {
         font-size: 1.3rem;
         text-align: left;
@@ -161,5 +187,14 @@ td {
 @media (min-width: 1200px) {
     #shopping-list {
         margin: 1rem 0;
+        padding: 2rem;
+    }
+
+    #checkbox {
+        padding: 0;
+    }
+
+    #delete button {
+        margin-left: auto;
     }
 }

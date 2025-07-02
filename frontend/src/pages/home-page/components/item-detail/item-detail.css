@@ -47,9 +47,13 @@
 
 #item-name-update {
     display: flex;
+    flex-direction: row;
     align-items: center;
     width: 70%;
     gap: 0.5rem;
+    background-color: inherit;
+    padding: 0;
+    margin: 0;
 }
 
 #item-name-update input {
@@ -140,12 +144,14 @@
         margin: 0 auto;
     }
 
-    #product-card {
-        margin: 0 auto;
-    }
-
     #product-description {
-        gap: 2rem;
+        gap: 1rem;
+    }
+}
+
+@media (min-width: 768px) {
+    #item-edit-save-button {
+        padding: 0.24rem 0.45rem;
     }
 }
 
@@ -159,6 +165,11 @@
     }
 
     #products-container {
-        max-width: 60%;
+        max-width: 50%;
+        padding: 1rem 2rem;
+    }
+
+    #item-edit-save-button {
+        padding: 0.1rem 0.45rem;
     }
 }

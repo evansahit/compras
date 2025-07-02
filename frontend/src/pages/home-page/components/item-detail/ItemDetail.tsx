@@ -10,37 +10,42 @@ import { validateItemName } from "../../../../utils/form-validation";
 import CancelIcon from "../../../../assets/icons/CancelIcon";
 import { updateItem } from "../../../../api/item";
 import ButtonSecondary from "../../../../components/button/button-secondary/ButtonSecondary";
+import { sortProductsByPriceAscending } from "../../../../utils/sortProductsByPrice";
 
 export default function ItemDetail() {
     const navigate = useNavigate();
     const location = useLocation();
     const { itemId } = useParams();
-    const [itemWithProducts, setItemWithProducts] =
-        useState<ItemWithProducts | null>(location.state);
+    const [itemWithProducts, setItemWithProducts] = useState<ItemWithProducts>(
+        location.state
+    );
+
     const [products, setProducts] = useState<ProductOutput[] | null>(
-        itemWithProducts?.products || null
+        (itemWithProducts && sortProductsByPriceAscending(itemWithProducts)) ||
+            null
     );
 
     const [isEditing, setIsEditing] = useState(false);
     const [updatedItemName, setUpdatedItemName] = useState(
-        itemWithProducts?.item.name || ""
+        (itemWithProducts && itemWithProducts.item.name) || ""
     );
     const [isLoading, setIsLoading] = useState(false);
 
     const [error, setError] = useState("");
 
-    async function handleUpdateItem(updatedItemName: string) {
+    async function handleUpdateItem() {
         setIsLoading(true);
-        if (itemWithProducts?.item.name === updatedItemName) {
+        if (itemWithProducts.item.name === updatedItemName) {
             setIsEditing(false);
+            setIsLoading(false);
 
             return;
         }
 
-        const inputError = validateItemName(updatedItemName) || "";
+        const inputError = validateItemName(updatedItemName);
         setError(inputError);
 
-        if (inputError.length === 0 && itemWithProducts) {
+        if (inputError.length === 0) {
             try {
                 const updatedItem = {
                     ...itemWithProducts.item,
@@ -50,11 +55,9 @@ export default function ItemDetail() {
 
                 setItemWithProducts({
                     ...itemWithProducts,
-                    item: {
-                        ...itemWithProducts.item,
-                        name: updatedItemName,
-                    },
+                    item: updatedItem,
                 });
+                // set products to null to trigger a reload of products data in useEffect below
                 setProducts(null);
                 setIsEditing(false);
             } catch (error) {
@@ -99,7 +102,13 @@ export default function ItemDetail() {
                     onClick={() => navigate("/home")}
                 />
                 {isEditing ? (
-                    <span id="item-name-update">
+                    <form
+                        id="item-name-update"
+                        onSubmit={(e) => {
+                            e.preventDefault();
+                            handleUpdateItem();
+                        }}
+                    >
                         <input
                             type="text"
                             value={updatedItemName}
@@ -107,14 +116,15 @@ export default function ItemDetail() {
                         />
                         <ButtonSecondary
                             id="item-edit-save-button"
-                            onClick={() => {
-                                handleUpdateItem(updatedItemName);
+                            onClick={(e) => {
+                                e.preventDefault();
+                                handleUpdateItem();
                             }}
                             isloading={isLoading}
                         >
                             Save
                         </ButtonSecondary>
-                    </span>
+                    </form>
                 ) : (
                     <span id="products-header-title">
                         {itemWithProducts && itemWithProducts.item.name}
@@ -128,7 +138,7 @@ export default function ItemDetail() {
                         onClick={() => {
                             setIsEditing(false);
                             setUpdatedItemName(
-                                itemWithProducts?.item.name || ""
+                                itemWithProducts.item.name || ""
                             );
                         }}
                     />
@@ -173,17 +183,16 @@ function ProductCard({ product }: { product: ProductOutput }) {
                     <p>{product.groceryStore}</p>
                 </div>
                 <div className="product-description-field">
+                    <span className="product-description-heading">Weight</span>
+                    <p>{product.weight}</p>
+                </div>
+                <div className="product-description-field">
                     <span className="product-description-heading">Price</span>
                     <p id={product.priceDiscounted > 0 ? "price-invalid" : ""}>
                         €{product.price}
                     </p>
                     {product.priceDiscounted > 0 && (
-                        <>
-                            <span className="product-description-heading">
-                                Price after discount
-                            </span>
-                            <p>€{product.priceDiscounted}</p>
-                        </>
+                        <p>€{product.priceDiscounted}</p>
                     )}
                 </div>
             </div>
