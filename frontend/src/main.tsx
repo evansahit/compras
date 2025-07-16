@@ -16,19 +16,13 @@ createRoot(document.getElementById("root")!).render(
             <Routes>
                 <Route path="/" element={<Layout />}>
                     <Route index element={<LandingPage />} />
+
                     {/* auth */}
                     <Route
                         path="/signup-or-login"
                         element={<SignupOrLoginPage />}
                     />
                     <Route path="/login" element={<LoginPage />} />
-
-                    {/* <Route path="/home" element={<HomePage />}>
-                        <Route
-                            path="home/items/:itemId"
-                            element={<ItemDetail />}
-                        />
-                    </Route> */}
 
                     <Route path="/home" element={<HomePage />} />
                     <Route path="home/items/:itemId" element={<ItemDetail />} />

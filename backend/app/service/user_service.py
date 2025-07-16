@@ -13,32 +13,48 @@ class UserService:
         conn: AsyncConnection,
         new_user: UserCreate,
     ) -> UserOutput:
-        sql = text("""
+        # check if email is taken
+        sql_user_check = text("""
+            SELECT email
+            FROM users
+            WHERE email = :email;
+        """)
+        user_check_result = await conn.execute(
+            sql_user_check, {"email": new_user.email}
+        )
+        user = user_check_result.mappings().first()
+
+        if user:
+            raise HTTPException(
+                status_code=status.HTTP_409_CONFLICT,
+                detail="A user with this email address already exists.",
+            )
+
+        # create user if email is not taken
+        sql_create_user = text("""
             INSERT INTO users (first_name, last_name, email, hashed_password)
             VALUES (:first_name, :last_name, :email, :hashed_password)
             RETURNING id, first_name, last_name, email, created_at, updated_at;
         """)
+        new_user_dict = new_user.model_dump()
+        new_user_dict["hashed_password"] = get_password_hash(
+            new_user_dict["plain_password"]
+        )
+        del new_user_dict["plain_password"]
 
-        async with conn.begin():
-            new_user_dict = new_user.model_dump()
-            new_user_dict["hashed_password"] = get_password_hash(
-                new_user_dict["plain_password"]
+        result = await conn.execute(
+            sql_create_user,
+            new_user_dict,
+        )
+
+        row = result.mappings().first()
+        if row is None:
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Failed to create user {new_user.email}",
             )
-            del new_user_dict["plain_password"]
 
-            result = await conn.execute(
-                sql,
-                new_user_dict,
-            )
-
-            row = result.mappings().first()
-            if row is None:
-                raise HTTPException(
-                    status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-                    detail=f"Failed to create user {new_user.email}",
-                )
-
-            return UserOutput(**row)
+        return UserOutput(**row)
 
     @staticmethod
     async def get_user_by_id(conn: AsyncConnection, user_id: UUID) -> UserOutput:

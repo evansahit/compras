@@ -6,4 +6,5 @@ engine = create_async_engine(Settings.DB_URL, echo=False)
 
 async def get_db_connection():
     async with engine.connect() as conn:
-        yield conn
+        async with conn.begin():
+            yield conn

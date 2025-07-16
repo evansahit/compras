@@ -5,8 +5,6 @@ import { getCurrentUser, getItemsForCurrentUser } from "../../api/user";
 import type { ItemWithProducts, UserOutput, ItemOutput } from "../../types";
 import ShoppingList from "./components/shopping-list/ShoppingList";
 
-// TODO: need to find a more secure for storing JWTs
-//       can someone fake having a JWT token by creating a localstorage entry named "jwt"?
 export default function HomePage() {
     const navigate = useNavigate();
     const [currentUser, setCurrentUser] = useState<UserOutput>();

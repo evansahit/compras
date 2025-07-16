@@ -25,7 +25,6 @@ class ItemService:
             RETURNING id, user_id, name, is_completed, is_archived, created_at, updated_at;
         """)
         created_item = await conn.execute(sql_insert_item, new_item.model_dump())
-        await conn.commit()
         created_item = created_item.mappings().first()
         if not created_item:
             raise HTTPException(
@@ -56,7 +55,6 @@ class ItemService:
             row = result.mappings().first()
             if row:
                 created_products.append(ProductOutput(**row))
-        await conn.commit()
 
         if len(created_products) == 0:
             raise HTTPException(
@@ -145,7 +143,6 @@ class ItemService:
                 "is_archived": updated_item.is_archived,
             },
         )
-        await conn.commit()
 
         item_update_result = item_update_result.mappings().first()
         if not item_update_result:
@@ -162,7 +159,6 @@ class ItemService:
                 WHERE item_id = :item_id;
             """)
             await conn.execute(sql_delete_products, {"item_id": item_id})
-            await conn.commit()
 
             # insert products found for newly updated item name
             ah_products: list[ProductCreate] = get_ah_products(
@@ -177,7 +173,6 @@ class ItemService:
             """)
             for p in products:
                 await conn.execute(sql_insert_products, p.model_dump())
-            await conn.commit()
 
         return ItemOutput(**item_update_result)
 
@@ -211,8 +206,6 @@ class ItemService:
         result = result.mappings().first()
         if not result:
             raise create_not_found_exception("Item not found or already deleted")
-
-        await conn.commit()
 
         return ItemOutput(**result)
 
