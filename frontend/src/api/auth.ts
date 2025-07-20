@@ -1,6 +1,7 @@
 import type { UserOutput, UserInput } from "../types";
 import { API_URL_BASE } from "../constants";
-import { transformToUserOutput } from "../utils/data-transformation";
+import { transformToUserOutput } from "./utils";
+import type { NavigateFunction } from "react-router";
 
 export async function createUser(formData: FormData): Promise<UserOutput> {
     const endpoint = "/users";
@@ -62,6 +63,7 @@ export async function login(formData: FormData): Promise<void> {
     localStorage.setItem("jwt", jwt);
 }
 
-export async function logout(): Promise<void> {
+export async function logout(navigate: NavigateFunction): Promise<void> {
     localStorage.removeItem("jwt");
+    navigate("/");
 }

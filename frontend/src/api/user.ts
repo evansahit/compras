@@ -1,9 +1,6 @@
 import type { ItemWithProducts, UserOutput } from "../types";
 import { API_URL_BASE } from "../constants";
-import {
-    transformToUserOutput,
-    transformToItemWithProducts,
-} from "../utils/data-transformation";
+import { transformToUserOutput, transformToItemWithProducts } from "./utils";
 
 export async function getCurrentUser(): Promise<UserOutput> {
     const endpoint = "/users/me";
@@ -15,23 +12,19 @@ export async function getCurrentUser(): Promise<UserOutput> {
         },
     });
 
-    let json;
-    try {
-        json = await response.json();
-    } catch {
-        json = null;
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+            error.detail || "Something went wrong getting your user information"
+        );
     }
 
-    if (!response.ok) {
-        const error =
-            json.detail || "Something went wrong getting your user information";
-        throw new Error(error);
-    }
+    const json = await response.json();
 
     return transformToUserOutput(json);
 }
 
-export async function getItemsForCurrentUser(
+export async function getItemsByUserId(
     userId: string
 ): Promise<ItemWithProducts[]> {
     const endpoint = `/users/${userId}/items`;
@@ -43,23 +36,16 @@ export async function getItemsForCurrentUser(
         },
     });
 
-    let json;
-    try {
-        json = await response.json();
-    } catch {
-        json = null;
-    }
-
     if (!response.ok) {
-        const error =
-            json.detail || "Something went wrong getting your shopping list.";
-
-        throw new Error(error);
+        const error = await response.json();
+        throw new Error(
+            error.detail || "Something went wrong getting your shopping list."
+        );
     }
 
-    const items = json.map((item) => transformToItemWithProducts(item));
+    const json = await response.json();
 
-    return items;
+    return json.map((item) => transformToItemWithProducts(item));
 }
 
 function sleep(ms: number): Promise<void> {

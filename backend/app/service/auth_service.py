@@ -68,7 +68,6 @@ class AuthService:
                 raise exception
 
             token_data = TokenData(username=email)
-
         except InvalidTokenError:
             raise exception
 

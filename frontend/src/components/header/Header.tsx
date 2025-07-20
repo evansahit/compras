@@ -37,8 +37,7 @@ export default function Header() {
                 {jwt && (
                     <ButtonDanger
                         onClick={() => {
-                            logout();
-                            navigate("/");
+                            logout(navigate);
                         }}
                         isloading={isLoading}
                     >

@@ -10,7 +10,7 @@ import {
     transformToItemOutput,
     transformToItemWithProducts,
     transformToProductOutput,
-} from "../utils/data-transformation";
+} from "./utils";
 
 export async function createNewItem(
     newItem: ItemInput

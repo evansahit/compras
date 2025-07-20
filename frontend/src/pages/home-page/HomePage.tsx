@@ -1,13 +1,19 @@
 import "./home-page.css";
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router";
-import { getCurrentUser, getItemsForCurrentUser } from "../../api/user";
-import type { ItemWithProducts, UserOutput, ItemOutput } from "../../types";
+import { getItemsByUserId } from "../../api/user";
+import type { ItemWithProducts, ItemOutput } from "../../types";
 import ShoppingList from "./components/shopping-list/ShoppingList";
+import useGetCurrentUser from "../../hooks/useGetCurrentUser";
+// import useGetItemsByUserId from "../../hooks/useGetItemsByUserId";
 
 export default function HomePage() {
-    const navigate = useNavigate();
-    const [currentUser, setCurrentUser] = useState<UserOutput>();
+    const {
+        data: currentUser,
+        isLoading: currentUserIsLoading,
+        error: currentUserError,
+    } = useGetCurrentUser();
+
+    // const [currentUser, setCurrentUser] = useState<UserOutput>();
     const [items, setItems] = useState<ItemWithProducts[] | []>([]);
     const [isItemsLoading, setIsItemsLoading] = useState(true);
     const [itemsError, setItemsError] = useState("");
@@ -35,24 +41,23 @@ export default function HomePage() {
     }
 
     // make a request to get the current user to get their name
-    useEffect(() => {
-        const jwt = localStorage.getItem("jwt");
-        if (!jwt) navigate("/signup-or-login");
+    // useEffect(() => {
+    //     redirectUserIfNotAuthed(navigate);
 
-        async function getCurrentUserData() {
-            try {
-                const user: UserOutput = await getCurrentUser();
-                setCurrentUser(user);
-            } catch (error) {
-                console.log(error);
-                // remove invalid jwt
-                if (jwt) localStorage.removeItem("jwt");
-                navigate("/signup-or-login");
-            }
-        }
+    //     async function getCurrentUserData() {
+    //         try {
+    //             const user: UserOutput = await getCurrentUser();
+    //             setCurrentUser(user);
+    //         } catch (error) {
+    //             console.log(error);
+    //             // remove invalid jwt
+    //             logout();
+    //             redirectUserIfNotAuthed(navigate);
+    //         }
+    //     }
 
-        getCurrentUserData();
-    }, [navigate]);
+    //     getCurrentUserData();
+    // }, [navigate]);
 
     // make a request to get all the items belonging to this user
     useEffect(() => {
@@ -60,7 +65,7 @@ export default function HomePage() {
 
         async function getItemDataForCurrentUser(userId: string) {
             try {
-                const items: ItemWithProducts[] = await getItemsForCurrentUser(
+                const items: ItemWithProducts[] = await getItemsByUserId(
                     userId
                 );
                 setItems(items);
