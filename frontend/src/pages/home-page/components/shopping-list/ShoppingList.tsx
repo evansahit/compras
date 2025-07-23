@@ -8,7 +8,6 @@ import { findCheapestProductForItem } from "../../../../utils/find-cheapest-prod
 import CheckedCheckBox from "../../../../assets/icons/CheckedCheckBox";
 import BlankCheckBoxIcon from "../../../../assets/icons/BlankCheckBoxIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
-import { deleteItem } from "../../../../api/item";
 import { useNavigate } from "react-router";
 import { MIN_ITEM_NAME_LENGTH } from "../../../../constants";
 
