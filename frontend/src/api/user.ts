@@ -3,7 +3,8 @@ import { API_URL_BASE } from "../constants";
 import {
     transformToUserOutput,
     transformToItemWithProducts,
-} from "../utils/data-transformation";
+    transformToUserWithItemsAndProducts,
+} from "./utils";
 
 export async function getCurrentUser(): Promise<UserOutput> {
     const endpoint = "/users/me";
@@ -15,23 +16,42 @@ export async function getCurrentUser(): Promise<UserOutput> {
         },
     });
 
-    let json;
-    try {
-        json = await response.json();
-    } catch {
-        json = null;
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+            error.detail || "Something went wrong getting your user information"
+        );
     }
 
-    if (!response.ok) {
-        const error =
-            json.detail || "Something went wrong getting your user information";
-        throw new Error(error);
-    }
+    const json = await response.json();
 
     return transformToUserOutput(json);
 }
 
-export async function getItemsForCurrentUser(
+export async function getCurrentUserWithItemsAndProducts() {
+    const endpoint = `/users/current-user-with-items-and-products`;
+    const url = API_URL_BASE + endpoint;
+
+    const response = await fetch(url, {
+        headers: {
+            Authorization: localStorage.getItem("jwt") as string,
+        },
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+            error.detail ||
+                "Something went wrong getting user and item information"
+        );
+    }
+
+    const json = await response.json();
+
+    return transformToUserWithItemsAndProducts(json);
+}
+
+export async function getItemsByUserId(
     userId: string
 ): Promise<ItemWithProducts[]> {
     const endpoint = `/users/${userId}/items`;
@@ -43,23 +63,16 @@ export async function getItemsForCurrentUser(
         },
     });
 
-    let json;
-    try {
-        json = await response.json();
-    } catch {
-        json = null;
-    }
-
     if (!response.ok) {
-        const error =
-            json.detail || "Something went wrong getting your shopping list.";
-
-        throw new Error(error);
+        const error = await response.json();
+        throw new Error(
+            error.detail || "Something went wrong getting your shopping list."
+        );
     }
 
-    const items = json.map((item) => transformToItemWithProducts(item));
+    const json: unknown[] = await response.json();
 
-    return items;
+    return json.map((item) => transformToItemWithProducts(item));
 }
 
 function sleep(ms: number): Promise<void> {

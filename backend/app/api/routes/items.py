@@ -19,7 +19,7 @@ async def create_item(
     new_item: ItemCreate,
     conn: Annotated[AsyncConnection, Depends(get_db_connection)],
     _: Annotated[UserOutput, Depends(AuthService.get_current_user)],
-) -> Any:
+):
     return await ItemService.create_item(conn, new_item)
 
 
@@ -32,7 +32,7 @@ async def get_item_by_id(
     item_id: UUID,
     conn: Annotated[AsyncConnection, Depends(get_db_connection)],
     _: Annotated[UserOutput, Depends(AuthService.get_current_user)],
-) -> Any:
+):
     return await ItemService.get_item_by_id(conn, item_id)
 
 
@@ -46,7 +46,7 @@ async def update_item_by_id(
     updated_item: ItemUpdate,
     conn: Annotated[AsyncConnection, Depends(get_db_connection)],
     _: Annotated[UserOutput, Depends(AuthService.get_current_user)],
-) -> Any:
+):
     return await ItemService.update_item_by_id(conn, item_id, updated_item)
 
 
@@ -59,7 +59,7 @@ async def delete_item_by_id(
     item_id: UUID,
     conn: Annotated[AsyncConnection, Depends(get_db_connection)],
     _: Annotated[UserOutput, Depends(AuthService.get_current_user)],
-) -> Any:
+):
     return await ItemService.delete_item_by_id(conn, item_id)
 
 

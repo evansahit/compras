@@ -3,6 +3,7 @@ import type {
     ItemOutput,
     ItemWithProducts,
     ProductOutput,
+    UserWithItemsAndProducts,
 } from "../types";
 
 export function transformToUserOutput(data): UserOutput {
@@ -13,6 +14,22 @@ export function transformToUserOutput(data): UserOutput {
         email: data.email,
         createdAt: new Date(data.created_at),
         updatedAt: new Date(data.updated_at),
+    };
+}
+
+export function transformToUserWithItemsAndProducts(
+    data
+): UserWithItemsAndProducts {
+    return {
+        id: data.id,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        email: data.email,
+        createdAt: new Date(data.created_at),
+        updatedAt: new Date(data.updated_at),
+        itemsWithProducts: data.items_with_products.map((item) =>
+            transformToItemWithProducts(item)
+        ),
     };
 }
 
@@ -67,4 +84,22 @@ export function transformToProductOutput(data): ProductOutput {
         createdAt: new Date(data.created_at),
         updatedAt: new Date(data.updated_at),
     };
+}
+
+export function handleDefaultErrors(error) {
+    let errorMessage = "Iets is misgegaan";
+
+    if (error instanceof Error) {
+        if (
+            error.message === "Failed to fetch" ||
+            error.message.includes("fetch") ||
+            error.message.includes("NetworkError")
+        ) {
+            errorMessage = "Kon geen verbinding maken met de server";
+        } else {
+            errorMessage = error.message;
+        }
+    }
+
+    return errorMessage;
 }

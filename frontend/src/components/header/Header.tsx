@@ -6,8 +6,6 @@ import { useLocation, useNavigate } from "react-router";
 import { logout } from "../../api/auth";
 import { useState } from "react";
 
-// TODO: need to find a more secure for storing JWTs
-//       can someone fake having a JWT token by creating a localstorage entry named "jwt"?
 export default function Header() {
     const location = useLocation();
     const navigate = useNavigate();
@@ -37,8 +35,7 @@ export default function Header() {
                 {jwt && (
                     <ButtonDanger
                         onClick={() => {
-                            logout();
-                            navigate("/");
+                            logout(navigate);
                         }}
                         isloading={isLoading}
                     >

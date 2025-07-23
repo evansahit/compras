@@ -1,6 +1,7 @@
 import type { UserOutput, UserInput } from "../types";
 import { API_URL_BASE } from "../constants";
-import { transformToUserOutput } from "../utils/data-transformation";
+import { transformToUserOutput } from "./utils";
+import type { NavigateFunction } from "react-router";
 
 export async function createUser(formData: FormData): Promise<UserOutput> {
     const endpoint = "/users";
@@ -40,28 +41,24 @@ export async function login(formData: FormData): Promise<void> {
     const endpoint = "/token";
     const url = API_URL_BASE + endpoint;
 
-    const response: Response = await fetch(url, {
+    const response = await fetch(url, {
         method: "POST",
         body: formData,
     });
 
-    let json;
-    try {
-        json = await response.json();
-    } catch {
-        json = null;
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || "Your email or password is incorrect.");
     }
 
-    if (!response.ok) {
-        const error = json.detail || "Your email or password is incorrect.";
-        throw new Error(error);
-    }
+    const json = await response.json();
 
     const jwt = `${json.token_type} ${json.access_token}`;
 
     localStorage.setItem("jwt", jwt);
 }
 
-export async function logout(): Promise<void> {
+export async function logout(navigate: NavigateFunction): Promise<void> {
     localStorage.removeItem("jwt");
+    navigate("/");
 }
