@@ -1,116 +1,54 @@
 import "./home-page.css";
-import { useEffect, useState } from "react";
-import { getItemsByUserId } from "../../api/user";
-import type { ItemWithProducts, ItemOutput } from "../../types";
 import ShoppingList from "./components/shopping-list/ShoppingList";
-import useGetCurrentUser from "../../hooks/useGetCurrentUser";
-// import useGetItemsByUserId from "../../hooks/useGetItemsByUserId";
+import useCurrentUserWithItemsAndProducts from "../../hooks/useCurrentUserWithItemsAndProducts";
+import Loading from "../../components/atoms/loading/Loading";
+import Error from "../../components/atoms/error/Error";
 
 export default function HomePage() {
     const {
-        data: currentUser,
-        isLoading: currentUserIsLoading,
+        data: currentUserWithItemsAndProducts,
+        isLoading: isCurrentUserLoading,
         error: currentUserError,
-    } = useGetCurrentUser();
-
-    // const [currentUser, setCurrentUser] = useState<UserOutput>();
-    const [items, setItems] = useState<ItemWithProducts[] | []>([]);
-    const [isItemsLoading, setIsItemsLoading] = useState(true);
-    const [itemsError, setItemsError] = useState("");
-
-    function handleAddNewItem(newItem: ItemWithProducts) {
-        setItems((prev) => [...prev, newItem]);
-    }
-
-    function handleUpdateItem(newItem: ItemOutput) {
-        setItems((prev) =>
-            prev.map((itemWithProducts) =>
-                itemWithProducts.item.id === newItem.id
-                    ? { ...itemWithProducts, item: { ...newItem } }
-                    : itemWithProducts
-            )
-        );
-    }
-
-    function handleDeleteItem(itemId: string) {
-        setItems((prev) =>
-            prev.filter(
-                (itemWithProducts) => itemWithProducts.item.id !== itemId
-            )
-        );
-    }
-
-    // make a request to get the current user to get their name
-    // useEffect(() => {
-    //     redirectUserIfNotAuthed(navigate);
-
-    //     async function getCurrentUserData() {
-    //         try {
-    //             const user: UserOutput = await getCurrentUser();
-    //             setCurrentUser(user);
-    //         } catch (error) {
-    //             console.log(error);
-    //             // remove invalid jwt
-    //             logout();
-    //             redirectUserIfNotAuthed(navigate);
-    //         }
-    //     }
-
-    //     getCurrentUserData();
-    // }, [navigate]);
-
-    // make a request to get all the items belonging to this user
-    useEffect(() => {
-        if (!currentUser) return;
-
-        async function getItemDataForCurrentUser(userId: string) {
-            try {
-                const items: ItemWithProducts[] = await getItemsByUserId(
-                    userId
-                );
-                setItems(items);
-                setIsItemsLoading(false);
-            } catch (error) {
-                setItemsError(
-                    error instanceof Error
-                        ? error.message
-                        : "Something went wrong retrieving your shopping list."
-                );
-            }
-        }
-
-        getItemDataForCurrentUser(currentUser.id);
-    }, [currentUser]);
+        handleCreateNewItem,
+        handleUpdateItem,
+        handleDeleteItem,
+    } = useCurrentUserWithItemsAndProducts();
 
     return (
         <>
-            {!currentUser ? (
-                <h1 id="page-loading">Loading...</h1>
+            {isCurrentUserLoading ? (
+                <Loading />
             ) : (
                 <>
-                    <span id="greeting">
-                        Hey {currentUser ? currentUser.firstName : "User"}
-                    </span>
-                    <h1 id="home-page-title">Shopping list</h1>
-                    <p id="home-page-message">
-                        Products will be searched and matched based on the names
-                        of your items, so these will need to be written in
-                        Dutch.
-                    </p>
+                    {currentUserError ? (
+                        <Error>{currentUserError}</Error>
+                    ) : (
+                        <>
+                            <span id="greeting">
+                                Hey{" "}
+                                {currentUserWithItemsAndProducts
+                                    ? currentUserWithItemsAndProducts.firstName
+                                    : "Pal"}
+                            </span>
+                            <h1 id="home-page-title">Shopping list</h1>
+                            <p id="home-page-message">
+                                Products will be searched and matched based on
+                                the names of your items, so these will need to
+                                be written in Dutch.
+                            </p>
 
-                    {isItemsLoading && (
-                        <span id="list-loading">Loading shopping list...</span>
-                    )}
-
-                    {currentUser && (
-                        <ShoppingList
-                            userId={currentUser.id}
-                            items={items}
-                            itemsError={itemsError}
-                            createItem={handleAddNewItem}
-                            updateItem={handleUpdateItem}
-                            deleteItem={handleDeleteItem}
-                        />
+                            {currentUserWithItemsAndProducts && (
+                                <ShoppingList
+                                    userId={currentUserWithItemsAndProducts.id}
+                                    items={
+                                        currentUserWithItemsAndProducts.itemsWithProducts
+                                    }
+                                    createItem={handleCreateNewItem}
+                                    updateItem={handleUpdateItem}
+                                    deleteItem={handleDeleteItem}
+                                />
+                            )}
+                        </>
                     )}
                 </>
             )}

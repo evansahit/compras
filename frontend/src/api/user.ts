@@ -1,6 +1,10 @@
 import type { ItemWithProducts, UserOutput } from "../types";
 import { API_URL_BASE } from "../constants";
-import { transformToUserOutput, transformToItemWithProducts } from "./utils";
+import {
+    transformToUserOutput,
+    transformToItemWithProducts,
+    transformToUserWithItemsAndProducts,
+} from "./utils";
 
 export async function getCurrentUser(): Promise<UserOutput> {
     const endpoint = "/users/me";
@@ -24,6 +28,29 @@ export async function getCurrentUser(): Promise<UserOutput> {
     return transformToUserOutput(json);
 }
 
+export async function getCurrentUserWithItemsAndProducts() {
+    const endpoint = `/users/current-user-with-items-and-products`;
+    const url = API_URL_BASE + endpoint;
+
+    const response = await fetch(url, {
+        headers: {
+            Authorization: localStorage.getItem("jwt") as string,
+        },
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+            error.detail ||
+                "Something went wrong getting user and item information"
+        );
+    }
+
+    const json = await response.json();
+
+    return transformToUserWithItemsAndProducts(json);
+}
+
 export async function getItemsByUserId(
     userId: string
 ): Promise<ItemWithProducts[]> {
@@ -43,7 +70,7 @@ export async function getItemsByUserId(
         );
     }
 
-    const json = await response.json();
+    const json: unknown[] = await response.json();
 
     return json.map((item) => transformToItemWithProducts(item));
 }

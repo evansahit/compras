@@ -41,22 +41,17 @@ export async function login(formData: FormData): Promise<void> {
     const endpoint = "/token";
     const url = API_URL_BASE + endpoint;
 
-    const response: Response = await fetch(url, {
+    const response = await fetch(url, {
         method: "POST",
         body: formData,
     });
 
-    let json;
-    try {
-        json = await response.json();
-    } catch {
-        json = null;
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.detail || "Your email or password is incorrect.");
     }
 
-    if (!response.ok) {
-        const error = json.detail || "Your email or password is incorrect.";
-        throw new Error(error);
-    }
+    const json = await response.json();
 
     const jwt = `${json.token_type} ${json.access_token}`;
 

@@ -4,3 +4,5 @@ export const jsonAuthedHeaders = new Headers({
     "Content-Type": "application/json",
     Authorization: localStorage.getItem("jwt") as string,
 });
+
+export const MIN_ITEM_NAME_LENGTH = 2;

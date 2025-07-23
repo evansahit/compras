@@ -1,27 +1,22 @@
 import "./shopping-list.css";
-import type {
-    ItemUpdate,
-    ItemOutput,
-    ItemWithProducts,
-} from "../../../../types";
+import type { ItemUpdate, ItemWithProducts } from "../../../../types";
 import { useEffect, useRef, useState } from "react";
 import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
-import { createNewItem } from "../../../../api/item";
 import ButtonDanger from "../../../../components/button/button-danger/ButtonDanger";
 import { validateItemName } from "../../../../utils/form-validation";
 import { findCheapestProductForItem } from "../../../../utils/find-cheapest-product";
 import CheckedCheckBox from "../../../../assets/icons/CheckedCheckBox";
 import BlankCheckBoxIcon from "../../../../assets/icons/BlankCheckBoxIcon";
 import DeleteIcon from "../../../../assets/icons/DeleteIcon";
-import { updateItem, deleteItem } from "../../../../api/item";
+import { deleteItem } from "../../../../api/item";
 import { useNavigate } from "react-router";
+import { MIN_ITEM_NAME_LENGTH } from "../../../../constants";
 
 type ShoppingListProps = {
     userId: string;
     items: ItemWithProducts[];
-    itemsError: string;
-    createItem: (newItem: ItemWithProducts) => void;
-    updateItem: (newItem: ItemOutput) => void;
+    createItem: (userId: string, itemName: string) => Promise<void>;
+    updateItem: (newItem: ItemUpdate) => Promise<void>;
     deleteItem: (itemId: string) => void;
     demoMode?: boolean;
 };
@@ -66,11 +61,7 @@ export default function ShoppingList(props: ShoppingListProps) {
             setError("");
 
             try {
-                const newItem = await createNewItem({
-                    userId: props.userId,
-                    name: itemName,
-                });
-                props.createItem(newItem);
+                await props.createItem(props.userId, itemName);
 
                 setItemName("");
                 setIsInputTouched(false);
@@ -88,7 +79,12 @@ export default function ShoppingList(props: ShoppingListProps) {
 
     async function handleUpdateItem(item: ItemUpdate) {
         const itemToFind = items.find((i) => i.item.id === item.id);
-        if (item.name.length >= 2 && itemToFind?.item.name !== item.name) {
+        // for when an item's name is updated
+        const isItemNameUpdated: boolean =
+            item.name.length >= MIN_ITEM_NAME_LENGTH &&
+            itemToFind?.item.name !== item.name;
+
+        if (isItemNameUpdated) {
             setError(validateItemName(itemName));
             if (error.length > 0 || itemName.length === 0) {
                 return;
@@ -98,8 +94,7 @@ export default function ShoppingList(props: ShoppingListProps) {
                 setIsInputTouched(false);
 
                 try {
-                    const updatedItem: ItemOutput = await updateItem(item);
-                    props.updateItem(updatedItem);
+                    props.updateItem(item);
                     setItemName("");
                 } catch (error) {
                     setError(
@@ -111,13 +106,13 @@ export default function ShoppingList(props: ShoppingListProps) {
                     setIsLoading(false);
                 }
             }
+            // for when "isCompleted" is edited on an item
         } else {
             setIsLoading(true);
             setError("");
             setIsInputTouched(false);
             try {
-                const updatedItem = await updateItem(item);
-                props.updateItem(updatedItem);
+                props.updateItem(item);
             } catch (error) {
                 setError(
                     error instanceof Error
@@ -134,7 +129,6 @@ export default function ShoppingList(props: ShoppingListProps) {
         setIsLoading(true);
 
         try {
-            await deleteItem(itemId);
             props.deleteItem(itemId);
         } catch (error) {
             setError(

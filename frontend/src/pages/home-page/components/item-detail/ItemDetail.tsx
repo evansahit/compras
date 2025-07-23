@@ -1,66 +1,66 @@
 import "./item-detail.css";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useParams } from "react-router";
-import type { ItemWithProducts, ProductOutput } from "../../../../types";
-import { getProductsForItemByItemId } from "../../../../api/item";
-import { useNavigate, useLocation } from "react-router";
+import type { ItemUpdate, ProductOutput } from "../../../../types";
+import { useNavigate } from "react-router";
 import BackIcon from "../../../../assets/icons/BackIcon";
 import EditIcon from "../../../../assets/icons/EditIcon";
 import { validateItemName } from "../../../../utils/form-validation";
 import CancelIcon from "../../../../assets/icons/CancelIcon";
-import { updateItem } from "../../../../api/item";
 import ButtonSecondary from "../../../../components/button/button-secondary/ButtonSecondary";
 import { sortProductsByPriceAscending } from "../../../../utils/sortProductsByPrice";
+import useCurrentUserWithItemsAndProducts from "../../../../hooks/useCurrentUserWithItemsAndProducts";
+import Loading from "../../../../components/atoms/loading/Loading";
 
-// TODO: fix bug where if an item is updated and the page is refreshed, the products revert back to what they were
-//       if you navigate back to ShoppingList then the product is properly updated and if you click on it then you see the updated products
-//       this is probably happening because itemWithProducts is being set by grabbing the value from location.state and refreshing the page grabs the data from there.
 export default function ItemDetail() {
     const navigate = useNavigate();
-    const location = useLocation();
+    const {
+        data: userWithItemsAndProducts,
+        handleUpdateItem: updateItemFunction,
+        isLoading: isDataLoading,
+        refreshData,
+    } = useCurrentUserWithItemsAndProducts();
+
     const { itemId } = useParams();
-    const [itemWithProducts, setItemWithProducts] = useState<ItemWithProducts>(
-        location.state
-    );
+    const itemWithProducts = useMemo(() => {
+        return userWithItemsAndProducts?.itemsWithProducts.find(
+            (i) => i.item.id === itemId
+        );
+    }, [userWithItemsAndProducts, itemId]);
 
-    const [products, setProducts] = useState<ProductOutput[] | null>(
-        (itemWithProducts && sortProductsByPriceAscending(itemWithProducts)) ||
-            null
-    );
+    const sortedProducts = useMemo(() => {
+        return itemWithProducts
+            ? sortProductsByPriceAscending(itemWithProducts)
+            : null;
+    }, [itemWithProducts]);
 
+    const [updatedItemName, setUpdatedItemName] = useState("");
     const [isEditing, setIsEditing] = useState(false);
-    const [updatedItemName, setUpdatedItemName] = useState(
-        (itemWithProducts && itemWithProducts.item.name) || ""
-    );
     const [isLoading, setIsLoading] = useState(false);
-
     const [error, setError] = useState("");
 
     async function handleUpdateItem() {
         setIsLoading(true);
-        if (itemWithProducts.item.name === updatedItemName) {
+        if (itemWithProducts?.item.name === updatedItemName) {
             setIsEditing(false);
             setIsLoading(false);
 
             return;
         }
 
-        const inputError = validateItemName(updatedItemName);
+        const inputError = validateItemName(updatedItemName || "");
         setError(inputError);
         if (inputError.length === 0) {
             try {
-                const updatedItem = {
-                    ...itemWithProducts.item,
-                    name: updatedItemName,
+                const updatedItem: ItemUpdate = {
+                    id: itemWithProducts?.item.id as string,
+                    isCompleted: itemWithProducts?.item.isCompleted as boolean,
+                    isArchived: itemWithProducts?.item.isArchived as boolean,
+                    name: updatedItemName as string,
                 };
-                await updateItem(updatedItem);
 
-                setItemWithProducts({
-                    ...itemWithProducts,
-                    item: updatedItem,
-                });
-                // set products to null to trigger a reload of products data in useEffect below
-                setProducts(null);
+                await updateItemFunction(updatedItem);
+                await refreshData();
                 setIsEditing(false);
             } catch (error) {
                 setError(
@@ -75,98 +75,97 @@ export default function ItemDetail() {
     }
 
     useEffect(() => {
-        if (!itemId || itemId.length === 0) navigate("/home");
-
-        async function getProducts(itemId: string) {
-            try {
-                const products: ProductOutput[] =
-                    await getProductsForItemByItemId(itemId);
-                setProducts(products);
-                setError("");
-            } catch (error) {
-                setError(
-                    error instanceof Error
-                        ? error.message
-                        : "Something went wrong retrieving the products."
-                );
-            }
+        if (itemWithProducts) {
+            setUpdatedItemName(itemWithProducts.item.name);
         }
+    }, [itemWithProducts]);
 
-        if (!products) getProducts(itemId as string);
-    }, [products, itemId, navigate]);
+    useEffect(() => {
+        if (!itemId || itemId.length === 0) navigate("/home");
+    }, [sortedProducts, itemId, navigate]);
 
     return (
-        <div id="products-container">
-            <div id="products-header">
-                <BackIcon
-                    id="back-icon"
-                    color="var(--background-color)"
-                    onClick={() => navigate("/home")}
-                />
-                {isEditing ? (
-                    <form
-                        id="item-name-update"
-                        onSubmit={(e) => {
-                            e.preventDefault();
-                            handleUpdateItem();
-                        }}
-                    >
-                        <input
-                            type="text"
-                            value={updatedItemName}
-                            onChange={(e) => setUpdatedItemName(e.target.value)}
+        <>
+            {isDataLoading ? (
+                <Loading />
+            ) : (
+                <div id="products-container">
+                    <div id="products-header">
+                        <BackIcon
+                            id="back-icon"
+                            color="var(--background-color)"
+                            onClick={() => navigate("/home")}
                         />
-                        <ButtonSecondary
-                            id="item-edit-save-button"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                handleUpdateItem();
-                            }}
-                            isloading={isLoading}
-                        >
-                            Save
-                        </ButtonSecondary>
-                    </form>
-                ) : (
-                    <span id="products-header-title">
-                        {itemWithProducts && itemWithProducts.item.name}
-                    </span>
-                )}
+                        {isEditing ? (
+                            <form
+                                id="item-name-update"
+                                onSubmit={(e) => {
+                                    e.preventDefault();
+                                    handleUpdateItem();
+                                }}
+                            >
+                                <input
+                                    type="text"
+                                    value={updatedItemName}
+                                    onChange={(e) =>
+                                        setUpdatedItemName(e.target.value)
+                                    }
+                                />
+                                <ButtonSecondary
+                                    id="item-edit-save-button"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        handleUpdateItem();
+                                    }}
+                                    isloading={isLoading}
+                                >
+                                    Save
+                                </ButtonSecondary>
+                            </form>
+                        ) : (
+                            <span id="products-header-title">
+                                {itemWithProducts && itemWithProducts.item.name}
+                            </span>
+                        )}
 
-                {isEditing ? (
-                    <CancelIcon
-                        id="cancel-icon"
-                        color="var(--background-color)"
-                        onClick={() => {
-                            setIsEditing(false);
-                            setUpdatedItemName(
-                                itemWithProducts.item.name || ""
-                            );
-                        }}
-                    />
-                ) : (
-                    <EditIcon
-                        id="edit-icon"
-                        color="var(--background-color)"
-                        onClick={() => {
-                            setIsEditing(true);
-                        }}
-                    />
-                )}
-            </div>
+                        {isEditing ? (
+                            <CancelIcon
+                                id="cancel-icon"
+                                color="var(--background-color)"
+                                onClick={() => {
+                                    setIsEditing(false);
+                                    setUpdatedItemName(
+                                        itemWithProducts?.item.name || ""
+                                    );
+                                }}
+                            />
+                        ) : (
+                            <EditIcon
+                                id="edit-icon"
+                                color="var(--background-color)"
+                                onClick={() => {
+                                    setIsEditing(true);
+                                }}
+                            />
+                        )}
+                    </div>
 
-            {products && products.length === 0 && (
-                <span id="products-default-message">
-                    No products found for this item.
-                </span>
+                    {error && <p id="item-detail-error">{error}</p>}
+
+                    <ul id="product-cards-container">
+                        {sortedProducts ? (
+                            sortedProducts.map((p) => (
+                                <ProductCard key={p.id} product={p} />
+                            ))
+                        ) : (
+                            <span id="products-default-message">
+                                No products found for this item.
+                            </span>
+                        )}
+                    </ul>
+                </div>
             )}
-
-            {error && <p id="item-detail-error">{error}</p>}
-            <ul id="product-cards-container">
-                {products &&
-                    products.map((p) => <ProductCard key={p.id} product={p} />)}
-            </ul>
-        </div>
+        </>
     );
 }
 

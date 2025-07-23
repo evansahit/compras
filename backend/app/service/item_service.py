@@ -68,7 +68,7 @@ class ItemService:
         )
 
     @staticmethod
-    async def get_all_items_by_user_id(
+    async def get_all_items_with_products_by_user_id(
         conn: AsyncConnection, user_id: UUID
     ) -> list[ItemWithProducts]:
         sql_item = text("""
@@ -164,7 +164,9 @@ class ItemService:
             ah_products: list[ProductCreate] = get_ah_products(
                 item_id, updated_item.name
             )
-            jumbo_products = get_jumbo_products(item_id, updated_item.name)
+            jumbo_products: list[ProductCreate] = get_jumbo_products(
+                item_id, updated_item.name
+            )
             products = ah_products + jumbo_products
             sql_insert_products = text("""
                 INSERT INTO products (item_id, name, grocery_store, price, price_discounted, weight, image_url)

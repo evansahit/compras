@@ -1,6 +1,7 @@
 from datetime import datetime
 from uuid import UUID
 
+from app.schemas.item import ItemWithProducts
 from pydantic import BaseModel, EmailStr
 
 
@@ -22,3 +23,7 @@ class UserOutput(UserBase):
 
 class UserInDB(UserOutput):
     hashed_password: str
+
+
+class UserWithItemsAndProducts(UserOutput):
+    items_with_products: list[ItemWithProducts]

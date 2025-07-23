@@ -15,6 +15,10 @@ export type UserOutput = {
     updatedAt: Date;
 };
 
+export type UserWithItemsAndProducts = UserOutput & {
+    itemsWithProducts: ItemWithProducts[];
+};
+
 // items
 export type ItemInput = {
     userId: string;

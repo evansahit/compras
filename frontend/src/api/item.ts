@@ -29,19 +29,14 @@ export async function createNewItem(
         body: JSON.stringify(data),
     });
 
-    let json;
-    try {
-        json = await response.json();
-    } catch {
-        json = null;
-    }
-
     if (!response.ok) {
-        const error =
-            json.detail || "Something went wrong creating a new item.";
-
-        throw new Error(error);
+        const error = await response.json();
+        throw new Error(
+            error.detail || "Something went wrong creating a new item."
+        );
     }
+
+    const json = await response.json();
 
     return transformToItemWithProducts(json);
 }

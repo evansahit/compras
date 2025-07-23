@@ -13,6 +13,24 @@
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    background-color: var(--background-color);
+    color: var(--primary-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    z-index: 50;
+    filter: saturate(2);
+}
+
+#page-error {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--danger-color);
+    color: var(--background-color);
+    padding: 1rem;
+    border-radius: var(--border-radius);
+    z-index: 50;
 }
 
 @media (min-width: 768px) {

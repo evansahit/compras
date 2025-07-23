@@ -5,8 +5,6 @@ import { useEffect } from "react";
 import ShoppingList from "../home-page/components/shopping-list/ShoppingList";
 import { generateTestData } from "../../utils/test-data";
 
-// TODO: need to find a more secure for storing JWTs
-//       can someone fake having a JWT token by creating a localstorage entry named "jwt"?
 export default function LandingPage() {
     const navigate = useNavigate();
     const items = generateTestData();
@@ -27,7 +25,6 @@ export default function LandingPage() {
                     createItem={() => null}
                     updateItem={() => null}
                     deleteItem={() => null}
-                    itemsError=""
                     demoMode
                 />
             </div>
