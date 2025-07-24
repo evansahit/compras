@@ -31,7 +31,7 @@ export default function LoginForm() {
 
         try {
             await login(formData);
-            navigate("/home", { state: email });
+            navigate("/home");
         } catch (error) {
             setFormError(
                 error instanceof Error

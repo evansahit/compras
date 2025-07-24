@@ -14,8 +14,8 @@ import { MIN_ITEM_NAME_LENGTH } from "../../../../constants";
 type ShoppingListProps = {
     userId: string;
     items: ItemWithProducts[];
-    createItem: (userId: string, itemName: string) => Promise<void>;
-    updateItem: (newItem: ItemUpdate) => Promise<void>;
+    createItem: (userId: string, itemName: string) => void;
+    updateItem: (newItem: ItemUpdate) => void;
     deleteItem: (itemId: string) => void;
     demoMode?: boolean;
 };

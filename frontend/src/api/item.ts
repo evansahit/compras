@@ -1,4 +1,4 @@
-import { API_URL_BASE, jsonAuthedHeaders } from "../constants";
+import { API_URL_BASE, getJsonAuthedHeaders } from "../constants";
 import type {
     ItemInput,
     ItemWithProducts,
@@ -23,9 +23,12 @@ export async function createNewItem(
         name: newItem.name,
     };
 
+    console.log("jsonAuthedHeaders:");
+    getJsonAuthedHeaders().forEach((item) => console.log(item));
+
     const response = await fetch(url, {
         method: "POST",
-        headers: jsonAuthedHeaders,
+        headers: getJsonAuthedHeaders(),
         body: JSON.stringify(data),
     });
 
@@ -84,7 +87,7 @@ export async function updateItem(newItem: ItemUpdate): Promise<ItemOutput> {
 
     const response = await fetch(url, {
         method: "PUT",
-        headers: jsonAuthedHeaders,
+        headers: getJsonAuthedHeaders(),
         body: JSON.stringify(data),
     });
 
@@ -110,7 +113,7 @@ export async function deleteItem(itemId: string): Promise<ItemOutput> {
 
     const response = await fetch(url, {
         method: "DELETE",
-        headers: jsonAuthedHeaders,
+        headers: getJsonAuthedHeaders(),
     });
 
     let json;

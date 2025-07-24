@@ -13,14 +13,14 @@ If your on a budget or just want some extra change at the end of the month, Comp
 
 The project is still in development, so exact tools are subject to change.
 
-**Frontend**
+### Frontend
 
 -   Frontend library/ framework
     -   `React`.
         -   `react-router` for routing.
 -   `Typescript`.
 
-**Backend**
+### Backend
 
 -   Backend framework
     -   `FastAPI` (`Python`).
@@ -37,6 +37,61 @@ The project is still in development, so exact tools are subject to change.
 -   Retrieving product information
     -   `supermarktconnector` package provides a means to retrieve product information from Albert Heijn and Jumbo.
 
+### Get it running locally
+
+0. Clone the project from GitHub.
+
+    - `$ git clone git@github.com:evansahit/compras.git`
+
+#### Frontend
+
+1.  Make sure you have Node.js installed.
+2.  Navigate to the frontend project's folder:
+    -   (from root) `$ cd frontend/`
+3.  Install dependencies
+    -   `$ npm i`
+4.  Run the project
+    -   `$ npm run dev`
+
+#### Backend
+
+##### **PostgreSQL**
+
+6. Create the database locally:
+    - On Linux
+        - Make sure to have `psql` installed:
+            - `$ sudo apt update`
+            - `$ sudo apt install postgresql postgresql-contrib`
+        - Create a new PostgreSQL user and database and assign privileges to this user:
+            - `$ sudo -u postgres psql`
+            - `$ CREATE USER compras_user WITH PASSWORD 'your_password';`
+            - `$ CREATE DATABASE compras_db OWNER compras_user;`
+            - `$ GRANT ALL PRIVILEGES ON DATABASE compras_database TO compras_user;`
+            - `$ \q`
+        - Test the connection
+            - `$ psql -U compras_user -d compras_db`
+
+##### **FastAPI**
+
+7.  The project is running on Python 3.13, so follow the necessary steps to install that
+8.  Navigate tot the backend project's folder:
+    -   (from root) `$ cd backend/`
+9.  Create a virtual environment named `venv` to silo dependencies to this project using the `venv` package:
+    -   `$ python -m venv venv`
+10. Activate the `venv` virtual environment:
+
+    -   On MacOS/ Linux: `$ source venv/bin/activate`
+    -   On Windows: `$ venv\Scripts\activate.bat`
+    -   After activitation, you should see `(venv)` at the start of your terminal's line, e.g., `$ (venv) evan@Evan-PC:~/dev/compras/backend$`
+    -   You can also double check which Python interpreter is being used by running `$ which python` on MacOS and Linux or `$ where python on Windows`. This should output the path to the Python interpreter used to create the virtual environment, e.g. `/home/evan/dev/compras/backend/venv/bin/python`
+
+11. Install the dependencies:
+
+    -   `$ pip install -r requirements.txt`
+
+12. Run FastAPI:
+    -   `$ fastapi dev app/main.py`
+
 ## Progress
 
 -   FastAPI and React projects have been created.
@@ -46,6 +101,7 @@ The project is still in development, so exact tools are subject to change.
     -   Endpoints and logic for `/users` and `/items` resources have been created.
     -   Simple username + password authentication is implemented. Relevant endpoints have been protected by authentication checks.
 -   Frontend
+
     -   Doing mobile-first, so the website doesn't look great on anything larger than mobile.
     -   Landing page has been created, albeit a simple one.
     -   Signup/ login page has been created, including form validation.

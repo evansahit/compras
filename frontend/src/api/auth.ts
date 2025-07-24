@@ -56,6 +56,9 @@ export async function login(formData: FormData): Promise<void> {
     const jwt = `${json.token_type} ${json.access_token}`;
 
     localStorage.setItem("jwt", jwt);
+
+    console.log("localStorage.getItem('jwt'):");
+    console.log(localStorage.getItem("jwt"));
 }
 
 export async function logout(navigate: NavigateFunction): Promise<void> {
