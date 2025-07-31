@@ -23,9 +23,6 @@ export async function createNewItem(
         name: newItem.name,
     };
 
-    console.log("jsonAuthedHeaders:");
-    getJsonAuthedHeaders().forEach((item) => console.log(item));
-
     const response = await fetch(url, {
         method: "POST",
         headers: getJsonAuthedHeaders(),

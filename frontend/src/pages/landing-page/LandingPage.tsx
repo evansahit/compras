@@ -16,6 +16,7 @@ export default function LandingPage() {
 
     return (
         <div id="landing-page-container">
+            {/* <div className="blob"></div> */}
             <Hero />
             <div id="demo-container">
                 <span id="demo-title">check it out</span>

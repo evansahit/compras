@@ -18,7 +18,7 @@
 
     /* colors */
     --background-color: #eeebd3;
-    --primary-color: #255957;
+    --primary-color: rgb(37, 89, 87);
     --danger-color: #764134;
     --error-color: red;
     --border-color: rgba(37, 89, 87, 0.35);
@@ -33,7 +33,8 @@
 body {
     padding: 0 var(--x-padding-mobile);
     font-family: var(--paragraph-font);
-    background: #255957;
+    /* background-color: var(--background-color); */
+
     background: linear-gradient(
         180deg,
         rgba(37, 89, 87, 0.35) 0%,
