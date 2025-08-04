@@ -1,11 +1,15 @@
 import "./login-form.css";
-import ButtonPrimary from "../button/button-primary/ButtonPrimary";
+import ButtonPrimary from "../atoms/button/button-primary/ButtonPrimary";
 import React, { useState, useEffect } from "react";
 import { validateEmail, validatePassword } from "../../utils/form-validation";
 import { login } from "../../api/auth";
 import { useNavigate } from "react-router";
 
-export default function LoginForm() {
+interface LoginFormProps {
+    fromUrl?: string;
+}
+
+export default function LoginForm({ fromUrl }: LoginFormProps) {
     const navigate = useNavigate();
 
     const [email, setEmail] = useState("");
@@ -31,7 +35,8 @@ export default function LoginForm() {
 
         try {
             await login(formData);
-            navigate("/home");
+            if (fromUrl) navigate(fromUrl, { replace: true });
+            else navigate("/home");
         } catch (error) {
             setFormError(
                 error instanceof Error

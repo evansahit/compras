@@ -1,5 +1,5 @@
 import { Link } from "react-router";
-import ButtonPrimary from "../button/button-primary/ButtonPrimary";
+import ButtonPrimary from "../atoms/button/button-primary/ButtonPrimary";
 import "./not-found.css";
 
 export default function NotFound() {

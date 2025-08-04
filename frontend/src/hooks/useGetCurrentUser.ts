@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { UserOutput } from "../types";
 import { getCurrentUser } from "../api/user";
 import { handleDefaultErrors } from "../api/utils";
-import { logout } from "../api/auth";
+// import { logout } from "../api/auth";
 import { useNavigate } from "react-router";
 
 export default function useGetCurrentUser() {
@@ -16,10 +16,12 @@ export default function useGetCurrentUser() {
             try {
                 setIsLoading(true);
                 const res = await getCurrentUser();
+                console.log(`[debug] res:`);
+                console.log(res);
                 setData(res);
             } catch (error) {
                 setError(handleDefaultErrors(error));
-                logout(navigate);
+                // logout(navigate);
             } finally {
                 setIsLoading(false);
             }

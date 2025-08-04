@@ -1,8 +1,8 @@
 import "./shopping-list.css";
 import type { ItemUpdate, ItemWithProducts } from "../../../../types";
 import { useEffect, useRef, useState } from "react";
-import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
-import ButtonDanger from "../../../../components/button/button-danger/ButtonDanger";
+import ButtonPrimary from "../../../../components/atoms/button/button-primary/ButtonPrimary";
+import ButtonDanger from "../../../../components/atoms/button/button-danger/ButtonDanger";
 import { validateItemName } from "../../../../utils/form-validation";
 import { findCheapestProductForItem } from "../../../../utils/find-cheapest-product";
 import CheckedCheckBox from "../../../../assets/icons/CheckedCheckBox";

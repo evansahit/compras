@@ -7,12 +7,12 @@ import type {
 } from "../types";
 import { getCurrentUserWithItemsAndProducts } from "../api/user";
 import { handleDefaultErrors } from "../api/utils";
-import { logout } from "../api/auth";
-import { useNavigate } from "react-router";
+// import { logout } from "../api/auth";
+// import { useNavigate } from "react-router";
 import { createNewItem, deleteItem, updateItem } from "../api/item";
 
 export default function useCurrentUserWithItemsAndProducts() {
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const [data, setData] = useState<UserWithItemsAndProducts | undefined>(
         undefined
     );
@@ -73,11 +73,11 @@ export default function useCurrentUserWithItemsAndProducts() {
             setData(res);
         } catch (error) {
             setError(handleDefaultErrors(error));
-            logout(navigate);
+            // logout(navigate);
         } finally {
             setIsLoading(false);
         }
-    }, [navigate]);
+    }, []);
 
     useEffect(() => {
         fetchData();

@@ -1,7 +1,7 @@
 import { Link } from "react-router";
 import "./header.css";
-import ButtonPrimary from "../button/button-primary/ButtonPrimary";
-import ButtonDanger from "../button/button-danger/ButtonDanger";
+import ButtonPrimary from "../atoms/button/button-primary/ButtonPrimary";
+import ButtonDanger from "../atoms/button/button-danger/ButtonDanger";
 import { useLocation, useNavigate } from "react-router";
 import { logout } from "../../api/auth";
 import { useState } from "react";

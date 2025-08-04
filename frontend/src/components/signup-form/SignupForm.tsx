@@ -1,6 +1,6 @@
 import "./signup-form.css";
 import { useState, useEffect, type FormEvent } from "react";
-import ButtonPrimary from "../button/button-primary/ButtonPrimary";
+import ButtonPrimary from "../atoms/button/button-primary/ButtonPrimary";
 import {
     validateFirstName,
     validateEmail,
