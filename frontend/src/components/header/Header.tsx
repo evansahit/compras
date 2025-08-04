@@ -1,16 +1,12 @@
 import { Link } from "react-router";
 import "./header.css";
 import ButtonPrimary from "../atoms/button/button-primary/ButtonPrimary";
-import ButtonDanger from "../atoms/button/button-danger/ButtonDanger";
-import { useLocation, useNavigate } from "react-router";
-import { logout } from "../../api/auth";
-import { useState } from "react";
+import { useLocation } from "react-router";
+import ProfileIcon from "../../assets/icons/profile-icon/ProfileIcon";
 
 export default function Header() {
     const location = useLocation();
-    const navigate = useNavigate();
     const jwt = localStorage.getItem("jwt");
-    const [isLoading, setIsLoading] = useState(false);
 
     return (
         <>
@@ -33,14 +29,10 @@ export default function Header() {
                     </Link>
                 )}
                 {jwt && (
-                    <ButtonDanger
-                        onClick={() => {
-                            logout(navigate);
-                        }}
-                        isloading={isLoading}
-                    >
-                        Logout
-                    </ButtonDanger>
+                    <ProfileIcon
+                        id="profile-icon"
+                        color="var(--primary-color)"
+                    />
                 )}
             </header>
         </>

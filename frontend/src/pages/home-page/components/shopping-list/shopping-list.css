@@ -197,4 +197,12 @@ td {
     #delete button {
         margin-left: auto;
     }
+
+    #delete svg {
+        width: var(--icon-width-laptop);
+    }
+
+    #checkbox svg {
+        width: var(--icon-width-laptop);
+    }
 }

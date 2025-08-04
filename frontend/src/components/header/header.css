@@ -10,7 +10,7 @@ header {
     top: 0.75rem;
     backdrop-filter: blur(7px);
     -webkit-backdrop-filter: blur(20px);
-    z-index: 999;
+    z-index: 50;
 
     transition: all var(--transition-duration);
 }
@@ -33,12 +33,6 @@ header {
         padding: 0.5rem 1rem;
     }
 
-    #website-title {
-        font-size: 3.5rem;
-    }
-}
-
-@media (min-width: 768px) {
     #website-title {
         font-size: 4rem;
     }

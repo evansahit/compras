@@ -16,7 +16,7 @@
     justify-content: space-between;
 }
 #products-header svg {
-    width: var(--icon-width-mobile-large);
+    width: var(--icon-width-tablet);
 
     transition: all var(--transition-duration);
 }

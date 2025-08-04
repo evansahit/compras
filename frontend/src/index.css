@@ -9,8 +9,8 @@
 
     --transition-duration: 0.25s;
     --icon-width-mobile: 1.5rem;
-    --icon-width-mobile-large: 2rem;
     --icon-width-tablet: 2rem;
+    --icon-width-laptop: 2.5rem;
 
     /* fonts */
     --accent-font: "Kirang Haerang", system-ui;
