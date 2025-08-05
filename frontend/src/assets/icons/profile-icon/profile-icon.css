@@ -19,6 +19,7 @@
     background-color: var(--primary-color);
     color: var(--background-color);
     filter: saturate(2);
+    border: var(--border-light);
     box-shadow: 0 0 20px rgba(37, 89, 87, 0.5);
     padding: 1rem;
     border-radius: var(--border-radius);
@@ -26,15 +27,11 @@
 }
 
 .dropdown-item {
-    /* border: 1px solid var(--background-color); */
-    border-radius: var(--border-radius);
-    padding: var(--x-padding-mobile) !important;
-    box-shadow: inset 0 0 6px 1px rgba(0, 0, 0, 0.2);
+    box-shadow: inset 0 0 6px 2px rgba(0, 0, 0, 0.2);
     font-size: 1.25rem;
 }
-
-#logout {
-    background-color: var(--danger-color);
+.dropdown-item:hover {
+    filter: saturate(3);
 }
 
 @media (min-width: 1200px) {

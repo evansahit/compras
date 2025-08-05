@@ -5,7 +5,7 @@
     background-color: var(--primary-color);
     color: var(--background-color);
     filter: saturate(2);
-    border: 1px solid var(--border-color);
+    border: var(--border-dark);
     border-radius: var(--border-radius);
     padding: 0.75rem;
 }

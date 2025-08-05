@@ -3,6 +3,8 @@ import "./profile-icon.css";
 import React, { useState } from "react";
 import { logout } from "../../../api/auth";
 import { useNavigate } from "react-router";
+import ButtonPrimary from "../../../components/atoms/button/button-primary/ButtonPrimary";
+import ButtonDanger from "../../../components/atoms/button/button-danger/ButtonDanger";
 
 type ProfileIconProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     color?: string;
@@ -57,19 +59,21 @@ export default function ProfileIcon({ color, ...rest }: ProfileIconProps) {
 
             {isDropDownOpen && (
                 <div className="drop-down">
-                    <Link to="/profile" className="dropdown-item">
-                        <span>Profile</span>
-                    </Link>
+                    <ButtonPrimary className="dropdown-item">
+                        <Link to="/profile">
+                            <span>Profile</span>
+                        </Link>
+                    </ButtonPrimary>
 
-                    <span
-                        id="logout"
-                        className="dropdown-item"
-                        onClick={() => {
-                            logout(navigate);
-                        }}
-                    >
-                        Logout
-                    </span>
+                    <ButtonDanger className="dropdown-item">
+                        <span
+                            onClick={() => {
+                                logout(navigate);
+                            }}
+                        >
+                            Logout
+                        </span>
+                    </ButtonDanger>
                 </div>
             )}
         </button>
