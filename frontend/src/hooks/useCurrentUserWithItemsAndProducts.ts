@@ -3,16 +3,15 @@ import type {
     ItemOutput,
     ItemUpdate,
     ItemWithProducts,
+    UserOutput,
+    UserUpdate,
     UserWithItemsAndProducts,
 } from "../types";
 import { getCurrentUserWithItemsAndProducts } from "../api/user";
 import { handleDefaultErrors } from "../api/utils";
-// import { logout } from "../api/auth";
-// import { useNavigate } from "react-router";
 import { createNewItem, deleteItem, updateItem } from "../api/item";
 
 export default function useCurrentUserWithItemsAndProducts() {
-    // const navigate = useNavigate();
     const [data, setData] = useState<UserWithItemsAndProducts | undefined>(
         undefined
     );
@@ -78,6 +77,23 @@ export default function useCurrentUserWithItemsAndProducts() {
             setIsLoading(false);
         }
     }, []);
+
+    async function updateUser(user: UserUpdate): UserOutput {
+        try {
+            const updatedUser = await updateUser(user);
+            setData((prev) => {
+                if (!prev) return prev;
+                return {
+                    ...data,
+                    firstName: updatedUser.firstName,
+                    lastName: updatedUser.lastName,
+                    email: updatedUser.email,
+                };
+            });
+        } catch (error) {
+            setError;
+        }
+    }
 
     useEffect(() => {
         fetchData();

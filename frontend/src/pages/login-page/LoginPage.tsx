@@ -4,9 +4,7 @@ import { useLocation } from "react-router";
 
 export default function LoginPage() {
     const location = useLocation();
-    // console.log("[debug] location:", location);
     const from = location.state?.from?.pathname || "/";
-    // console.log("[debug] from:", from);
 
     return (
         <div className="login-wrapper">
