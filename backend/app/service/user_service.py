@@ -2,7 +2,13 @@ from typing import Annotated
 from uuid import UUID
 
 from app.schemas.item import ItemWithProducts
-from app.schemas.user import UserCreate, UserInDB, UserOutput, UserWithItemsAndProducts
+from app.schemas.user import (
+    UserCreate,
+    UserInDB,
+    UserOutput,
+    UserUpdate,
+    UserWithItemsAndProducts,
+)
 from app.service.item_service import ItemService
 from app.service.utils import get_password_hash
 from fastapi import HTTPException, status
@@ -66,7 +72,6 @@ class UserService:
             FROM users
             WHERE id = :user_id;
         """)
-
         result = await conn.execute(sql, {"user_id": user_id})
         row = result.mappings().first()
 
@@ -85,7 +90,6 @@ class UserService:
             FROM users
             WHERE email = :email;
         """)
-
         result = await conn.execute(sql, {"email": email})
         row = result.mappings().first()
 
@@ -98,7 +102,6 @@ class UserService:
             FROM users
             WHERE email = :email;
         """)
-
         result = await conn.execute(sql, {"email": email})
         row = result.mappings().first()
 
@@ -122,3 +125,32 @@ class UserService:
         return UserWithItemsAndProducts.model_validate(
             {**user.model_dump(), "items_with_products": items_with_products}
         )
+
+    @staticmethod
+    async def update_user(conn: AsyncConnection, user: UserUpdate) -> UserOutput:
+        sql = text("""
+            UPDATE users
+            SET first_name = :first_name,
+                last_name = :last_name,
+                email = :email
+            WHERE id = :user_id
+            RETURNING *;
+        """)
+
+        result = await conn.execute(
+            sql,
+            {
+                "user_id": user.id,
+                "first_name": user.first_name,
+                "last_name": user.last_name,
+                "email": user.email,
+            },
+        )
+        row = result.mappings().first()
+
+        if not row:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Could not find this user"
+            )
+
+        return UserOutput(**row)

@@ -21,6 +21,13 @@ class UserOutput(UserBase):
     updated_at: datetime
 
 
+class UserUpdate(BaseModel):
+    id: UUID
+    first_name: str
+    last_name: str | None
+    email: EmailStr
+
+
 class UserInDB(UserOutput):
     hashed_password: str
 
