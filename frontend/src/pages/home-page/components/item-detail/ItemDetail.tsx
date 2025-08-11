@@ -92,7 +92,6 @@ export default function ItemDetail() {
                 <div id="products-container">
                     <div id="products-header">
                         <BackIcon
-                            id="back-icon"
                             color="var(--background-color)"
                             onClick={() => navigate("/home")}
                         />

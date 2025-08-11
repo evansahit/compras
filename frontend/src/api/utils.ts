@@ -87,19 +87,25 @@ export function transformToProductOutput(data): ProductOutput {
 }
 
 export function handleDefaultErrors(error) {
-    let errorMessage = "Iets is misgegaan";
+    console.log("[debug] error:", error);
+
+    const DEFAULT_ERROR_MESSAGE = "Iets is misgegaan, probeer opnieuw.";
+    let errorMessage = DEFAULT_ERROR_MESSAGE;
 
     if (error instanceof Error) {
+        errorMessage = error.message.toLowerCase();
         if (
-            error.message === "Failed to fetch" ||
-            error.message.includes("fetch") ||
-            error.message.includes("NetworkError")
+            errorMessage.includes("Failed to fetch") ||
+            errorMessage.includes("fetch") ||
+            errorMessage.includes("networkerror")
         ) {
-            errorMessage = "Kon geen verbinding maken met de server";
+            errorMessage = "Kon geen verbinding maken met de server.";
         } else {
-            errorMessage = error.message;
+            errorMessage = DEFAULT_ERROR_MESSAGE;
         }
     }
+
+    console.log("[debug] errorMessage:", errorMessage);
 
     return errorMessage;
 }

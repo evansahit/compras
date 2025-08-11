@@ -60,4 +60,5 @@ async def update_user(
     user: UserUpdate,
     _: Annotated[UserOutput, Depends(AuthService.get_current_user)],
 ):
+    print("[debug] user:", user)
     return await UserService.update_user(conn, user)

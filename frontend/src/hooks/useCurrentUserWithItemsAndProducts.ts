@@ -7,9 +7,11 @@ import type {
     UserUpdate,
     UserWithItemsAndProducts,
 } from "../types";
-import { getCurrentUserWithItemsAndProducts } from "../api/user";
+import { getCurrentUserWithItemsAndProducts, updateUser } from "../api/user";
 import { handleDefaultErrors } from "../api/utils";
 import { createNewItem, deleteItem, updateItem } from "../api/item";
+// import { logout } from "../api/auth";
+// import { useNavigate } from "react-router";
 
 export default function useCurrentUserWithItemsAndProducts() {
     const [data, setData] = useState<UserWithItemsAndProducts | undefined>(
@@ -17,6 +19,7 @@ export default function useCurrentUserWithItemsAndProducts() {
     );
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
+    // const navigate = useNavigate();
 
     async function handleCreateNewItem(userId: string, itemName: string) {
         const newItem: ItemWithProducts = await createNewItem({
@@ -65,6 +68,35 @@ export default function useCurrentUserWithItemsAndProducts() {
         });
     }
 
+    async function handleUpdateUser(user: UserUpdate) {
+        console.log("[debug] user:", user);
+
+        try {
+            setIsLoading(true);
+            const updatedUser = await updateUser(user);
+
+            setData((prev) => {
+                if (!prev) return prev;
+
+                return {
+                    ...prev,
+                    firstName: updatedUser.firstName,
+                    lastName: updatedUser.lastName,
+                    email: updatedUser.email,
+                    updatedAt: updatedUser.updatedAt,
+                };
+            });
+        } catch (error) {
+            setError(handleDefaultErrors(error));
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
+    function handleClearError() {
+        setError("");
+    }
+
     const fetchData = useCallback(async () => {
         try {
             setIsLoading(true);
@@ -72,28 +104,12 @@ export default function useCurrentUserWithItemsAndProducts() {
             setData(res);
         } catch (error) {
             setError(handleDefaultErrors(error));
+            // if jwt is bad, throw it away and log out
             // logout(navigate);
         } finally {
             setIsLoading(false);
         }
     }, []);
-
-    async function updateUser(user: UserUpdate): UserOutput {
-        try {
-            const updatedUser = await updateUser(user);
-            setData((prev) => {
-                if (!prev) return prev;
-                return {
-                    ...data,
-                    firstName: updatedUser.firstName,
-                    lastName: updatedUser.lastName,
-                    email: updatedUser.email,
-                };
-            });
-        } catch (error) {
-            setError;
-        }
-    }
 
     useEffect(() => {
         fetchData();
@@ -103,9 +119,11 @@ export default function useCurrentUserWithItemsAndProducts() {
         data,
         isLoading,
         error,
+        handleUpdateUser,
         handleCreateNewItem,
         handleUpdateItem,
         handleDeleteItem,
+        handleClearError,
         refreshData: fetchData,
     };
 }

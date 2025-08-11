@@ -12,6 +12,9 @@
     --icon-width-tablet: 2rem;
     --icon-width-laptop: 2.5rem;
 
+    --inset-shadow-dark: inset 0 0 6px 2px rgba(0, 0, 0, 0.3);
+    --inset-shadow-light: inset 0 0 6px 2px rgba(0, 0, 0, 0.2);
+
     /* fonts */
     --accent-font: "Kirang Haerang", system-ui;
     --paragraph-font: "Poppins", sans-serif;
@@ -64,6 +67,19 @@ button {
     outline-color: var(--primary-color);
 }
 
+.button-row {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: center;
+    /* margin-top: 1rem; */
+}
+
+button:disabled {
+    opacity: 0.75 !important;
+    cursor: not-allowed !important;
+}
+
 @media (hover: hover) and (pointer: fine) {
     button:hover {
         cursor: pointer;
@@ -78,9 +94,8 @@ button {
     }
 }
 
-button:disabled {
-    opacity: 0.75 !important;
-    cursor: not-allowed !important;
+#back-icon svg {
+    fill: var(--primary-color);
 }
 
 /* form */

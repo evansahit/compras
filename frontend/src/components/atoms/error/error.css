@@ -1,21 +1,34 @@
-#error {
+/* TODO: fix styling of error component so that it remains in the middle of the screen, also when scrolling */
+#error-container {
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
     width: 100%;
-    text-align: center;
-    font-size: 1.5rem;
+    display: flex;
+    flex-direction: row;
+    align-items: start;
+    justify-content: center;
     background-color: var(--danger-color);
-    color: var(--background-color);
+    box-shadow: var(--inset-shadow-dark);
+    border: var(--border-light);
     padding: 1rem;
-    border-radius: var(--border-radius);
     z-index: 50;
+    border-radius: var(--border-radius);
+}
+
+#error-message {
+    font-size: 1.5rem;
+    margin-left: auto;
+}
+
+.error-close-icon {
+    margin: -0.55rem 0 0 auto;
 }
 
 @media (min-width: 768px) {
     #error {
-        width: fit-content;
+        max-width: fit-content;
         padding: 1rem;
     }
 }

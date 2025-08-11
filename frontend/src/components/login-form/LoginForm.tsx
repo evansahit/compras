@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { validateEmail, validatePassword } from "../../utils/form-validation";
 import { login } from "../../api/auth";
 import { useNavigate } from "react-router";
+import { handleDefaultErrors } from "../../api/utils";
 
 interface LoginFormProps {
     fromUrl?: string;
@@ -38,11 +39,7 @@ export default function LoginForm({ fromUrl }: LoginFormProps) {
             if (fromUrl) navigate(fromUrl, { replace: true });
             else navigate("/home");
         } catch (error) {
-            setFormError(
-                error instanceof Error
-                    ? error.message
-                    : "Something went wrong logging you in."
-            );
+            setFormError(handleDefaultErrors(error));
         } finally {
             setIsFormLoading(false);
         }

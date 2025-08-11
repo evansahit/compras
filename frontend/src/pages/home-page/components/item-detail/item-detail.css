@@ -16,8 +16,6 @@
     justify-content: space-between;
 }
 #products-header svg {
-    width: var(--icon-width-tablet);
-
     transition: all var(--transition-duration);
 }
 @media (hover: hover) and (pointer: fine) {
@@ -28,17 +26,13 @@
     }
 }
 
-#back-icon svg {
-    fill: var(--primary-color);
-}
-
-#cancel-icon svg {
+/* #cancel-icon svg {
     width: 1.8rem;
 }
 
 #edit-icon svg {
     width: 1.8rem;
-}
+} */
 
 #products-header-title {
     font-weight: bolder;

@@ -9,7 +9,8 @@ export default function EditIcon({ color, ...rest }: EditIconProps) {
             style={{
                 padding: "0.1rem",
                 display: "flex",
-                background: "inherit",
+                background: "none",
+                minWidth: "var(--icon-width-tablet)",
             }}
         >
             <svg

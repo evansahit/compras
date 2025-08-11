@@ -7,11 +7,13 @@ type BackIconProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 export default function BackIcon({ color, ...rest }: BackIconProps) {
     return (
         <button
+            id="back-icon"
             {...rest}
             style={{
                 padding: "0.1rem",
                 display: "flex",
                 background: "inherit",
+                minWidth: "var(--icon-width-tablet)",
             }}
         >
             <svg

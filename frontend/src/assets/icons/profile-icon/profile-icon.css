@@ -27,7 +27,7 @@
 }
 
 .dropdown-item {
-    box-shadow: inset 0 0 6px 2px rgba(0, 0, 0, 0.2);
+    box-shadow: var(--inset-shadow-dark);
     font-size: 1.25rem;
 }
 .dropdown-item:hover {
