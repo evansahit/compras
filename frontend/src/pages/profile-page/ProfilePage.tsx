@@ -5,7 +5,12 @@ import Loading from "../../components/atoms/loading/Loading";
 import Error from "../../components/atoms/error/Error";
 import ButtonDanger from "../../components/atoms/button/button-danger/ButtonDanger";
 import ButtonPrimary from "../../components/atoms/button/button-primary/ButtonPrimary";
-import { validateEmail, validateFirstName } from "../../utils/form-validation";
+import {
+    validateEmail,
+    validateFirstName,
+    validatePassword,
+    validatePasswordsMatch,
+} from "../../utils/form-validation";
 
 export default function ProfilePage() {
     const {
@@ -13,62 +18,154 @@ export default function ProfilePage() {
         isLoading,
         error,
         handleUpdateUser,
+        handlePasswordUpdate,
         handleClearError,
+        handleSetError,
     } = useCurrentUserWithItemsAndProducts();
 
-    const [isEditing, setIsEditing] = useState(false);
-    const [editedUserInfo, setEditedUserInfo] = useState({
-        id: "",
-        firstName: "",
-        lastName: "",
-        email: "",
-    });
-    // console.log("[debug] editedUserInfo:", editedUserInfo);
-    const [firstNameError, setFirstNameError] = useState("");
-    // console.log("[debug] firstNameError:", firstNameError);
-    const [emailError, setEmailError] = useState("");
-    // console.log("[debug] emailError:", emailError);
-    const [isFirstNameTouched, setIsFirstNameTouched] = useState(false);
-    const [isEmailTouched, setIsEmailTouched] = useState(false);
-    const [isUserInfoSubmitButtonDisabled, setIsUserInfoSubmitButtonDisabled] =
-        useState(false);
-    // console.log(
-    //     "[debug] isUserInfoSubmitButtonDisabled:",
-    //     isUserInfoSubmitButtonDisabled
-    // );
+    const [userInfoUpdateState, setUserInfoUpdateState] = useState({
+        isEditing: false,
 
-    function handleCancelUserUpdate() {
-        setEditedUserInfo({
-            id: currentUserWithItemsAndProducts?.id ?? "",
-            firstName: currentUserWithItemsAndProducts?.firstName ?? "",
-            lastName: currentUserWithItemsAndProducts?.lastName ?? "",
-            email: currentUserWithItemsAndProducts?.email ?? "",
+        id: "",
+
+        firstName: "",
+        firstNameError: "",
+        isFirstNameTouched: false,
+
+        lastName: "",
+
+        email: "",
+        emailError: "",
+        isEmailTouched: false,
+
+        isSubmitButtonDisabled: false,
+    });
+
+    const [passwordUpdateState, setPasswordUpdateState] = useState({
+        isEditing: false,
+
+        oldPassword: "",
+        isOldPasswordTouched: false,
+        oldPasswordError: "",
+
+        newPassword: "",
+        isNewPasswordTouched: false,
+        newPasswordError: "",
+
+        confirmNewPassword: "",
+        isConfirmPasswordTouched: false,
+        confirmPasswordError: "",
+
+        isSubmitButtonDisabled: false,
+    });
+
+    function handleCancelUserInfoUpdate() {
+        setUserInfoUpdateState((prev) => {
+            return {
+                ...prev,
+                firstName: currentUserWithItemsAndProducts?.firstName ?? "",
+                firstNameError: "",
+                isFirstNameTouched: false,
+                lastName: currentUserWithItemsAndProducts?.lastName ?? "",
+                email: currentUserWithItemsAndProducts?.email ?? "",
+                emailError: "",
+                isEmailTouched: false,
+                isEditing: false,
+                isSubmitButtonDisabled: false,
+            };
         });
-        setFirstNameError("");
-        setEmailError("");
-        setIsEditing(false);
     }
 
-    function handleUserUpdateSubmit() {
-        handleUpdateUser(editedUserInfo);
-        setIsEditing(false);
+    async function handleUserInfoUpdateSubmit() {
+        if (!currentUserWithItemsAndProducts) {
+            handleSetError(
+                "Something went wrong updating your information. Please try again."
+            );
+            return;
+        }
+
+        const userInfoData = {
+            firstName: userInfoUpdateState.firstName,
+            lastName: userInfoUpdateState.lastName,
+            email: userInfoUpdateState.email,
+        };
+
+        await handleUpdateUser(
+            currentUserWithItemsAndProducts?.id,
+            userInfoData
+        );
+        setUserInfoUpdateState((prev) => ({ ...prev, isEditing: false }));
+    }
+
+    function handleCancelPasswordUpdate() {
+        setPasswordUpdateState({
+            isEditing: false,
+
+            oldPassword: "",
+            isOldPasswordTouched: false,
+            oldPasswordError: "",
+
+            newPassword: "",
+            isNewPasswordTouched: false,
+            newPasswordError: "",
+
+            confirmNewPassword: "",
+            isConfirmPasswordTouched: false,
+            confirmPasswordError: "",
+            isSubmitButtonDisabled: false,
+        });
+    }
+
+    async function handlePasswordUpdateSubmit() {
+        if (!currentUserWithItemsAndProducts) {
+            handleSetError(
+                "Something went wrong changing your password. Please try again."
+            );
+            return;
+        }
+
+        await handlePasswordUpdate(
+            currentUserWithItemsAndProducts?.id,
+            passwordUpdateState.oldPassword,
+            passwordUpdateState.newPassword
+        );
     }
 
     useEffect(() => {
-        if (isEditing) {
-            if (isFirstNameTouched)
-                setFirstNameError(validateFirstName(editedUserInfo.firstName));
-            if (isEmailTouched)
-                setEmailError(validateEmail(editedUserInfo.email));
+        // form validation for personal info
+        if (userInfoUpdateState.isEditing) {
+            if (userInfoUpdateState.isFirstNameTouched)
+                setUserInfoUpdateState((prev) => ({
+                    ...prev,
+                    firstNameError: validateFirstName(
+                        userInfoUpdateState.firstName
+                    ),
+                }));
+            if (userInfoUpdateState.isEmailTouched)
+                setUserInfoUpdateState((prev) => ({
+                    ...prev,
+                    emailError: validateEmail(userInfoUpdateState.email),
+                }));
 
-            if (firstNameError.length > 0 || emailError.length > 0)
-                setIsUserInfoSubmitButtonDisabled(true);
-            else setIsUserInfoSubmitButtonDisabled(false);
+            if (
+                userInfoUpdateState.firstNameError.length > 0 ||
+                userInfoUpdateState.emailError.length > 0
+            )
+                setUserInfoUpdateState((prev) => ({
+                    ...prev,
+                    isSubmitButtonDisabled: true,
+                }));
+            else
+                setUserInfoUpdateState((prev) => ({
+                    ...prev,
+                    isSubmitButtonDisabled: false,
+                }));
         } else {
-            setEditedUserInfo((prev) => {
+            setUserInfoUpdateState((prev) => {
                 if (!currentUserWithItemsAndProducts) return prev;
 
                 return {
+                    ...prev,
                     id: currentUserWithItemsAndProducts?.id,
                     firstName: currentUserWithItemsAndProducts?.firstName,
                     lastName: currentUserWithItemsAndProducts?.lastName,
@@ -76,18 +173,67 @@ export default function ProfilePage() {
                 };
             });
         }
+
+        // form validation for password change
+        if (passwordUpdateState.isEditing) {
+            if (passwordUpdateState.isOldPasswordTouched) {
+                setPasswordUpdateState((prev) => ({
+                    ...prev,
+                    oldPasswordError: validatePassword(
+                        passwordUpdateState.oldPassword
+                    ),
+                }));
+            }
+
+            if (passwordUpdateState.isNewPasswordTouched) {
+                setPasswordUpdateState((prev) => ({
+                    ...prev,
+                    newPasswordError: validatePassword(
+                        passwordUpdateState.newPassword
+                    ),
+                }));
+            }
+
+            if (passwordUpdateState.isConfirmPasswordTouched) {
+                setPasswordUpdateState((prev) => ({
+                    ...prev,
+                    confirmPasswordError: validatePassword(
+                        passwordUpdateState.confirmNewPassword
+                    ),
+                }));
+            }
+
+            if (
+                passwordUpdateState.isNewPasswordTouched &&
+                passwordUpdateState.isConfirmPasswordTouched
+            ) {
+                setPasswordUpdateState((prev) => ({
+                    ...prev,
+                    confirmPasswordError: validatePasswordsMatch(
+                        passwordUpdateState.newPassword,
+                        passwordUpdateState.confirmNewPassword
+                    ),
+                }));
+            }
+        }
     }, [
         currentUserWithItemsAndProducts,
-        editedUserInfo.email,
-        editedUserInfo.firstName,
-        emailError,
-        firstNameError,
-        isEditing,
-        isEmailTouched,
-        isFirstNameTouched,
+        passwordUpdateState.confirmNewPassword,
+        passwordUpdateState.isConfirmPasswordTouched,
+        passwordUpdateState.isEditing,
+        passwordUpdateState.isNewPasswordTouched,
+        passwordUpdateState.isOldPasswordTouched,
+        passwordUpdateState.newPassword,
+        passwordUpdateState.oldPassword,
+        userInfoUpdateState.email,
+        userInfoUpdateState.emailError.length,
+        userInfoUpdateState.firstName,
+        userInfoUpdateState.firstNameError.length,
+        userInfoUpdateState.isEditing,
+        userInfoUpdateState.isEmailTouched,
+        userInfoUpdateState.isFirstNameTouched,
     ]);
 
-    // TODO: error is blocking the whole page with no way of clicking it away.
     return (
         <div className="profile-card">
             {isLoading && <Loading />}
@@ -103,17 +249,29 @@ export default function ProfilePage() {
                     <input
                         type="text"
                         id="first-name"
-                        value={editedUserInfo.firstName}
+                        value={userInfoUpdateState.firstName}
                         onChange={(e) => {
-                            setIsEditing(true);
-                            setEditedUserInfo((prev) => ({
-                                ...prev,
-                                firstName: e.target.value,
-                            }));
+                            setUserInfoUpdateState((prev) => {
+                                const newValue = e.target.value;
+                                if (!newValue) return prev;
+
+                                return {
+                                    ...prev,
+                                    isEditing: true,
+                                    firstName: newValue,
+                                };
+                            });
                         }}
-                        onBlur={() => setIsFirstNameTouched(true)}
+                        onBlur={() =>
+                            setUserInfoUpdateState((prev) => ({
+                                ...prev,
+                                isFirstNameTouched: true,
+                            }))
+                        }
                     />
-                    <span className="input-error">{firstNameError}</span>
+                    <span className="input-error">
+                        {userInfoUpdateState.firstNameError}
+                    </span>
                 </div>
 
                 <div className="profile-input-group">
@@ -121,13 +279,15 @@ export default function ProfilePage() {
                     <input
                         type="text"
                         id="last-name"
-                        value={editedUserInfo.lastName}
+                        value={userInfoUpdateState.lastName}
                         onChange={(e) => {
-                            setIsEditing(true);
-                            setEditedUserInfo((prev) => ({
-                                ...prev,
-                                lastName: e.target.value,
-                            }));
+                            setUserInfoUpdateState((prev) => {
+                                return {
+                                    ...prev,
+                                    lastName: e.target.value,
+                                    isEditing: true,
+                                };
+                            });
                         }}
                     />
                 </div>
@@ -137,31 +297,45 @@ export default function ProfilePage() {
                     <input
                         type="email"
                         id="email"
-                        value={editedUserInfo.email}
+                        value={userInfoUpdateState.email}
                         onChange={(e) => {
-                            setIsEditing(true);
-                            setEditedUserInfo((prev) => ({
-                                ...prev,
-                                email: e.target.value,
-                            }));
+                            setUserInfoUpdateState((prev) => {
+                                const newValue = e.target.value;
+                                if (!newValue) return prev;
+
+                                return {
+                                    ...prev,
+                                    email: newValue,
+                                    isEditing: true,
+                                };
+                            });
                         }}
-                        onBlur={() => setIsEmailTouched(true)}
+                        onBlur={() =>
+                            setUserInfoUpdateState((prev) => ({
+                                ...prev,
+                                isEmailTouched: true,
+                            }))
+                        }
                     />
-                    <span className="input-error">{emailError}</span>
+                    <span className="input-error">
+                        {userInfoUpdateState.emailError}
+                    </span>
                 </div>
 
-                {isEditing && (
+                {userInfoUpdateState.isEditing && (
                     <div className="button-row">
                         <ButtonDanger
                             onClick={() => {
-                                handleCancelUserUpdate();
+                                handleCancelUserInfoUpdate();
                             }}
                         >
                             Cancel
                         </ButtonDanger>
                         <ButtonPrimary
-                            onClick={() => handleUserUpdateSubmit()}
-                            disabled={isUserInfoSubmitButtonDisabled}
+                            onClick={() => handleUserInfoUpdateSubmit()}
+                            disabled={
+                                userInfoUpdateState.isSubmitButtonDisabled
+                            }
                         >
                             Save
                         </ButtonPrimary>
@@ -175,12 +349,95 @@ export default function ProfilePage() {
                 </span>
                 <div className="profile-input-group">
                     <label htmlFor="old-password">Old password</label>
-                    <input type="password" id="old-password" />
+                    <input
+                        type="password"
+                        id="old-password"
+                        onChange={(e) => {
+                            setPasswordUpdateState((prev) => ({
+                                ...prev,
+                                isEditing: true,
+                                oldPassword: e.target.value,
+                            }));
+                        }}
+                        onBlur={() => {
+                            setPasswordUpdateState((prev) => ({
+                                ...prev,
+                                isOldPasswordTouched: true,
+                            }));
+                        }}
+                    />
+                    <span className="input-error">
+                        {passwordUpdateState.oldPasswordError}
+                    </span>
                 </div>
                 <div className="profile-input-group">
                     <label htmlFor="new-password">New password</label>
-                    <input type="password" id="new-password" />
+                    <input
+                        type="password"
+                        id="new-password"
+                        onChange={(e) => {
+                            setPasswordUpdateState((prev) => ({
+                                ...prev,
+                                isEditing: true,
+                                newPassword: e.target.value,
+                            }));
+                        }}
+                        onBlur={() => {
+                            setPasswordUpdateState((prev) => ({
+                                ...prev,
+                                isNewPasswordTouched: true,
+                            }));
+                        }}
+                    />
+                    <span className="input-error">
+                        {passwordUpdateState.newPasswordError}
+                    </span>
                 </div>
+                <div className="profile-input-group">
+                    <label htmlFor="confirm-new-password">
+                        Confirm new password
+                    </label>
+                    <input
+                        type="password"
+                        id="confirm-new-password"
+                        onChange={(e) => {
+                            setPasswordUpdateState((prev) => ({
+                                ...prev,
+                                isEditing: true,
+                                confirmNewPassword: e.target.value,
+                            }));
+                        }}
+                        onBlur={() => {
+                            setPasswordUpdateState((prev) => ({
+                                ...prev,
+                                isConfirmPasswordTouched: true,
+                            }));
+                        }}
+                    />
+                    <span className="input-error">
+                        {passwordUpdateState.confirmPasswordError}
+                    </span>
+                </div>
+
+                {passwordUpdateState.isEditing && (
+                    <div className="button-row">
+                        <ButtonDanger
+                            onClick={() => {
+                                handleCancelPasswordUpdate();
+                            }}
+                        >
+                            Cancel
+                        </ButtonDanger>
+                        <ButtonPrimary
+                            onClick={() => handlePasswordUpdateSubmit()}
+                            disabled={
+                                passwordUpdateState.isSubmitButtonDisabled
+                            }
+                        >
+                            Save
+                        </ButtonPrimary>
+                    </div>
+                )}
             </div>
         </div>
     );

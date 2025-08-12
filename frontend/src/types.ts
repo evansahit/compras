@@ -16,7 +16,6 @@ export type UserOutput = {
 };
 
 export type UserUpdate = {
-    id: string;
     firstName: string;
     lastName: string;
     email: string;
@@ -24,6 +23,10 @@ export type UserUpdate = {
 
 export type UserWithItemsAndProducts = UserOutput & {
     itemsWithProducts: ItemWithProducts[];
+};
+
+export type UserWithJWT = UserOutput & {
+    jwt: string;
 };
 
 // items

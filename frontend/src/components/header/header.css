@@ -4,7 +4,7 @@ header {
     align-items: center;
     margin: 1rem 0;
     padding: 0.5rem;
-    border: var(--border-dark);
+    border: var(--border-color-dark);
     border-radius: var(--border-radius);
     position: sticky;
     top: 0.75rem;

@@ -3,12 +3,14 @@ import type {
     UserOutput,
     UserUpdate,
     UserWithItemsAndProducts,
+    UserWithJWT,
 } from "../types";
 import { API_URL_BASE, getJsonAuthedHeaders } from "../constants";
 import {
     transformToUserOutput,
     transformToItemWithProducts,
     transformToUserWithItemsAndProducts,
+    transformToUserWithJWT,
 } from "./utils";
 
 const endpointPrefix = "/users";
@@ -82,12 +84,19 @@ export async function getItemsByUserId(
     return json.map((item) => transformToItemWithProducts(item));
 }
 
-export async function updateUser(user: UserUpdate) {
-    const endpoint = `${endpointPrefix}/${user.id}`;
+export async function updateUser(
+    userId: string,
+    user: UserUpdate
+): Promise<UserOutput | UserWithJWT> {
+    if (!userId || !user)
+        throw Error(
+            "Something went wrong updating your information. Please try again."
+        );
+
+    const endpoint = `${endpointPrefix}/${userId}`;
     const url = API_URL_BASE + endpoint;
 
     const data = {
-        id: user.id,
         first_name: user.firstName,
         last_name: user.lastName,
         email: user.email,
@@ -108,7 +117,45 @@ export async function updateUser(user: UserUpdate) {
 
     const json = await response.json();
 
-    return transformToUserOutput(json);
+    if ("jwt" in json) {
+        localStorage.setItem("jwt", json.jwt);
+
+        return transformToUserWithJWT(json);
+    } else {
+        return transformToUserOutput(json);
+    }
+}
+
+export async function updatePassword(
+    userId: string,
+    oldPassword: string,
+    newPassword: string
+): Promise<void> {
+    if (!userId || !oldPassword || !newPassword)
+        throw Error(
+            "Something went wrong changing your password. Make sure you have filled in your old and new passwords."
+        );
+
+    const endpoint = `${endpointPrefix}/${userId}/update-password`;
+    const url = API_URL_BASE + endpoint;
+
+    const data = {
+        old_password: oldPassword,
+        new_password: newPassword,
+    };
+
+    const response = await fetch(url, {
+        method: "PUT",
+        headers: getJsonAuthedHeaders(),
+        body: JSON.stringify(data),
+    });
+
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+            error.detail || "Something went wrong changing your password."
+        );
+    }
 }
 
 function sleep(ms: number): Promise<void> {

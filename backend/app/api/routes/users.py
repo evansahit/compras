@@ -11,6 +11,7 @@ from app.schemas.user import (
     UserOutput,
     UserUpdate,
     UserWithItemsAndProducts,
+    UserWithJWT,
 )
 from app.service.auth_service import AuthService
 from app.service.item_service import ItemService
@@ -51,14 +52,38 @@ async def get_current_user_with_items_and_products(
     return await UserService.get_current_user_with_items_and_products(conn, user)
 
 
-@router.put("/{user_id}", response_model=UserOutput, status_code=status.HTTP_200_OK)
+@router.put(
+    "/{user_id}",
+    response_model=UserOutput | UserWithJWT,
+    status_code=status.HTTP_200_OK,
+)
 async def update_user(
     conn: Annotated[
         AsyncConnection,
         Depends(get_db_connection),
     ],
+    user_id: UUID,
     user: UserUpdate,
     _: Annotated[UserOutput, Depends(AuthService.get_current_user)],
 ):
-    print("[debug] user:", user)
-    return await UserService.update_user(conn, user)
+    return await UserService.update_user(conn, user_id, user)
+
+
+@router.put(
+    "/{user_id}/update-password",
+    response_model=UserOutput,
+    status_code=status.HTTP_200_OK,
+)
+async def update_password(
+    conn: Annotated[
+        AsyncConnection,
+        Depends(get_db_connection),
+    ],
+    user_id: UUID,
+    old_plain_password: str,
+    new_plain_password: str,
+    _: Annotated[UserOutput, Depends(AuthService.get_current_user)],
+):
+    await UserService.update_password(
+        conn, user_id, old_plain_password, new_plain_password
+    )

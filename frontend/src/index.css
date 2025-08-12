@@ -24,8 +24,9 @@
     --primary-color: #255957;
     --danger-color: #764134;
     --error-color: red;
-    --border-dark: 1px solid rgba(37, 89, 87, 0.35);
-    --border-light: 1px solid rgba(238, 235, 211, 0.6);
+    --border-color-dark: 1px solid rgba(37, 89, 87, 0.35);
+    --border-color-light: 1px solid rgba(238, 235, 211, 0.6);
+    --shadow-color-dark: 0 0 20px rgba(37, 89, 87, 0.5);
 }
 
 * {
@@ -85,7 +86,7 @@ button:disabled {
         cursor: pointer;
         filter: brightness(100%);
         transform: translateY(-2px);
-        box-shadow: 0 0 20px rgba(37, 89, 87, 0.5);
+        box-shadow: var(--shadow-color-dark);
     }
 
     button:disabled:hover {
@@ -108,7 +109,7 @@ form {
     padding: 1rem;
     background-color: var(--background-color);
     border-radius: var(--border-radius);
-    border: var(--border-dark);
+    border: var(--border-color-dark);
     filter: saturate(2);
 }
 
@@ -132,7 +133,7 @@ input {
     border-radius: var(--border-radius);
     font-family: var(--font-family);
     outline-color: var(--primary-color);
-    border: var(--border-dark);
+    border: var(--border-color-dark);
 }
 
 .input-group {

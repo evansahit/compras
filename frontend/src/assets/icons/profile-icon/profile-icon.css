@@ -19,8 +19,8 @@
     background-color: var(--primary-color);
     color: var(--background-color);
     filter: saturate(2);
-    border: var(--border-light);
-    box-shadow: 0 0 20px rgba(37, 89, 87, 0.5);
+    border: var(--border-color-light);
+    box-shadow: var(--shadow-color-dark);
     padding: 1rem;
     border-radius: var(--border-radius);
     z-index: 60;

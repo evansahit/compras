@@ -12,7 +12,7 @@
     position: relative;
     top: 0.75rem;
     color: var(--primary-color);
-    /* border: var(--border-dark); */
+    /* border: var(--border-color-dark); */
     filter: saturate(2.5);
     width: fit-content;
     border-radius: var(--border-radius);
@@ -36,7 +36,7 @@
 @media (hover: hover) and (pointer: fine) {
     #demo-container:hover {
         transform: translateY(-1px);
-        box-shadow: 0 0 20px rgba(37, 89, 87, 0.5);
+        box-shadow: var(--shadow-color-dark);
 
         #demo-title {
             background-color: var(--primary-color);

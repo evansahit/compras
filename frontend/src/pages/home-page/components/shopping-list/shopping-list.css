@@ -1,7 +1,7 @@
 #shopping-list {
     margin: 1rem 0;
     padding: 0.7rem;
-    border: var(--border-dark);
+    border: var(--border-color-dark);
     border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;

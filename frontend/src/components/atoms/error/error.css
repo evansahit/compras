@@ -1,4 +1,3 @@
-/* TODO: fix styling of error component so that it remains in the middle of the screen, also when scrolling */
 #error-container {
     position: absolute;
     top: 50%;
@@ -11,7 +10,7 @@
     justify-content: center;
     background-color: var(--danger-color);
     box-shadow: var(--inset-shadow-dark);
-    border: var(--border-light);
+    border: var(--border-color-light);
     padding: 1rem;
     z-index: 50;
     border-radius: var(--border-radius);
@@ -20,6 +19,7 @@
 #error-message {
     font-size: 1.5rem;
     margin-left: auto;
+    color: var(--background-color);
 }
 
 .error-close-icon {

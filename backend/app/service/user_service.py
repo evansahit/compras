@@ -1,14 +1,16 @@
-from typing import Annotated
+from datetime import timedelta
 from uuid import UUID
 
+from app.config import Settings
 from app.schemas.item import ItemWithProducts
 from app.schemas.user import (
     UserCreate,
-    UserInDB,
     UserOutput,
     UserUpdate,
     UserWithItemsAndProducts,
+    UserWithJWT,
 )
+from app.service.auth_service import AuthService
 from app.service.item_service import ItemService
 from app.service.utils import get_password_hash
 from fastapi import HTTPException, status
@@ -84,36 +86,6 @@ class UserService:
         return UserOutput(**row)
 
     @staticmethod
-    async def _get_user_by_email(conn: AsyncConnection, email: str) -> UserInDB | None:
-        sql = text("""
-            SELECT id, first_name, last_name, email, hashed_password, created_at, updated_at
-            FROM users
-            WHERE email = :email;
-        """)
-        result = await conn.execute(sql, {"email": email})
-        row = result.mappings().first()
-
-        return UserInDB(**row) if row else None
-
-    @staticmethod
-    async def get_user_by_email(conn: AsyncConnection, email: str) -> UserOutput:
-        sql = text("""
-            SELECT id, first_name, last_name, email, created_at, updated_at
-            FROM users
-            WHERE email = :email;
-        """)
-        result = await conn.execute(sql, {"email": email})
-        row = result.mappings().first()
-
-        if not row:
-            raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Could not find user with email of {email}",
-            )
-
-        return UserOutput(**row)
-
-    @staticmethod
     async def get_current_user_with_items_and_products(
         conn: AsyncConnection,
         user: UserOutput,
@@ -127,30 +99,124 @@ class UserService:
         )
 
     @staticmethod
-    async def update_user(conn: AsyncConnection, user: UserUpdate) -> UserOutput:
+    async def update_user(
+        conn: AsyncConnection, user_id: UUID, user: UserUpdate
+    ) -> UserOutput | UserWithJWT:
+        sql_get_user = text("""
+            SELECT *
+            FROM users
+            WHERE id = :user_id;
+        """)
+        get_user_res = await conn.execute(sql_get_user, {"user_id": user_id})
+        get_user_res = get_user_res.mappings().first()
+        if not get_user_res:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, detail="Could not find this user"
+            )
+        get_user_obj = UserOutput(**get_user_res)
+
+        # create new JWT token as the user's email might have changed.
+        if get_user_obj.email != user.email:
+            access_token_expires = (
+                float(Settings.ACCESS_TOKEN_EXPIRE_DAYS)
+                if Settings.ACCESS_TOKEN_EXPIRE_DAYS
+                else float(3)
+            )
+            access_token_expires = timedelta(days=access_token_expires)
+            jwt = f"Bearer {
+                AuthService.create_access_token(
+                    data={'sub': user.email}, expires_delta=access_token_expires
+                )
+            }"
+
+            sql = text("""
+                UPDATE users
+                SET first_name = :first_name,
+                    last_name = :last_name,
+                    email = :email
+                WHERE id = :user_id
+                RETURNING *;
+            """)
+            result = await conn.execute(
+                sql,
+                {
+                    "user_id": user_id,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email,
+                },
+            )
+            row = result.mappings().first()
+
+            if not row:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Could not find this user",
+                )
+
+            return UserWithJWT(**row, jwt=jwt)
+        else:
+            sql = text("""
+                UPDATE users
+                SET first_name = :first_name,
+                    last_name = :last_name,
+                    email = :email
+                WHERE id = :user_id
+                RETURNING *;
+            """)
+            result = await conn.execute(
+                sql,
+                {
+                    "user_id": user_id,
+                    "first_name": user.first_name,
+                    "last_name": user.last_name,
+                    "email": user.email,
+                },
+            )
+            row = result.mappings().first()
+
+            if not row:
+                raise HTTPException(
+                    status_code=status.HTTP_404_NOT_FOUND,
+                    detail="Could not find this user",
+                )
+
+            return UserOutput(**row)
+
+    @staticmethod
+    async def update_password(
+        conn: AsyncConnection,
+        user_id: UUID,
+        old_plain_password: str,
+        new_plain_password: str,
+    ):
+        if (old_plain_password != new_plain_password) or (
+            not old_plain_password or not new_plain_password
+        ):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Old and new passwords are empty or do not match.",
+            )
+
         sql = text("""
             UPDATE users
-            SET first_name = :first_name,
-                last_name = :last_name,
-                email = :email
+            SET hashed_password = :hashed_password
             WHERE id = :user_id
-            RETURNING *;
+            RETURNING id, first_name, last_name, email, created_at, updated_at;
         """)
 
+        hashed_password = get_password_hash(new_plain_password)
         result = await conn.execute(
             sql,
             {
-                "user_id": user.id,
-                "first_name": user.first_name,
-                "last_name": user.last_name,
-                "email": user.email,
+                "user_id": user_id,
+                "hashed_password": hashed_password,
             },
         )
         row = result.mappings().first()
 
         if not row:
             raise HTTPException(
-                status_code=status.HTTP_404_NOT_FOUND, detail="Could not find this user"
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Something went wrong changing your password.",
             )
-
-        return UserOutput(**row)

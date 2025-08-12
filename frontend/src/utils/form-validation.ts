@@ -58,12 +58,10 @@ export function validatePasswordsMatch(
     passwordA: string,
     passwordB: string
 ): string {
-    if (
-        passwordA.length !== 0 &&
-        passwordB.length !== 0 &&
-        passwordA !== passwordB
-    )
-        return passwordErrors.noMatch;
+    if (passwordA.length === 0 || passwordB.length === 0)
+        return passwordErrors.empty;
+
+    if (passwordA !== passwordB) return passwordErrors.noMatch;
 
     return "";
 }

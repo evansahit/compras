@@ -1,12 +1,10 @@
-import type React from "react";
 import "./error.css";
-import BackIcon from "../../../assets/icons/BackIcon";
-import { useNavigate } from "react-router";
+import type React from "react";
 import CancelIcon from "../../../assets/icons/CancelIcon";
 
 interface ErrorProps {
     children: React.ReactNode;
-    handleClearError: () => void;
+    handleClearError?: () => void;
     className?: string;
 }
 
@@ -15,8 +13,6 @@ export default function Error({
     handleClearError,
     className,
 }: ErrorProps) {
-    const navigate = useNavigate();
-
     return (
         <div id="error-container">
             <h1 id="error-message" className={`${className}`}>
@@ -25,7 +21,9 @@ export default function Error({
             <CancelIcon
                 className="error-close-icon"
                 color="var(--background-color)"
-                onClick={() => handleClearError()}
+                onClick={
+                    handleClearError ? () => handleClearError() : undefined
+                }
             />
         </div>
     );

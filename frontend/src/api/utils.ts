@@ -4,6 +4,7 @@ import type {
     ItemWithProducts,
     ProductOutput,
     UserWithItemsAndProducts,
+    UserWithJWT,
 } from "../types";
 
 export function transformToUserOutput(data): UserOutput {
@@ -30,6 +31,18 @@ export function transformToUserWithItemsAndProducts(
         itemsWithProducts: data.items_with_products.map((item) =>
             transformToItemWithProducts(item)
         ),
+    };
+}
+
+export function transformToUserWithJWT(data): UserWithJWT {
+    return {
+        jwt: data.jwt,
+        id: data.id,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        email: data.email,
+        updatedAt: new Date(data.updated_at),
+        createdAt: new Date(data.created_at),
     };
 }
 
@@ -87,8 +100,6 @@ export function transformToProductOutput(data): ProductOutput {
 }
 
 export function handleDefaultErrors(error) {
-    console.log("[debug] error:", error);
-
     const DEFAULT_ERROR_MESSAGE = "Iets is misgegaan, probeer opnieuw.";
     let errorMessage = DEFAULT_ERROR_MESSAGE;
 
@@ -104,8 +115,6 @@ export function handleDefaultErrors(error) {
             errorMessage = DEFAULT_ERROR_MESSAGE;
         }
     }
-
-    console.log("[debug] errorMessage:", errorMessage);
 
     return errorMessage;
 }

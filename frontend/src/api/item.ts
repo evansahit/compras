@@ -54,19 +54,14 @@ export async function getProductsForItemByItemId(
         },
     });
 
-    let json;
-    try {
-        json = await response.json();
-    } catch {
-        json = null;
-    }
-
     if (!response.ok) {
-        const error =
-            json.detail || "Something went wrong retrieving the products";
-        throw new Error(error);
+        const error = await response.json();
+        throw new Error(
+            error.detail || "Something went wrong creating a new item."
+        );
     }
 
+    const json = await response.json();
     const products = json.map((product) => transformToProductOutput(product));
 
     return products;
@@ -89,18 +84,14 @@ export async function updateItem(newItem: ItemUpdate): Promise<ItemOutput> {
         body: JSON.stringify(data),
     });
 
-    let json;
-    try {
-        json = await response.json();
-    } catch {
-        json = null;
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+            error.detail || "Something went wrong creating a new item."
+        );
     }
 
-    if (!response.ok) {
-        const error =
-            json.detail || `Something went wrong updating item ${newItem.name}`;
-        throw new Error(error);
-    }
+    const json = await response.json();
 
     return transformToItemOutput(json);
 }
@@ -114,17 +105,14 @@ export async function deleteItem(itemId: string): Promise<ItemOutput> {
         headers: getJsonAuthedHeaders(),
     });
 
-    let json;
-    try {
-        json = await response.json();
-    } catch {
-        json = null;
+    if (!response.ok) {
+        const error = await response.json();
+        throw new Error(
+            error.detail || "Something went wrong creating a new item."
+        );
     }
 
-    if (!response.ok) {
-        const error = json.detail || `Something went wrong deleting item`;
-        throw new Error(error);
-    }
+    const json = await response.json();
 
     return transformToItemOutput(json);
 }

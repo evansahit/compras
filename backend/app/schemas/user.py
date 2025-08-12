@@ -22,7 +22,6 @@ class UserOutput(UserBase):
 
 
 class UserUpdate(BaseModel):
-    id: UUID
     first_name: str
     last_name: str | None
     email: EmailStr
@@ -34,3 +33,7 @@ class UserInDB(UserOutput):
 
 class UserWithItemsAndProducts(UserOutput):
     items_with_products: list[ItemWithProducts]
+
+
+class UserWithJWT(UserOutput):
+    jwt: str

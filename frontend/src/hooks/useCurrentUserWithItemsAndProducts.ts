@@ -3,15 +3,16 @@ import type {
     ItemOutput,
     ItemUpdate,
     ItemWithProducts,
-    UserOutput,
     UserUpdate,
     UserWithItemsAndProducts,
 } from "../types";
-import { getCurrentUserWithItemsAndProducts, updateUser } from "../api/user";
+import {
+    getCurrentUserWithItemsAndProducts,
+    updatePassword,
+    updateUser,
+} from "../api/user";
 import { handleDefaultErrors } from "../api/utils";
 import { createNewItem, deleteItem, updateItem } from "../api/item";
-// import { logout } from "../api/auth";
-// import { useNavigate } from "react-router";
 
 export default function useCurrentUserWithItemsAndProducts() {
     const [data, setData] = useState<UserWithItemsAndProducts | undefined>(
@@ -19,61 +20,76 @@ export default function useCurrentUserWithItemsAndProducts() {
     );
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState("");
-    // const navigate = useNavigate();
 
     async function handleCreateNewItem(userId: string, itemName: string) {
-        const newItem: ItemWithProducts = await createNewItem({
-            userId: userId,
-            name: itemName,
-        });
+        try {
+            setIsLoading(true);
+            const newItem: ItemWithProducts = await createNewItem({
+                userId: userId,
+                name: itemName,
+            });
+            setData((prev) => {
+                if (!prev) return prev;
 
-        setData((prev) => {
-            if (!prev) return prev;
-
-            return {
-                ...prev,
-                itemsWithProducts: [...prev.itemsWithProducts, newItem],
-            };
-        });
+                return {
+                    ...prev,
+                    itemsWithProducts: [...prev.itemsWithProducts, newItem],
+                };
+            });
+        } catch (error) {
+            setError(handleDefaultErrors(error));
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     async function handleUpdateItem(item: ItemUpdate) {
-        const updatedItem: ItemOutput = await updateItem(item);
+        try {
+            setIsLoading(true);
+            const updatedItem: ItemOutput = await updateItem(item);
+            setData((prev) => {
+                if (!prev) return prev;
 
-        setData((prev) => {
-            if (!prev) return prev;
-
-            return {
-                ...prev,
-                itemsWithProducts: prev.itemsWithProducts.map((i) =>
-                    i.item.id === updatedItem.id
-                        ? { ...i, item: { ...updatedItem } }
-                        : i
-                ),
-            };
-        });
+                return {
+                    ...prev,
+                    itemsWithProducts: prev.itemsWithProducts.map((i) =>
+                        i.item.id === updatedItem.id
+                            ? { ...i, item: { ...updatedItem } }
+                            : i
+                    ),
+                };
+            });
+        } catch (error) {
+            setError(handleDefaultErrors(error));
+        } finally {
+            setIsLoading(false);
+        }
     }
 
     async function handleDeleteItem(itemId: string) {
-        await deleteItem(itemId);
-        setData((prev) => {
-            if (!prev) return prev;
+        try {
+            await deleteItem(itemId);
+            setData((prev) => {
+                if (!prev) return prev;
 
-            return {
-                ...prev,
-                itemsWithProducts: prev.itemsWithProducts.filter(
-                    (i) => i.item.id !== itemId
-                ),
-            };
-        });
+                return {
+                    ...prev,
+                    itemsWithProducts: prev.itemsWithProducts.filter(
+                        (i) => i.item.id !== itemId
+                    ),
+                };
+            });
+        } catch (error) {
+            setError(handleDefaultErrors(error));
+        } finally {
+            setIsLoading(false);
+        }
     }
 
-    async function handleUpdateUser(user: UserUpdate) {
-        console.log("[debug] user:", user);
-
+    async function handleUpdateUser(userId: string, user: UserUpdate) {
         try {
             setIsLoading(true);
-            const updatedUser = await updateUser(user);
+            const updatedUser = await updateUser(userId, user);
 
             setData((prev) => {
                 if (!prev) return prev;
@@ -93,8 +109,27 @@ export default function useCurrentUserWithItemsAndProducts() {
         }
     }
 
+    async function handlePasswordUpdate(
+        userId: string,
+        oldPassword: string,
+        newPassword: string
+    ) {
+        try {
+            setIsLoading(true);
+            await updatePassword(userId, oldPassword, newPassword);
+        } catch (error) {
+            setError(handleDefaultErrors(error));
+        } finally {
+            setIsLoading(false);
+        }
+    }
+
     function handleClearError() {
         setError("");
+    }
+
+    function handleSetError(errorMessage: string) {
+        setError(errorMessage);
     }
 
     const fetchData = useCallback(async () => {
@@ -121,9 +156,11 @@ export default function useCurrentUserWithItemsAndProducts() {
         error,
         handleUpdateUser,
         handleCreateNewItem,
+        handlePasswordUpdate,
         handleUpdateItem,
         handleDeleteItem,
         handleClearError,
+        handleSetError,
         refreshData: fetchData,
     };
 }
