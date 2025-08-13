@@ -100,6 +100,7 @@ The project is still in development, so exact tools are subject to change.
     -   `PostgreSQL` functions and triggers have been implemented to automatically update the `updated_at` column in each table with the current timestamp at time of updating.
     -   Endpoints and logic for `/users` and `/items` resources have been created.
     -   Simple username + password authentication is implemented. Relevant endpoints have been protected by authentication checks.
+    -   User's can edit their personal info such as name, email and also change their passwords.
 -   Frontend
 
     -   Doing mobile-first, so the website doesn't look great on anything larger than mobile.
@@ -116,11 +117,10 @@ The project is still in development, so exact tools are subject to change.
     -   Can create new items.
     -   Can mark items as completed.
     -   Can delete items.
-    -   Working on item detail page where all the found products for an item is displayed and where the item title can be edited.
-    -   All pages except item detail page are responsive up until now.
-    -   All pages are responsive.
+    -   Can view all products for an item on the item detail page.
     -   Can edit item name on item detail page.
     -   Products on item detail page are sorted by price ascending.
+    -   Finished a profile page where a user can view and edit their info (very minimal for now).
 
 -   Would love to include more supermarkets, but they don't have public API's :(
     -   Albert Heijn and Jumbo don't either, but I lucked out by finding a Python package which provides a means to search for products.
