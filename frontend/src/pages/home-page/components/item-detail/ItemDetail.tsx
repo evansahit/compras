@@ -7,7 +7,7 @@ import BackIcon from "../../../../assets/icons/BackIcon";
 import EditIcon from "../../../../assets/icons/EditIcon";
 import { validateItemName } from "../../../../utils/form-validation";
 import CancelIcon from "../../../../assets/icons/CancelIcon";
-import ButtonSecondary from "../../../../components/button/button-secondary/ButtonSecondary";
+import ButtonSecondary from "../../../../components/atoms/button/button-secondary/ButtonSecondary";
 import { sortProductsByPriceAscending } from "../../../../utils/sortProductsByPrice";
 import useCurrentUserWithItemsAndProducts from "../../../../hooks/useCurrentUserWithItemsAndProducts";
 import Loading from "../../../../components/atoms/loading/Loading";
@@ -92,7 +92,6 @@ export default function ItemDetail() {
                 <div id="products-container">
                     <div id="products-header">
                         <BackIcon
-                            id="back-icon"
                             color="var(--background-color)"
                             onClick={() => navigate("/home")}
                         />

@@ -15,8 +15,18 @@ export type UserOutput = {
     updatedAt: Date;
 };
 
+export type UserUpdate = {
+    firstName: string;
+    lastName: string;
+    email: string;
+};
+
 export type UserWithItemsAndProducts = UserOutput & {
     itemsWithProducts: ItemWithProducts[];
+};
+
+export type UserWithJWT = UserOutput & {
+    jwt: string;
 };
 
 // items

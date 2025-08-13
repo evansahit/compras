@@ -1,6 +1,6 @@
 import "./signup-form.css";
 import { useState, useEffect, type FormEvent } from "react";
-import ButtonPrimary from "../button/button-primary/ButtonPrimary";
+import ButtonPrimary from "../atoms/button/button-primary/ButtonPrimary";
 import {
     validateFirstName,
     validateEmail,
@@ -10,6 +10,7 @@ import {
 import { useNavigate } from "react-router";
 
 import { createUser } from "../../api/auth";
+import { handleDefaultErrors } from "../../api/utils";
 
 export default function SignUpForm() {
     const navigate = useNavigate();
@@ -46,9 +47,7 @@ export default function SignUpForm() {
             await createUser(formData);
             navigate("/login");
         } catch (error) {
-            setFormError(
-                error instanceof Error ? error.message : "Unknown error"
-            );
+            setFormError(handleDefaultErrors(error));
         } finally {
             setIsFormLoading(false);
         }

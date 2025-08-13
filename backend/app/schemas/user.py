@@ -21,9 +21,24 @@ class UserOutput(UserBase):
     updated_at: datetime
 
 
+class UserUpdate(BaseModel):
+    first_name: str
+    last_name: str | None
+    email: EmailStr
+
+
+class UserUpdatePassword(BaseModel):
+    old_plain_password: str
+    new_plain_password: str
+
+
 class UserInDB(UserOutput):
     hashed_password: str
 
 
 class UserWithItemsAndProducts(UserOutput):
     items_with_products: list[ItemWithProducts]
+
+
+class UserWithJWT(UserOutput):
+    jwt: str

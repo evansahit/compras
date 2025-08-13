@@ -9,6 +9,8 @@ import NotFound from "./components/404/NotFound.tsx";
 import LoginPage from "./pages/login-page/LoginPage.tsx";
 import HomePage from "./pages/home-page/HomePage.tsx";
 import ItemDetail from "./pages/home-page/components/item-detail/ItemDetail.tsx";
+import ProfilePage from "./pages/profile-page/ProfilePage.tsx";
+import ProtectedRoute from "./components/ProtectedRoute.tsx";
 
 createRoot(document.getElementById("root")!).render(
     <StrictMode>
@@ -24,8 +26,30 @@ createRoot(document.getElementById("root")!).render(
                     />
                     <Route path="/login" element={<LoginPage />} />
 
-                    <Route path="/home" element={<HomePage />} />
-                    <Route path="home/items/:itemId" element={<ItemDetail />} />
+                    <Route
+                        path="/home"
+                        element={
+                            <ProtectedRoute>
+                                <HomePage />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="home/items/:itemId"
+                        element={
+                            <ProtectedRoute>
+                                <ItemDetail />
+                            </ProtectedRoute>
+                        }
+                    />
+                    <Route
+                        path="/profile"
+                        element={
+                            <ProtectedRoute>
+                                <ProfilePage />
+                            </ProtectedRoute>
+                        }
+                    />
 
                     {/* 404 */}
                     <Route path="*" element={<NotFound />} />

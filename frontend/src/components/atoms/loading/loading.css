@@ -7,6 +7,8 @@
     color: var(--primary-color);
     padding: 1rem;
     border-radius: var(--border-radius);
+    border: var(--border-color-dark);
+    box-shadow: var(--shadow-color-dark);
     z-index: 50;
     filter: saturate(2);
 }

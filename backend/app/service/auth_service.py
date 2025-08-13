@@ -5,10 +5,10 @@ import jwt
 from app.config import Settings
 from app.database.db import get_db_connection
 from app.schemas.token import TokenData
-from app.schemas.user import UserInDB
-from app.service.user_service import UserOutput, UserService
+from app.schemas.user import UserInDB, UserOutput
 from app.service.utils import (
     create_unauthorized_exception,
+    get_user_by_email,
     verify_password,
 )
 from fastapi import Depends
@@ -24,7 +24,7 @@ class AuthService:
     async def authenticate_user(
         conn: AsyncConnection, email: str, plain_password: str
     ) -> UserInDB | None:
-        user: UserInDB | None = await UserService._get_user_by_email(conn, email)
+        user: UserInDB | None = await get_user_by_email(conn, email)
 
         if not user or not verify_password(plain_password, user.hashed_password):
             return None
@@ -74,9 +74,7 @@ class AuthService:
         if not token_data.username:
             raise exception
 
-        user: UserInDB | None = await UserService._get_user_by_email(
-            conn, token_data.username
-        )
+        user: UserInDB | None = await get_user_by_email(conn, token_data.username)
         if not user:
             raise exception
 

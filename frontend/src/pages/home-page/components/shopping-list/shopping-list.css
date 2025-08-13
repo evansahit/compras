@@ -1,10 +1,11 @@
 #shopping-list {
     margin: 1rem 0;
     padding: 0.7rem;
-    border: 1px solid var(--border-color);
+    border: var(--border-color-dark);
     border-radius: var(--border-radius);
     display: flex;
     flex-direction: column;
+    gap: 1rem;
     background-color: var(--background-color);
     filter: saturate(2);
     color: var(--primary-color);
@@ -134,14 +135,6 @@ td {
     margin-top: 1rem;
 }
 
-#button-row {
-    display: flex;
-    flex-direction: row;
-    gap: 1rem;
-    justify-content: center;
-    margin-top: 1rem;
-}
-
 @media (min-width: 500px) {
     #shopping-list {
         padding: 1rem;
@@ -196,5 +189,13 @@ td {
 
     #delete button {
         margin-left: auto;
+    }
+
+    #delete svg {
+        width: var(--icon-width-laptop);
+    }
+
+    #checkbox svg {
+        width: var(--icon-width-laptop);
     }
 }

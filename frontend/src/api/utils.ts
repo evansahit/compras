@@ -4,6 +4,7 @@ import type {
     ItemWithProducts,
     ProductOutput,
     UserWithItemsAndProducts,
+    UserWithJWT,
 } from "../types";
 
 export function transformToUserOutput(data): UserOutput {
@@ -30,6 +31,18 @@ export function transformToUserWithItemsAndProducts(
         itemsWithProducts: data.items_with_products.map((item) =>
             transformToItemWithProducts(item)
         ),
+    };
+}
+
+export function transformToUserWithJWT(data): UserWithJWT {
+    return {
+        jwt: data.jwt,
+        id: data.id,
+        firstName: data.first_name,
+        lastName: data.last_name,
+        email: data.email,
+        updatedAt: new Date(data.updated_at),
+        createdAt: new Date(data.created_at),
     };
 }
 
@@ -87,15 +100,19 @@ export function transformToProductOutput(data): ProductOutput {
 }
 
 export function handleDefaultErrors(error) {
-    let errorMessage = "Iets is misgegaan";
+    const DEFAULT_ERROR_MESSAGE = "Iets is misgegaan, probeer opnieuw.";
+    let errorMessage = DEFAULT_ERROR_MESSAGE;
 
     if (error instanceof Error) {
-        if (
-            error.message === "Failed to fetch" ||
-            error.message.includes("fetch") ||
-            error.message.includes("NetworkError")
+        errorMessage = error.message.toLowerCase();
+        if (errorMessage.length === 0) {
+            return DEFAULT_ERROR_MESSAGE;
+        } else if (
+            errorMessage.includes("failed to fetch") ||
+            errorMessage.includes("fetch") ||
+            errorMessage.includes("networkerror")
         ) {
-            errorMessage = "Kon geen verbinding maken met de server";
+            errorMessage = "Kon geen verbinding maken met de server.";
         } else {
             errorMessage = error.message;
         }

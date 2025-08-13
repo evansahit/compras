@@ -1,8 +1,8 @@
 import "./shopping-list.css";
 import type { ItemUpdate, ItemWithProducts } from "../../../../types";
 import { useEffect, useRef, useState } from "react";
-import ButtonPrimary from "../../../../components/button/button-primary/ButtonPrimary";
-import ButtonDanger from "../../../../components/button/button-danger/ButtonDanger";
+import ButtonPrimary from "../../../../components/atoms/button/button-primary/ButtonPrimary";
+import ButtonDanger from "../../../../components/atoms/button/button-danger/ButtonDanger";
 import { validateItemName } from "../../../../utils/form-validation";
 import { findCheapestProductForItem } from "../../../../utils/find-cheapest-product";
 import CheckedCheckBox from "../../../../assets/icons/CheckedCheckBox";
@@ -14,9 +14,9 @@ import { MIN_ITEM_NAME_LENGTH } from "../../../../constants";
 type ShoppingListProps = {
     userId: string;
     items: ItemWithProducts[];
-    createItem: (userId: string, itemName: string) => void;
-    updateItem: (newItem: ItemUpdate) => void;
-    deleteItem: (itemId: string) => void;
+    createItem: (userId: string, itemName: string) => Promise<void>;
+    updateItem: (newItem: ItemUpdate) => Promise<void>;
+    deleteItem: (itemId: string) => Promise<void>;
     demoMode?: boolean;
 };
 
@@ -297,7 +297,7 @@ export default function ShoppingList(props: ShoppingListProps) {
 
             {error.length > 0 && <span id="input-error">{error}</span>}
 
-            <div id="button-row">
+            <div className="button-row">
                 {isEditing && (
                     <ButtonDanger
                         onMouseDown={() => {
