@@ -133,15 +133,15 @@ export async function updatePassword(
 ): Promise<void> {
     if (!userId || !oldPassword || !newPassword)
         throw Error(
-            "Something went wrong changing your password. Make sure you have filled in your old and new passwords."
+            "Something went wrong changing your password. Make sure you have filled in both your old and new passwords."
         );
 
     const endpoint = `${endpointPrefix}/${userId}/update-password`;
     const url = API_URL_BASE + endpoint;
 
     const data = {
-        old_password: oldPassword,
-        new_password: newPassword,
+        old_plain_password: oldPassword,
+        new_plain_password: newPassword,
     };
 
     const response = await fetch(url, {

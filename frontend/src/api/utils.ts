@@ -105,14 +105,16 @@ export function handleDefaultErrors(error) {
 
     if (error instanceof Error) {
         errorMessage = error.message.toLowerCase();
-        if (
-            errorMessage.includes("Failed to fetch") ||
+        if (errorMessage.length === 0) {
+            return DEFAULT_ERROR_MESSAGE;
+        } else if (
+            errorMessage.includes("failed to fetch") ||
             errorMessage.includes("fetch") ||
             errorMessage.includes("networkerror")
         ) {
             errorMessage = "Kon geen verbinding maken met de server.";
         } else {
-            errorMessage = DEFAULT_ERROR_MESSAGE;
+            errorMessage = error.message;
         }
     }
 

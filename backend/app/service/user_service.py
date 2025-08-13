@@ -5,6 +5,7 @@ from app.config import Settings
 from app.schemas.item import ItemWithProducts
 from app.schemas.user import (
     UserCreate,
+    UserInDB,
     UserOutput,
     UserUpdate,
     UserWithItemsAndProducts,
@@ -12,7 +13,7 @@ from app.schemas.user import (
 )
 from app.service.auth_service import AuthService
 from app.service.item_service import ItemService
-from app.service.utils import get_password_hash
+from app.service.utils import get_password_hash, verify_password
 from fastapi import HTTPException, status
 from sqlalchemy import text
 from sqlalchemy.ext.asyncio import AsyncConnection
@@ -190,21 +191,45 @@ class UserService:
         old_plain_password: str,
         new_plain_password: str,
     ):
-        if (old_plain_password != new_plain_password) or (
-            not old_plain_password or not new_plain_password
-        ):
+        if not old_plain_password or not new_plain_password:
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Old and new passwords are empty or do not match.",
+                detail="Something went wrong changing your password. Make sure to fill in both your old and new passwords.",
             )
 
+        if old_plain_password == new_plain_password:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Something went wrong changing your password. Your old and new passwords are the same.",
+            )
+
+        # check if user exists and if old password matches with the old hashed password
+        sql_find_user = text("""
+            SELECT *
+            FROM users
+            WHERE id = :user_id;
+        """)
+        row_find_user = await conn.execute(sql_find_user, {"user_id": user_id})
+        row_res = row_find_user.mappings().first()
+        if not row_res:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Something went wrong changing your password. Could not find this user.",
+            )
+        row_res = UserInDB(**row_res)
+        if not verify_password(old_plain_password, row_res.hashed_password):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Wrong password, please try again.",
+            )
+
+        # update password with new password
         sql = text("""
             UPDATE users
             SET hashed_password = :hashed_password
             WHERE id = :user_id
             RETURNING id, first_name, last_name, email, created_at, updated_at;
         """)
-
         hashed_password = get_password_hash(new_plain_password)
         result = await conn.execute(
             sql,

@@ -1,3 +1,4 @@
+/* TODO: on mobile make the error popup showup on the bottom of the screen and let it stick there. on bigger screens make the error popup look like a toast in the corner of the screen somewhere */
 #error-container {
     position: absolute;
     top: 50%;

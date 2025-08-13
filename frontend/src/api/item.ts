@@ -12,7 +12,6 @@ import {
     transformToProductOutput,
 } from "./utils";
 
-// TODO: finish rewriting methods to new version
 export async function createNewItem(
     newItem: ItemInput
 ): Promise<ItemWithProducts> {

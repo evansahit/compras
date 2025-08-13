@@ -27,6 +27,11 @@ class UserUpdate(BaseModel):
     email: EmailStr
 
 
+class UserUpdatePassword(BaseModel):
+    old_plain_password: str
+    new_plain_password: str
+
+
 class UserInDB(UserOutput):
     hashed_password: str
 

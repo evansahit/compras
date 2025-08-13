@@ -129,6 +129,20 @@ export default function ProfilePage() {
             passwordUpdateState.oldPassword,
             passwordUpdateState.newPassword
         );
+
+        setPasswordUpdateState((prev) => ({
+            ...prev,
+            isEditing: false,
+            oldPassword: "",
+            newPassword: "",
+            confirmNewPassword: "",
+            newPasswordError: "",
+            oldPasswordError: "",
+            confirmPasswordError: "",
+            isOldPasswordTouched: false,
+            isNewPasswordTouched: false,
+            isConfirmPasswordTouched: false,
+        }));
     }
 
     useEffect(() => {
@@ -192,6 +206,22 @@ export default function ProfilePage() {
                         passwordUpdateState.newPassword
                     ),
                 }));
+            }
+
+            if (
+                passwordUpdateState.isOldPasswordTouched &&
+                passwordUpdateState.isNewPasswordTouched
+            ) {
+                if (
+                    passwordUpdateState.oldPassword ===
+                    passwordUpdateState.newPassword
+                ) {
+                    setPasswordUpdateState((prev) => ({
+                        ...prev,
+                        newPasswordError:
+                            "Your new password must be different from your old password",
+                    }));
+                }
             }
 
             if (passwordUpdateState.isConfirmPasswordTouched) {
@@ -352,6 +382,7 @@ export default function ProfilePage() {
                     <input
                         type="password"
                         id="old-password"
+                        value={passwordUpdateState.oldPassword}
                         onChange={(e) => {
                             setPasswordUpdateState((prev) => ({
                                 ...prev,
@@ -375,6 +406,7 @@ export default function ProfilePage() {
                     <input
                         type="password"
                         id="new-password"
+                        value={passwordUpdateState.newPassword}
                         onChange={(e) => {
                             setPasswordUpdateState((prev) => ({
                                 ...prev,
@@ -400,6 +432,7 @@ export default function ProfilePage() {
                     <input
                         type="password"
                         id="confirm-new-password"
+                        value={passwordUpdateState.confirmNewPassword}
                         onChange={(e) => {
                             setPasswordUpdateState((prev) => ({
                                 ...prev,

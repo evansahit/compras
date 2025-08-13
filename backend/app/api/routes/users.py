@@ -10,6 +10,7 @@ from app.schemas.user import (
     UserCreate,
     UserOutput,
     UserUpdate,
+    UserUpdatePassword,
     UserWithItemsAndProducts,
     UserWithJWT,
 )
@@ -71,7 +72,6 @@ async def update_user(
 
 @router.put(
     "/{user_id}/update-password",
-    response_model=UserOutput,
     status_code=status.HTTP_200_OK,
 )
 async def update_password(
@@ -80,10 +80,12 @@ async def update_password(
         Depends(get_db_connection),
     ],
     user_id: UUID,
-    old_plain_password: str,
-    new_plain_password: str,
+    password_update: UserUpdatePassword,
     _: Annotated[UserOutput, Depends(AuthService.get_current_user)],
 ):
     await UserService.update_password(
-        conn, user_id, old_plain_password, new_plain_password
+        conn,
+        user_id,
+        password_update.old_plain_password,
+        password_update.new_plain_password,
     )
