@@ -6,3 +6,6 @@ email-validator
 pyjwt
 passlib[bcrypt]
 supermarktconnector
+httpx
+pytest
+pytest-asyncio

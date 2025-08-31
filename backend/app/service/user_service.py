@@ -35,7 +35,6 @@ class UserService:
             sql_user_check, {"email": new_user.email}
         )
         user = user_check_result.mappings().first()
-
         if user:
             raise HTTPException(
                 status_code=status.HTTP_409_CONFLICT,
@@ -53,12 +52,10 @@ class UserService:
             new_user_dict["plain_password"]
         )
         del new_user_dict["plain_password"]
-
         result = await conn.execute(
             sql_create_user,
             new_user_dict,
         )
-
         row = result.mappings().first()
         if row is None:
             raise HTTPException(
