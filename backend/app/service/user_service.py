@@ -78,7 +78,7 @@ class UserService:
         if not row:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND,
-                detail=f"Could not find user with ID of {user_id}",
+                detail="Could not find this user",
             )
 
         return UserOutput(**row)
@@ -92,8 +92,8 @@ class UserService:
             ItemWithProducts
         ] = await ItemService.get_all_items_with_products_by_user_id(conn, user.id)
 
-        return UserWithItemsAndProducts.model_validate(
-            {**user.model_dump(), "items_with_products": items_with_products}
+        return UserWithItemsAndProducts(
+            **user.model_dump(), items_with_products=items_with_products
         )
 
     @staticmethod
@@ -157,8 +157,7 @@ class UserService:
             sql = text("""
                 UPDATE users
                 SET first_name = :first_name,
-                    last_name = :last_name,
-                    email = :email
+                    last_name = :last_name
                 WHERE id = :user_id
                 RETURNING *;
             """)
@@ -168,7 +167,6 @@ class UserService:
                     "user_id": user_id,
                     "first_name": user.first_name,
                     "last_name": user.last_name,
-                    "email": user.email,
                 },
             )
             row = result.mappings().first()
@@ -194,12 +192,6 @@ class UserService:
                 detail="Something went wrong changing your password. Make sure to fill in both your old and new passwords.",
             )
 
-        if old_plain_password == new_plain_password:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Something went wrong changing your password. Your old and new passwords are the same.",
-            )
-
         # check if user exists and if old password matches with the old hashed password
         sql_find_user = text("""
             SELECT *
@@ -210,14 +202,20 @@ class UserService:
         row_res = row_find_user.mappings().first()
         if not row_res:
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
+                status_code=status.HTTP_404_NOT_FOUND,
                 detail="Something went wrong changing your password. Could not find this user.",
             )
         row_res = UserInDB(**row_res)
         if not verify_password(old_plain_password, row_res.hashed_password):
             raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
+                status_code=status.HTTP_401_UNAUTHORIZED,
                 detail="Wrong password, please try again.",
+            )
+
+        if old_plain_password == new_plain_password:
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail="Something went wrong changing your password. Your old and new passwords are the same.",
             )
 
         # update password with new password
@@ -242,3 +240,23 @@ class UserService:
                 status_code=status.HTTP_404_NOT_FOUND,
                 detail="Something went wrong changing your password.",
             )
+
+    @staticmethod
+    async def _get_user_with_hashed_password(
+        conn: AsyncConnection, user_id: UUID
+    ) -> UserInDB:
+        sql = text("""
+            SELECT id, first_name, last_name, email, hashed_password, created_at, updated_at
+            FROM users
+            WHERE id = :user_id;
+        """)
+
+        user = await conn.execute(sql, {"user_id": user_id})
+        user = user.mappings().first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail="Could not find this user",
+            )
+
+        return UserInDB(**user)

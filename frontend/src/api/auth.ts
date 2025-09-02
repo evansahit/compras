@@ -64,5 +64,10 @@ export async function logout(navigate: NavigateFunction): Promise<void> {
 }
 
 export function isAuthed(): boolean {
-    return Boolean(localStorage.getItem("jwt"));
+    const isAuthed = Boolean(localStorage.getItem("jwt"));
+    if (!isAuthed) {
+        localStorage.removeItem("jwt");
+    }
+
+    return isAuthed;
 }

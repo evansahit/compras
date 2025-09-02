@@ -71,6 +71,19 @@ class ItemService:
     async def get_all_items_with_products_by_user_id(
         conn: AsyncConnection, user_id: UUID
     ) -> list[ItemWithProducts]:
+        sql_user_check = text("""
+            SELECT id
+            FROM users
+            WHERE id = :user_id;
+        """)
+        user = await conn.execute(sql_user_check, {"user_id": user_id})
+        user = user.mappings().first()
+        if not user:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Could not find user with ID of {user_id}",
+            )
+
         sql_item = text("""
             SELECT id, user_id, name, is_completed, is_archived, created_at, updated_at
             FROM items
