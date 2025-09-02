@@ -2,13 +2,14 @@ from datetime import datetime
 from uuid import UUID
 
 from app.schemas.item import ItemWithProducts
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 
 class UserBase(BaseModel):
     first_name: str
     last_name: str | None
-    email: EmailStr
+    # min length decided by a minimal possible email (a@a.a)
+    email: EmailStr = Field(min_length=5, description="Email cannot be empty")
 
 
 class UserCreate(UserBase):
